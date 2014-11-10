@@ -1,0 +1,10 @@
+Thumbs.db
+*.flcache
+*.cache
+.idea
+.sass-cache
+*.orig
+.DS_Store
+vendor/
+composer.lock
+composer.phar
