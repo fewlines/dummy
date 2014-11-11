@@ -1,3 +1,6 @@
 [submodule "js/third-party/google-closure"]
 	path = js/third-party/google-closure
 	url = git@github.com:google/closure-library.git
+[submodule "php/fewlines"]
+	path = php/fewlines
+	url = git@github.com:fewlines/fewlines-php.git
