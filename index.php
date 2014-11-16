@@ -2,8 +2,15 @@
 	// Constants
 	define("ROOT_DIR", __DIR__);
 	define("FEWLINES_PHP", ROOT_DIR . '/php');
+	define("LAYOUT_PATH", ROOT_DIR . '/templates/fewlines/layout');
+	define("VIEW_PATH", ROOT_DIR . '/templates/fewlines/views');
 
-	define("URL_LAYOUT_ROUTE", "/view:index/action:index");
+	define("LAYOUT_FILETYPE", 'phtml');
+	define("VIEW_FILETYPE", "phtml");
+
+	define("DEFAULT_LAYOUT", 'layout');
+
+	//define("URL_LAYOUT_ROUTE", "/view:index/action:index");
 
 	define("AL_FNC", '\Fewlines\Autoloader\Autoloader::loadClass');
 
@@ -14,9 +21,8 @@
 
 	// Inlcude the application ("bootstrap")
 	require_once "Fewlines/Application/Application.php";
-echo "<pre>";
+
 	// Instantiate the application
 	$application = new \Fewlines\Application\Application(AL_FNC);
 	$application->run();
-echo "</pre>";
 ?>
