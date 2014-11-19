@@ -8,6 +8,7 @@
 	define("LAYOUT_FILETYPE", 'phtml');
 	define("VIEW_FILETYPE", "phtml");
 
+	define("DEFAULT_ERROR_VIEW", "error");
 	define("DEFAULT_LAYOUT", 'layout');
 
 	//define("URL_LAYOUT_ROUTE", "/view:index/action:index");
