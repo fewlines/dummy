@@ -38,9 +38,17 @@ $whereValues = array(
 			"colname",    // Collumname
 			"<=",         // Operator
 			"value"	      // value
-		)
 
-	);
+		),
+    		array(
+                "OR|AND|...", // Operator to link the conditions
+                              // IF empty OR first value NOT REQUIRED, IF empty and NOT first value THROW EXCEPTION
+
+                "colname",    // Collumname
+                "<=",         // Operator
+                "value"	      // value
+
+	));
 
 $db->select('table')->update($updateValues)->where($whereValues)->save();
 
