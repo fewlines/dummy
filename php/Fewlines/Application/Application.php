@@ -27,7 +27,7 @@ class Application
 	 *
 	 * @var boolean
 	 */
-	private $wasRunned = false;
+	private $isRunning = false;
 
 	/**
 	 * Instance of the request object
@@ -57,9 +57,6 @@ class Application
 		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
-
-		// Render the frontend
-		$this->renderApplication();
 
         $test2 = array(
             array(
@@ -112,7 +109,10 @@ class Application
 	 */
 	public function run()
 	{
-		$this->wasRunned = true;
+		$this->isRunning = true;
+
+		// Render the frontend
+		$this->renderApplication();
 	}
 
 	/**
@@ -120,15 +120,15 @@ class Application
 	 *
 	 * @return boolean
 	 */
-	public function wasRunned()
+	public function isRunning()
 	{
-		return $this->wasRunned;
+		return $this->isRunning;
 	}
 
 	/**
 	 * Registers the autoload function
 	 *
-	 * @param  function
+	 * @param  string
 	 * @return booleam
 	 */
 	private function registerAutoloader($fnc)
@@ -142,7 +142,9 @@ class Application
 	 */
 	private function registerErrorHandler()
 	{
-		set_error_handler(array(new ErrorHandler(), 'handleError'));
+		set_error_handler(
+			array(new ErrorHandler(), 'handleError')
+		);
 	}
 }
 

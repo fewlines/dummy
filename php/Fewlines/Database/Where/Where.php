@@ -16,16 +16,16 @@ class Where
     /**
      * Holds the given wherevalues
      *
+     * @var string
      */
     private $whereString;
 
     /**
+     * Holds the where queries
      *
-     * Ist the save of all where querys
-     *
+     * @var array
      */
     private $whereQuerys = array();
-
 
     /**
      * Build the query out of the array
@@ -33,47 +33,49 @@ class Where
      */
     public function setValues($whereValues)
     {
-        $i = 0; //counter array
         $this->whereString .= "WHERE";
 
-        for($whereValues;$i < count($whereValues);$i++)
+        for($i = 0; $i < count($whereValues); $i++)
         {
             $values = $whereValues[$i];
-            $i2 = 0; //counter the second for
-            for($values;$i2 < count($values);$i2++)
+
+            for($x = 0; $x < count($values); $x++)
             {
-                echo $i2;
                 if($i == 1)
                 {
-
-                    switch($i2)
+                    switch($x)
                     {
                         case 0:
-                        case 2: $this->whereString .= $values[$i2] . " "; break;
-                        default:$this->whereString .= "'" . $values[$i2] . "' ";break;
+                        case 2:
+                            $this->whereString .= $values[$x] . " ";
+                        break;
+
+                        default:
+                            $this->whereString .= "'" . $values[$x] . "' ";
+                        break;
                     }
-
-
                 }
                 else
                 {
-                    switch($i2)
+                    switch($x)
                     {
-                        case 1: $this->whereString .= $values[$i2] . " "; break;
-                        default:$this->whereString .= "'" . $values[$i2] . "' ";break;
+                        case 1:
+                            $this->whereString .= $values[$x] . " ";
+                        break;
+
+                        default:
+                            $this->whereString .= "'" . $values[$x] . "' ";
+                        break;
                     }
                 }
-
             }
         }
 
         $this->whereQuerys[] = $this->whereString;
-        //exit($this->whereString);
     }
 
     public function getString()
     {
-
         return $this->whereQuerys;
     }
 }
