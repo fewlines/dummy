@@ -34,6 +34,7 @@ class Where
     public function setValues($whereValues)
     {
         $i = 0; //counter array
+        $this->whereString .= "WHERE";
 
         for($whereValues;$i < count($whereValues);$i++)
         {
@@ -72,6 +73,7 @@ class Where
 
     public function getString()
     {
+
         return $this->whereQuerys;
     }
 }

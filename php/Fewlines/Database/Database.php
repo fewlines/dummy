@@ -126,9 +126,10 @@ class Database
      * @param $updateValues
      */
 
-    public function update($updateValues)
+    public function update($updateValues, $tablename)
     {
         $this->update = new Update;
+        $this->update->setUpdate($updateValues, $tablename);
 
     }
 
