@@ -11,8 +11,18 @@
 
 namespace Fewlines\Session;
 
+use Fewlines\Session\Cookie\Cookie as NativeCookie;
+use Fewlines\Session\Cookie\Session as NativeSession;
+
 class Session
 {
+	/**
+	 * Prefix for each session
+	 *
+	 * @var string
+	 */
+	const PREFIX = 'fl_';
+
 	/**
 	 * Namepsace for cookie
 	 *
@@ -36,19 +46,11 @@ class Session
 	private static $isStarted = false;
 
 	/**
-	 * Tells if the session is a cookie
-	 * or a native session
-	 *
-	 * @var string
-	 */
-	private $type;
-
-	/**
 	 * Holds all created sessions
 	 *
 	 * @var array
 	 */
-	private static $sessions;
+	private static $sessions = array();
 
 	/**
 	 * Creates a new session
@@ -70,13 +72,85 @@ class Session
 		switch($this->type)
 		{
 			case self::COOKIE:
-				$this->createCookie($name, $content, $lifetime);
+				$this->createCookie($name, $content, $lifetime + time());
 			break;
 
 			case self::SESSION:
 				$this->createSession($name, $content);
 			break;
 		}
+	}
+
+	/**
+	 * Maps the cookie with the suffix and
+	 * filters the cookies from the project
+	 *
+	 * @return
+	 */
+	public static function mapCookies($val, $key)
+	{
+		if(preg_match('/^' . self::PREFIX . '(.*)/', $key))
+		{
+			return array($key, $val);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Init cookies and save them
+	 */
+	public static function initCookies()
+	{
+		// Get valid cookies
+		$cookies = array_map('self::mapCookies', $_COOKIE,
+			array_keys($_COOKIE));
+		$cookies = array_filter($cookies);
+		$cookies = array_values($cookies);
+
+		// Get valid sessions
+		$sessions = array_map('self::mapCookies', $_SESSION,
+			array_keys($_SESSION));
+		$sessions = array_filter($sessions);
+		$sessions = array_values($sessions);
+
+		// Sort valid cookies and create objects to save
+		for($i = 0; $i < count($cookies); $i++)
+		{
+			$cookie = new NativeCookie;
+			$cookie->setName($cookies[$i][0])
+				   ->setContent($cookies[$i][1]);
+
+			$expirationDate = explode(NativeCookie::$lifetimeSeperator,
+				$cookies[$i][1]);
+
+			if(array_key_exists(1, $expirationDate))
+			{
+				$cookie->setLifetime((int) ($expirationDate[1]));
+			}
+			else
+			{
+				$cookie->setLifetime(false);
+			}
+
+			self::$sessions[] = $cookie;
+		}
+
+		// Sort valid sessions and create objects to save
+		for($i = 0; $i < count($sessions); $i++)
+		{
+			$session = new NativeSession;
+			$session->setName($sessions[$i][0])
+					->setContent($sessions[$i][1]);
+
+			self::$sessions[] = $session;
+		}
+	}
+
+	private function updateCookies()
+	{
+		self::$sessions = [];
+		$this->initCookies();
 	}
 
 	/**
@@ -90,9 +164,26 @@ class Session
 		self::$isStarted = true;
 	}
 
+	/**
+	 * Returns if the session was started
+	 *
+	 * @return boolean
+	 */
 	public static function isStarted()
 	{
 		return self::$isStarted;
+	}
+
+	/**
+	 * Converts a name to a valid cookie
+	 * name
+	 *
+	 * @param  string $name
+	 * @return string
+	 */
+	public static function convertName($name)
+	{
+		return self::PREFIX . $name;
 	}
 
 	/**
@@ -104,7 +195,15 @@ class Session
 	 */
 	private function createCookie($name, $content, $lifetime)
 	{
+		$name = self::convertName($name);
 
+		$cookie = new NativeCookie;
+		$cookie->setName($name)
+			   ->setContent($content)
+			   ->setLifetime($lifetime)
+			   ->set();
+
+		$this->updateCookies();
 	}
 
 	/**
@@ -121,27 +220,42 @@ class Session
 				"Please start the session first (before any output)"
 			);
 		}
+
+		$name = self::convertName($name);
+
+		$session = new NativeSession;
+		$session->setName($name)
+				->setContent($content)
+				->set();
+
+		$this->updateCookies();
 	}
 
 	/**
-	 * Tells it the session is a cookie
+	 * Returns a saved session (cookie or session)
 	 *
-	 * @return boolean
+	 * @param  string $name
+	 * @return *
 	 */
-	public function isCookie()
+	public static function get($name)
 	{
-		return $this->type == self::COOKIE;
-	}
+		$name = self::convertName($name);
+		$foundSessions = array();
 
-	/**
-	 * Tells it the session is a native
-	 * session
-	 *
-	 * @return boolean
-	 */
-	public function isSession()
-	{
-		return $this->type == self::SESSION;
+		for($i = 0; $i < count(self::$sessions); $i++)
+		{
+			$session = self::$sessions[$i];
+
+			if($session->getName() == $name)
+			{
+				$foundSessions[
+					get_class($session) == 'Fewlines\Session\Cookie\Cookie'
+					? self::COOKIE : self::SESSION
+				] = self::$sessions[$i];
+			}
+		}
+
+		return $foundSessions;
 	}
 }
 

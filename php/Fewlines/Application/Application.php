@@ -52,8 +52,11 @@ class Application
 		// Add autoloader
 		$this->registerAutoloader($autoloaderFnc);
 
-		// Register all components
+		// Register session
 		Session::startSession();
+		Session::initCookies();
+
+		// Register all components
 		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
