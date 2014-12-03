@@ -21,20 +21,29 @@ class Update
     private $updateString;
 
     /**
+     * number of the courent update function
+     *
+     * @var int
+     */
+    private $count = -1;
+
+    /**
      * Holds all update values
      */
     private $updateQuerrys = array();
 
         public function setUpdate($updateValues, $tablename)
         {
+            $this->count++;
+
             $counter = 0;
             $this->updateString = "UPDATE ";
-            $this->updateString .= "'$tablename' ";
+            $this->updateString .= "`$tablename` ";
             $this->updateString .= "SET ";
             foreach($updateValues as $key => $value)
             {
 
-                $this->updateString .= "'$key' ";
+                $this->updateString .= "$key ";
                 $this->updateString .= " = ";
                 $this->updateString .= "'$value'";
                 $counter++;
@@ -45,6 +54,18 @@ class Update
 
             }
             $this->updateQuerrys[] = $this->updateString;
+        }
+
+        /**
+        * return the update query as string
+        *
+        * @return $return
+        */
+
+        public function getString()
+        {
+            $return = $this->updateQuerrys[$this->count];
+            return $return;
         }
 
 }

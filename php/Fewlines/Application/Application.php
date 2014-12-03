@@ -68,11 +68,28 @@ class Application
                 "AND",
                 "nachname",
                 "=",
-                "Kern",
+                "Langlitz",
             ),
         );
-        //$test = new Database("localhost", "root", "","klassentest");
-        //$test->where($test2);
+
+        $test4 = array(
+            "vorname" => "Christine",
+            "nachname" => "Kern",
+            "age" => "19"
+        );
+
+        $test5 = array(
+                "age",
+                "vorname",
+                "nachname"
+        );
+
+        $test3 = "user";
+        $test = new Database("localhost", "root", "","klassentest");
+        $test->fetch();
+        //echo $test->select($test3,$test5)->update($test4)->where($test2)->getQuery();
+
+
 	}
 
 	/**

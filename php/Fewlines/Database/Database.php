@@ -12,6 +12,7 @@
 
 namespace Fewlines\Database;
 
+use Fewlines\Database\Fetch\Fetch;
 use \Fewlines\Database\Select\Select;
 use Fewlines\Database\Where\Where;
 use Fewlines\Database\Update\Update;
@@ -33,11 +34,26 @@ class Database
     private $link;
 
     /**
+     * holds the last query
+     *
+     * @var String
+     */
+    private $query = array();
+
+    /**
      * Holds the current select instance
      *
      * @var \Fewlines\Database\Select\Select
      */
     private $select;
+
+    /**
+     * Holds the current Fetch instance
+     *
+     * @var \Fewlines\Database\Fetch\Fetch
+     */
+
+    private $fetch;
 
     /**
      * Holds the current update instance
@@ -51,13 +67,6 @@ class Database
      */
     private $where;
 
-    /**
-     * Tells wether the table was set
-     * or not
-     *
-     * @var boolean
-     */
-    private $wasSelected = false;
 
     /**
      * Create the database connection
@@ -86,21 +95,15 @@ class Database
      * Selects the table
      *
      * @param string $table
+     * @param array $rows
      */
-    public function select($table)
+    public function select($table, $rows)
     {
-        if(false == $this->wasSelected)
-        {
-            $this->wasSelected = true;
+        $this->query = array(); // truncate the array
 
-            $this->select = new Select;
-            $this->select->setTable($table);
-        }
-        else
-        {
-            // Change the table
-        }
-
+        $this->select = new Select();
+        $this->select->setSelect($table, $rows);
+        $this->query[] = $this->select->getString();
         return $this;
     }
 
@@ -116,8 +119,10 @@ class Database
 
         $this->where = new Where;
         $this->where->setValues($whereValues);
-        print_r($this->where->getString());
+        $this->query[] = $this->where->getString();
         return $this;
+
+
     }
 
     /**
@@ -126,15 +131,29 @@ class Database
      * @param $updateValues
      */
 
-    public function update($updateValues, $tablename)
+    public function update($updateValues)
     {
+        $this->query = array(); // truncate the array
+
         $this->update = new Update;
+        $tablename = $this->select->getTable();
         $this->update->setUpdate($updateValues, $tablename);
+        $this->query[] = $this->update->getString();
+        return $this;
 
     }
 
+    public function fetch()
+    {
+        $this->fetch = new Fetch();
+        $this->fetch->setFetch();
+    }
 
-
+    public function getQuery()
+    {
+        $return = implode($this->query);
+        return $return;
+    }
 
 }
 ?>

@@ -21,6 +21,13 @@ class Where
     private $whereString;
 
     /**
+     * number of the courent where function
+     *
+     * @var int
+     */
+    private $count = -1;
+
+    /**
      * Holds the where queries
      *
      * @var array
@@ -33,7 +40,8 @@ class Where
      */
     public function setValues($whereValues)
     {
-        $this->whereString .= "WHERE";
+        $this->count++;
+        $this->whereString .= "WHERE ";
 
         for($i = 0; $i < count($whereValues); $i++)
         {
@@ -74,9 +82,16 @@ class Where
         $this->whereQuerys[] = $this->whereString;
     }
 
+    /**
+     * return the where query as string
+     *
+     * @return $return
+     */
+
     public function getString()
     {
-        return $this->whereQuerys;
+        $return = $this->whereQuerys[$this->count];
+        return $return;
     }
 }
 ?>
