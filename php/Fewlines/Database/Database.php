@@ -12,7 +12,7 @@
 
 namespace Fewlines\Database;
 
-use Fewlines\Database\Fetch\Fetch;
+//use Fewlines\Database\Fetch\Fetch;
 use \Fewlines\Database\Select\Select;
 use Fewlines\Database\Where\Where;
 use Fewlines\Database\Update\Update;
@@ -145,8 +145,8 @@ class Database
 
     public function fetch()
     {
-        $this->fetch = new Fetch();
-        $this->fetch->setFetch();
+        //$this->fetch = new Fetch();
+        //$this->fetch->setFetch();
     }
 
     public function getQuery()

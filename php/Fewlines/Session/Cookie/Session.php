@@ -36,7 +36,7 @@ class Session extends Cookie
 	/**
 	 * Set the session
 	 */
-	public function set()
+	public function create()
 	{
 		$_SESSION[$this->name] = $this->content;
 	}

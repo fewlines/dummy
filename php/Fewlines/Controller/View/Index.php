@@ -16,8 +16,18 @@ class Index extends \Fewlines\Controller\Template
 {
 	public function indexAction()
 	{
-		//$session = new Session("testCookie", "potassdtoe", 120);
-		$test = Session::get('testCookie');
+		$session = new Session("testCookie", "potassdtoe", 30303039338938, true);
+		$cook = Session::get('testCookie');
+
+		if($cook->isSession())
+		{
+			echo "SESS: " . $cook->getSession()->getContent() . "<br />";
+		}
+
+		if($cook->isCookie())
+		{
+			echo "COOK: " . $cook->getCookie()->getContent() . "<br />";
+		}
 	}
 }
 

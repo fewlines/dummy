@@ -36,6 +36,20 @@ class Cookie
 	private $lifetime = 0;
 
 	/**
+	 * The path where the cookie will be set
+	 *
+	 * @var string
+	 */
+	private $path;
+
+	/**
+	 * Is encrypted cookie or not
+	 *
+	 * @var boolean
+	 */
+	private $isEncrypted = false;
+
+	/**
 	 * Deletes the cookie
 	 */
 	public function delete()
@@ -46,10 +60,43 @@ class Cookie
 	/**
 	 * Sets the cookie
 	 */
-	public function set()
+	public function create()
 	{
+		if(true == $this->isEncrypted)
+		{
+			/**
+			 * @TODO: Write encryption/decryption system
+			 */
+		}
+
 		$content = $this->content . self::$lifetimeSeperator . $this->lifetime;
-		setcookie($this->name, $content, $this->lifetime);
+
+		// Set the cookie
+		setcookie($this->name, $content, $this->lifetime, $this->path);
+	}
+
+	/**
+	 * Sets if the content of the cookie should be encrypted or not
+	 *
+	 * @param boolean $isEncrypted
+	 * @return \Fewlines\Session\Cookie
+	 */
+	public function setEncrypted($isEncrypted)
+	{
+		$this->isEncrypted = $isEncrypted;
+		return $this;
+	}
+
+	/**
+	 * Sets the path to the cookie
+	 *
+	 * @param string $path
+	 * @return \Fewlines\Session\Cookie
+	 */
+	public function setPath($path)
+	{
+		$this->path = $path;
+		return $this;
 	}
 
 	/**

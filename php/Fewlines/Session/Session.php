@@ -13,6 +13,8 @@ namespace Fewlines\Session;
 
 use Fewlines\Session\Cookie\Cookie as NativeCookie;
 use Fewlines\Session\Cookie\Session as NativeSession;
+use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Session\Result;
 
 class Session
 {
@@ -24,18 +26,32 @@ class Session
 	const PREFIX = 'fl_';
 
 	/**
-	 * Namepsace for cookie
+	 * Key for cookie
 	 *
 	 * @var string
 	 */
 	const COOKIE = 'cookie';
 
 	/**
-	 * Namepsace for native session
+	 * Key for native session
 	 *
 	 * @var string
 	 */
 	const SESSION = 'session';
+
+	/**
+	 * Holds the namespace for the cookie
+	 *
+	 * @var string
+	 */
+	const COOKIE_NAMESPACE = 'Fewlines\Session\Cookie\Cookie';
+
+	/**
+	 * Holds the namespace for the session
+	 *
+	 * @var string
+	 */
+	const SESSION_NAMESPACE = 'Fewlines\Session\Cookie\Session';
 
 	/**
 	 * Tells if the native session
@@ -55,24 +71,28 @@ class Session
 	/**
 	 * Creates a new session
 	 *
-	 * @param string $name
-	 * @param *	     $content
-	 * @param int 	 $lifetime (minutes)
+	 * @param string  $name
+	 * @param *	      $content
+	 * @param int 	  $lifetime (minutes)
+	 * @param boolean $encrypt
+	 * @param string  $path
 	 */
-	public function __construct($name, $content, $lifetime = 0)
+	public function __construct($name, $content, $lifetime = 0, $encrypt = false, $path = '')
 	{
-		$this->type = self::COOKIE;
+		$cookiePath = HttpRequest::getInstance()->getBaseUrl();
 
-		if($lifetime == 0)
+		if($path != '')
 		{
-			$this->type = self::SESSION;
+			$cookiePath .= $path;
 		}
+
+		$this->type = $lifetime == 0 ? self::SESSION : self::COOKIE;
 
 		// Create a session by type
 		switch($this->type)
 		{
 			case self::COOKIE:
-				$this->createCookie($name, $content, $lifetime + time());
+				$this->createCookie($name, $content, (time() + $lifetime * 60), $encrypt, $cookiePath);
 			break;
 
 			case self::SESSION:
@@ -147,10 +167,24 @@ class Session
 		}
 	}
 
-	private function updateCookies()
+	/**
+	 * Adds a session to the session collection
+	 *
+	 * @param \Fewlines\Session\Cookie\Session $session
+	 */
+	private function addSession(\Fewlines\Session\Cookie\Session $session)
 	{
-		self::$sessions = [];
-		$this->initCookies();
+		self::$sessions[] = $session;
+	}
+
+	/**
+	 * Adds a cookie to the session collection
+	 *
+	 * @param FewlinesSessionCookieCookie $cookie
+	 */
+	private function addCookie(\Fewlines\Session\Cookie\Cookie $cookie)
+	{
+		self::$sessions[] = $cookie;
 	}
 
 	/**
@@ -189,11 +223,12 @@ class Session
 	/**
 	 * Creates a cookie
 	 *
-	 * @param string $name
-	 * @param *      $content
-	 * @param int    $lifetime
+	 * @param string  $name
+	 * @param *       $content
+	 * @param int     $lifetime
+	 * @param boolean $encrypt
 	 */
-	private function createCookie($name, $content, $lifetime)
+	private function createCookie($name, $content, $lifetime, $encrypt, $path)
 	{
 		$name = self::convertName($name);
 
@@ -201,9 +236,11 @@ class Session
 		$cookie->setName($name)
 			   ->setContent($content)
 			   ->setLifetime($lifetime)
-			   ->set();
+			   ->setPath($path)
+			   ->setEncrypted($encrypt)
+			   ->create();
 
-		$this->updateCookies();
+		$this->addCookie($cookie);
 	}
 
 	/**
@@ -226,9 +263,9 @@ class Session
 		$session = new NativeSession;
 		$session->setName($name)
 				->setContent($content)
-				->set();
+				->create();
 
-		$this->updateCookies();
+		$this->addSession($session);
 	}
 
 	/**
@@ -240,7 +277,7 @@ class Session
 	public static function get($name)
 	{
 		$name = self::convertName($name);
-		$foundSessions = array();
+		$result = new Result;
 
 		for($i = 0; $i < count(self::$sessions); $i++)
 		{
@@ -248,14 +285,18 @@ class Session
 
 			if($session->getName() == $name)
 			{
-				$foundSessions[
-					get_class($session) == 'Fewlines\Session\Cookie\Cookie'
-					? self::COOKIE : self::SESSION
-				] = self::$sessions[$i];
+				if(get_class($session) == self::COOKIE_NAMESPACE)
+				{
+					$result->setCookie($session);
+				}
+				else if(get_class($session) == self::SESSION_NAMESPACE)
+				{
+					$result->setSession($session);
+				}
 			}
 		}
 
-		return $foundSessions;
+		return $result;
 	}
 }
 
