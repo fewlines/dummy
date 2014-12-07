@@ -13,8 +13,6 @@
 
 	//define("URL_LAYOUT_ROUTE", "/view:index/action:index");
 
-	define("AL_FNC", '\Fewlines\Autoloader\Autoloader::loadClass');
-
 	// Set include path for the php libs
 	set_include_path(implode(PATH_SEPARATOR, array(
 			FEWLINES_PHP, get_include_path()
@@ -24,6 +22,6 @@
 	require_once "Fewlines/Application/Application.php";
 
 	// Instantiate the application
-	$application = new \Fewlines\Application\Application(AL_FNC);
+	$application = new \Fewlines\Application\Application;
 	$application->run();
 ?>

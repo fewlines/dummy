@@ -22,25 +22,27 @@ class Error extends \Fewlines\Controller\Template
 	public function indexAction()
 	{
 		$this->responseCode = $this->httpRequest->getStatusCode();
+		$viewName = $this->template->getLayout()->getRealViewName();
 
 		$this->assign('responseCode', $this->responseCode);
-		$this->assign('errorMessage', $this->getMessage());
+		$this->assign('errorMessage', $this->getMessage($viewName));
 	}
 
 	/**
 	 * Returns the error description
 	 * for the view
 	 *
+	 * @param  string $viewName
 	 * @return string
 	 */
-	private function getMessage()
+	private function getMessage($viewName)
 	{
 		$message = "An error occured";
 
 		switch($this->responseCode)
 		{
 			case 404:
-				$message = "Page not found!";
+				$message = "Page \"" . $viewName . "\" not found!";
 			break;
 		}
 

@@ -2,7 +2,7 @@
 /**
  * fewlines CMS
  *
- * Description: A interface for the native
+ * Description: A "interface" for the native
  * php sessions and cookies
  *
  * @copyright Copyright (c) fewlines

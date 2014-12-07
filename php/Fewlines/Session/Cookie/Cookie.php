@@ -65,7 +65,7 @@ class Cookie
 		if(true == $this->isEncrypted)
 		{
 			/**
-			 * @TODO: Write encryption/decryption system
+			 * @todo Write encryption/decryption system
 			 */
 		}
 

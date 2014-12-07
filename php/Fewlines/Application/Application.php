@@ -45,12 +45,13 @@ class Application
 	private $template;
 
 	/**
-	 * @param string $autoloaderFnc The function of the autoloader
+	 * Inits the application components
 	 */
-	public function __construct($autoloaderFnc)
+	public function __construct()
 	{
 		// Add autoloader
-		$this->registerAutoloader($autoloaderFnc);
+		$autoloader = '\Fewlines\Autoloader\Autoloader::loadClass';
+		$this->registerAutoloader($autoloader);
 
 		// Register session
 		Session::startSession();

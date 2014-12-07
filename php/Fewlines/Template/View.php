@@ -18,18 +18,26 @@ use Fewlines\Http\Request as HttpRequest;
 class View
 {
 	/**
-	 * The name of the view
+	 * The name of the view (could be overwritten
+	 * by anything e.g. a 404 error)
 	 *
 	 * @var string
 	 */
-	public $viewName;
+	private $viewName;
+
+	/**
+	 * The real viewname as in the url
+	 *
+	 * @var string
+	 */
+	private $realViewName;
 
 	/**
 	 * Current action
 	 *
 	 * @var string
 	 */
-	public $action;
+	private $action;
 
 	/**
 	 * The filename of the view templates
@@ -51,6 +59,27 @@ class View
 	 * @var \Fewlines\Controller\Template
 	 */
 	public $controller;
+
+	/**
+	 * Returns the name of the rendered view
+	 *
+	 * @return string
+	 */
+	public function getViewName()
+	{
+		return $this->viewName;
+	}
+
+	/**
+	 * Gets the name of the first view
+	 * (no overwrites)
+	 *
+	 * @return string
+	 */
+	public function getRealViewName()
+	{
+		return $this->realViewName;
+	}
 
 	/**
 	 * Returns the path to the current view
@@ -130,7 +159,6 @@ class View
 		// Set the action to index (prevent unexpected actions)
 		$defaultAction = HttpRequest::getInstance()->getDefaultDestination('action');
 		$this->setViewAction($defaultAction);
-
 		$this->setViewName($viewName);
 
 		return PathHelper::getRealViewPath($viewName);
@@ -143,6 +171,11 @@ class View
 	 */
 	private function setViewName($name)
 	{
+		if(is_null($this->realViewName))
+		{
+			$this->realViewName = $name;
+		}
+
 		$this->viewName = $name;
 	}
 
