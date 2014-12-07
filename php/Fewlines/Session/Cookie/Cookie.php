@@ -10,9 +10,17 @@
 
 namespace Fewlines\Session\Cookie;
 
+use Fewlines\Crypt\Crypt as Crypter;
+
 class Cookie
 {
-	public static $lifetimeSeperator = '[EXPD]:';
+	/**
+	 * Holds the seprator for the
+	 * lifetime of a cookie
+	 *
+	 * @var string
+	 */
+	public static $lifetimeSeperator = ' --exp=';
 
 	/**
 	 * Name of the cookie
@@ -50,6 +58,17 @@ class Cookie
 	private $isEncrypted = false;
 
 	/**
+	 * Converts the cookie object to the
+	 * content of the cookie
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->getContent();
+	}
+
+	/**
 	 * Deletes the cookie
 	 */
 	public function delete()
@@ -62,14 +81,13 @@ class Cookie
 	 */
 	public function create()
 	{
+		$content = $this->content . self::$lifetimeSeperator . $this->lifetime;
+
 		if(true == $this->isEncrypted)
 		{
-			/**
-			 * @todo Write encryption/decryption system
-			 */
+			$content = Crypter::encrypt($content);
+			$this->setContent($content);
 		}
-
-		$content = $this->content . self::$lifetimeSeperator . $this->lifetime;
 
 		// Set the cookie
 		setcookie($this->name, $content, $this->lifetime, $this->path);
@@ -158,6 +176,28 @@ class Cookie
 	}
 
 	/**
+	 * Returns the plain content without
+	 * any lifetime values
+	 *
+	 * @return string
+	 */
+	private function getExtractedContent($content = '')
+	{
+		$returnContent = '';
+		$explodeContent = $this->content;
+
+		if($content != '')
+		{
+			$explodeContent = $content;
+		}
+
+		$extContent     = explode(self::$lifetimeSeperator, $explodeContent);
+		$returnContent = $extContent[0];
+
+		return $returnContent;
+	}
+
+	/**
 	 * Returns the content of
 	 * the cookie
 	 *
@@ -165,8 +205,14 @@ class Cookie
 	 */
 	public function getContent()
 	{
-		$content = explode(self::$lifetimeSeperator, $this->content);
-		return $content[0];
+		$content = '';
+
+		if(Crypter::isCrypted($this->content))
+		{
+			$content = Crypter::decrypt($this->content);
+		}
+
+		return $this->getExtractedContent($content);
 	}
 }
 

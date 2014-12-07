@@ -27,13 +27,11 @@ class Crypt
 	 * @param  string $str
 	 * @return string
 	 */
-	public function hash($str)
+	public static function hash($str)
 	{
 		$chars = str_split($str);
 		$hashmap = array();
-		$securityKey = defined(SECURITY_KEY)
-						? SECURITY_KEY
-						: self::KEY;
+		$securityKey = self::getKey();
 
 		for($i = 0; $i < count($chars); $i++)
 		{
@@ -54,18 +52,39 @@ class Crypt
 	}
 
 	/**
+	 * Returns the key defined by user
+	 * or the own key
+	 *
+	 * @return string
+	 */
+	private static function getKey()
+	{
+		return defined(SECURITY_KEY) ? SECURITY_KEY : self::KEY;
+	}
+
+	/**
+	 * Returns the iv size
+	 *
+	 * @return integer
+	 */
+	private static function getIvSize()
+	{
+		return mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+	}
+
+	/**
 	 * Encrypts the given string
 	 *
 	 * @param  string $str
 	 * @return string
 	 */
-	public function encrypt($str)
+	public static function encrypt($str)
 	{
-		/**
-		 * @todo Write enryption algorithm
-		 */
+	    $key        = pack('H*', self::getKey());
+	    $iv         = mcrypt_create_iv(self::getIvSize(), MCRYPT_RAND);
+	    $secretTxt  = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $str, MCRYPT_MODE_CBC, $iv);
 
-		return $str;
+	   	return base64_encode($iv . $secretTxt) . ";" . self::hash(self::getKey());
 	}
 
 	/**
@@ -74,13 +93,33 @@ class Crypt
 	 * @param  string $str
 	 * @return string
 	 */
-	public function decrypt($str)
+	public static function decrypt($str)
 	{
-		/**
-		 * @todo Write decyption algorithm
-		 */
+		if(false == self::isCrypted($str))
+		{
+			throw new Exception\InvalidStringToDecryptException("
+				The string given was not encrypted
+			");
+		}
 
-		return $str;
+		$key       = pack('H*', self::getKey());
+		$ivSize    = self::getIvSize();
+ 		$secretTxt = base64_decode($str);
+    	$ivDec     = substr($secretTxt, 0, $ivSize);
+    	$secretTxt = substr($secretTxt, $ivSize);
+
+    	return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $secretTxt, MCRYPT_MODE_CBC, $ivDec);
+	}
+
+	/**
+	 * Check if the string was encrypted
+	 *
+	 * @param  string $str
+	 * @return boolean
+	 */
+	public static function isCrypted($str)
+	{
+		return (bool) preg_match('/;' . self::hash(self::getKey()) . '/', $str);
 	}
 }
 

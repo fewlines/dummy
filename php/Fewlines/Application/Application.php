@@ -61,39 +61,6 @@ class Application
 		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
-
-        $test2 = array(
-            array(
-                "vorname",
-                "=",
-                "Maurice",
-            ),
-            array(
-                "AND",
-                "nachname",
-                "=",
-                "Langlitz",
-            ),
-        );
-
-        $test4 = array(
-            "vorname" => "Christine",
-            "nachname" => "Kern",
-            "age" => "19"
-        );
-
-        $test5 = array(
-                "age",
-                "vorname",
-                "nachname"
-        );
-
-        $test3 = "user";
-        $test = new Database("localhost", "root", "","klassentest");
-        $test->fetch();
-        //echo $test->select($test3,$test5)->update($test4)->where($test2)->getQuery();
-
-
 	}
 
 	/**
