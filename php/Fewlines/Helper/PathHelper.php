@@ -23,7 +23,22 @@ class PathHelper
 	 */
 	public static function getRealPath($path)
 	{
+		$path = self::normalizePath($path);
 		return substr($path, -1) != '/' ? $path . '/' : $path;
+	}
+
+	/**
+	 * Normalizes path, so all paths
+	 * will be the same after using this
+	 * function
+	 *
+	 * @param  string $path
+	 * @return string
+	 */
+	public static function normalizePath($path)
+	{
+		$path = preg_replace('/\\\/', '/', $path);
+		return $path;
 	}
 
 	/**

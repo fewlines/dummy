@@ -11,7 +11,7 @@
 
 namespace Fewlines\Helper;
 
-abstract class ViewHelper
+abstract class AbstractViewHelper
 {
 	public function init(){}
 }

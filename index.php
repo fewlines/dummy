@@ -21,7 +21,16 @@
 	// Inlcude the application ("bootstrap")
 	require_once "Fewlines/Application/Application.php";
 
+	// Define config dirs
+	$configs = array(
+		array(
+			"dir"  => ROOT_DIR . "/config/fewlines",
+			"type" => 'xml'
+		)
+	);
+
 	// Instantiate the application
 	$application = new \Fewlines\Application\Application;
+	$application->setConfig($configs);
 	$application->run();
 ?>

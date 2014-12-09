@@ -12,7 +12,7 @@ namespace Fewlines\Helper\View;
 
 use Fewlines\Http\Request as HttpRequest;
 
-class BaseUrl extends \Fewlines\Helper\ViewHelper
+class BaseUrl extends \Fewlines\Helper\AbstractViewHelper
 {
 	/**
 	 * Holds the current http request

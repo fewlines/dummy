@@ -45,6 +45,14 @@ class Application
 	private $template;
 
 	/**
+	 * Holds the config object (config files
+	 * defined by the user)
+	 *
+	 * @var \Fewlines\Application\Config
+	 */
+	private $config;
+
+	/**
 	 * Inits the application components
 	 */
 	public function __construct()
@@ -61,6 +69,17 @@ class Application
 		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
+	}
+
+	/**
+	 * Set the dirs which contains the config
+	 * files
+	 *
+	 * @param array $configDirs
+	 */
+	public function setConfig($configDirs)
+	{
+		$this->config = new Config($configDirs);
 	}
 
 	/**
