@@ -1,3 +1,3 @@
-[submodule "js/third-party/google-closure"]
-	path = js/third-party/google-closure
+[submodule "javascript/third-party/google-closure"]
+	path = javascript/third-party/google-closure
 	url = git@github.com:google/closure-library.git
