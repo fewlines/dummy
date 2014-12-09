@@ -19,7 +19,7 @@ class Config
 		for($i = 0; $i < count($configs); $i++)
 		{
 			$files = DirHelper::getFilesByType(
-				$configs[$i]['dir'], $configs['type']);
+				$configs[$i]['dir'], $configs[$i]['type']);
 		}
 	}
 }
