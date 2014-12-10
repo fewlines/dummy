@@ -11,16 +11,24 @@
 namespace Fewlines\Application;
 
 use Fewlines\Helper\DirHelper;
+use Fewlines\Helper\PathHelper;
 
 class Config
 {
 	public function __construct($configs)
 	{
+		$files = array();
+
 		for($i = 0; $i < count($configs); $i++)
 		{
-			$files = DirHelper::getFilesByType(
-				$configs[$i]['dir'], $configs[$i]['type']);
+			$dir = PathHelper::normalizePath($configs[$i]['dir']);
+			$files[$dir] = DirHelper::getFilesByType($dir,
+				$configs[$i]['type'], true);
 		}
+
+		echo "<pre>";
+		print_r(DirHelper::flattenTree($files));
+		echo "</pre>";
 	}
 }
 

@@ -24,13 +24,48 @@ class DirHelper
 	public static function getFilesByType($dir, $filetype, $recursive = false)
 	{
 		$elements = self::scanDir($dir, $recursive);
+		$files = array();
 
 		for($i = 0; $i < count($elements); $i++)
 		{
-			echo "<pre>";
-			print_r($elements);
-			echo "</pre>";
+			if($elements[$i]['type'] == 'dir')
+			{
+				$deepFiles = self::getFilesByType($elements[$i]['path'], $filetype, $recursive);
+
+				if(!empty($deepFiles))
+				{
+					$files[] = $deepFiles;
+				}
+			}
+			else if(strtolower(end(explode(".", $elements[$i]['name']))) == $filetype)
+			{
+				$files[] = $elements[$i];
+			}
 		}
+
+		return $files;
+	}
+
+	/**
+	 * Makes an flat array made by a recursive
+	 * strategy
+	 *
+	 * @param  array $tree
+	 * @return array
+	 */
+	public static function flattenTree($tree)
+	{
+		$flatTree = array();
+
+    	array_walk_recursive($tree, function($value, $key) use (&$flatTree){
+    		if($key == 'name')
+    		{
+    			$flatTree[] = $value;
+    		}
+
+    	});
+
+    	return $flatTree;
 	}
 
 	/**
