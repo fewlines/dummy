@@ -14,7 +14,7 @@ class PathHelper
 {
 	/**
 	 * Returns a real path.
-	 * For example if the leading slash is missin
+	 * For example if the leading slash is missing
 	 * this function add's it at the and and
 	 * returns the new path
 	 *
@@ -25,6 +25,38 @@ class PathHelper
 	{
 		$path = self::normalizePath($path);
 		return substr($path, -1) != '/' ? $path . '/' : $path;
+	}
+
+	/**
+	 * Gets the relative path of 2 given
+	 * parts
+	 *
+	 * @param  string $relPath
+	 * @param  string $from
+	 * @return string
+	 */
+	public function getRelativePath($relPath, $from)
+	{
+		$isFile = !is_dir($from);
+		$fromDir = $isFile ? pathinfo($from, PATHINFO_DIRNAME) : $from;
+		$realPath = rtrim($fromDir, "/") . "/";
+
+		preg_match_all("/\.\.\//", $relPath, $back);
+		$back = $back[0];
+
+		for($i = 0; $i < count($back); $i++)
+		{
+			$realPath .= "../";
+		}
+
+		$realPath = self::normalizePath(realpath($realPath));
+
+		if(false == is_dir($relPath))
+		{
+			$realPath = rtrim($realPath, "/") . "/" . pathinfo($relPath, PATHINFO_BASENAME);
+		}
+
+		return $realPath;
 	}
 
 	/**
