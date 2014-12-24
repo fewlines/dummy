@@ -57,33 +57,65 @@ class Xml
 		{
 			for($i = 0; $i < count($includes); $i++)
 			{
-				$src = (array) $includes[$i]->attributes()['src'];
+				$src   = (array) $includes[$i]->attributes()['src'];
+				$alias = (array) $includes[$i]->attributes()['alias'];
 
 				if(true == is_null($src))
 				{
 					continue;
 				}
 
-				$includePaths[] = PathHelper::getRelativePath($src[0], $this->file);
+				$path = PathHelper::getRelativePath($src[0], $this->file);
+
+				if(true == is_null($alias) || true == empty($alias[0]))
+				{
+					$includePaths[] = $path;
+				}
+				else
+				{
+					$includePaths[$alias[0]] = $path;
+				}
 			}
 		}
 		else
 		{
-			$src = (array) $includes->attributes()['src'];
+			$src   = (array) $includes->attributes()['src'];
+			$alias = (array) $includes->attributes()['alias'];
 
 			if(false == is_null($src))
 			{
-				$includePaths[] = PathHelper::getRelativePath($src[0], $this->file);
+				$path = PathHelper::getRelativePath($src[0], $this->file);
+
+				if(true == is_null($alias) || true == empty($alias[0]))
+				{
+					$includePaths[] = $path;
+				}
+				else
+				{
+					$includePaths[$alias[0]] = $path;
+				}
 			}
 		}
 
+		// Remove include flags from tree
 		unset($this->tree['include']);
 
-		for($i = 0; $i < count($includePaths); $i++)
+		foreach($includePaths as $alias => $path)
 		{
-			$xml = new self($includePaths[$i]);
+			$path = PathHelper::addFilePrefix($path, "_");
+			$xml  = new self($path);
 			$tree = $xml->getTree();
-			$this->tree[] = $tree;
+
+			if(true == is_numeric($alias))
+			{
+				$elName = preg_replace("/\.xml|^_/", "", $xml->getBasename());
+			}
+			else
+			{
+				$elName = $alias;
+			}
+
+			$this->tree[$elName] = $tree;
 		}
 	}
 
@@ -95,6 +127,14 @@ class Xml
 	public function getTree()
 	{
 		return $this->tree;
+	}
+
+	/**
+	 * Gets the basename of the xml file
+	 */
+	public function getBaseName()
+	{
+		return pathinfo($this->file, PATHINFO_BASENAME);
 	}
 }
 

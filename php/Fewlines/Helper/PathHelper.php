@@ -112,6 +112,31 @@ class PathHelper
 
 		return $path;
 	}
+
+	/**
+	 * Adds a prefix to a file name
+	 *
+	 * @param string  $path
+	 * @param string  $prefix
+	 * @param boolean $prepend
+	 */
+	public static function addFilePrefix($path, $prefix, $prepend = true)
+	{
+		$filename   = pathinfo($path, PATHINFO_FILENAME);
+		$extension  = '.' . pathinfo($path, PATHINFO_EXTENSION);
+		$prefixPath = pathinfo($path, PATHINFO_DIRNAME) . '/';
+
+		if(false == $prepend)
+		{
+			$prefixPath .= $filename . $prefix . $extension;
+		}
+		else
+		{
+			$prefixPath .= $prefix . $filename . $extension;
+		}
+
+		return $prefixPath;
+	}
 }
 
 ?>

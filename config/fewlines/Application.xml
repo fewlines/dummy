@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Application>
-	<include src="Database.xml"></include>
-	<test>asdasda</test>
-</Application>
+<application>
+	<version>0.1 Beta</version>
+	<include src="database.xml"></include>
+	<include src="test.xml"></include>
+</application>

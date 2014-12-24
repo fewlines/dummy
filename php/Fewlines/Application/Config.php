@@ -24,6 +24,13 @@ class Config
 	private $configFiles = array();
 
 	/**
+	 * The input of all files as an array
+	 *
+	 * @var array
+	 */
+	private $xmls  = array();
+
+	/**
 	 * Load config files
 	 *
 	 * @param array $configs
@@ -48,9 +55,28 @@ class Config
 	 */
 	private function initConfigs()
 	{
-		$xml = new Xml($this->configFiles[0]);
+		// Collect xml files and create xml objects
+		for($i = 0; $i < count($this->configFiles); $i++)
+		{
+			$filename = basename($this->configFiles[$i]);
+			$ignore   = (bool) preg_match("/^_(.*)$/", $filename);
+
+			if(false == $ignore)
+			{
+				$this->xmls[] = new Xml($this->configFiles[$i]);
+			}
+		}
+
+		$flatXmls = array();
+
+		// Flatten the xml tree and merge same properties
+		for($i = 0; $i < count($this->xmls); $i++)
+		{
+			$flatXmls = $this->xmls[$i]->getTree();
+		}
+
 		echo "<pre>";
-		print_r($xml->getTree());
+		print_r($flatXmls);
 		echo "</pre>";
 	}
 }

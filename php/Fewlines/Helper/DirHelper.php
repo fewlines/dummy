@@ -57,12 +57,12 @@ class DirHelper
 	{
 		$flatTree = array();
 
-    	array_walk_recursive($tree, function($value, $key) use (&$flatTree){
+    	array_walk_recursive($tree, function($value, $key) use (&$flatTree)
+    	{
     		if($key == 'path')
     		{
     			$flatTree[] = $value;
     		}
-
     	});
 
     	return $flatTree;
