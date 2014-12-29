@@ -11,6 +11,7 @@
 
 namespace Fewlines\Controller;
 
+use Fewlines\Application\Config;
 use Fewlines\Controller\TemplateInterface;
 use Fewlines\Http\Request as HttpRequest;
 
@@ -55,6 +56,16 @@ class Template implements TemplateInterface
 	{
 		$this->template = $template;
 		$this->httpRequest = httpRequest::getInstance();
+	}
+
+	/**
+	 * Get the instantiated config instance
+	 *
+	 * @return \Fewlines\Application\Config
+	 */
+	protected function getConfig()
+	{
+		return Config::getInstance();
 	}
 }
 

@@ -6,7 +6,7 @@
 			<hue src="test1.xml"></hue>
 			<hue src="test2.xml"></hue>
 			<hue src="test3.xml">
-				<version update="23-12-2014">0.1 Alpha</version>
+				<version update="test-2">0.2 Alpha</version>
 			</hue>
 		</include>
 	</testhue>

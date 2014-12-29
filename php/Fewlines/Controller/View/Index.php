@@ -30,6 +30,9 @@ class Index extends \Fewlines\Controller\Template
 		{
 			echo "COOK: " . $cook->getCookie()->getContent() . "<br />";
 		}
+
+		// $this->getConfig()->getElementsByPath("application/version");
+		// $this->getConfig()->getElementByPath("database/host");
 	}
 }
 
