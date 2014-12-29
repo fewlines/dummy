@@ -51,33 +51,20 @@ class Config
 	}
 
 	/**
-	 * Create config object per xml
+	 * Create config objects with xml
 	 */
 	private function initConfigs()
 	{
-		// Collect xml files and create xml objects
 		for($i = 0; $i < count($this->configFiles); $i++)
 		{
 			$filename = basename($this->configFiles[$i]);
-			$ignore   = (bool) preg_match("/^_(.*)$/", $filename);
+			$ignore   = preg_match("/^_(.*)$/", $filename);
 
 			if(false == $ignore)
 			{
 				$this->xmls[] = new Xml($this->configFiles[$i]);
 			}
 		}
-
-		$flatXmls = array();
-
-		// Flatten the xml tree and merge same properties
-		for($i = 0; $i < count($this->xmls); $i++)
-		{
-			$flatXmls = $this->xmls[$i]->getTree();
-		}
-
-		echo "<pre>";
-		print_r($flatXmls);
-		echo "</pre>";
 	}
 }
 

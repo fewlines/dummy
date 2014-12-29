@@ -11,13 +11,15 @@
 namespace Fewlines\Xml;
 
 use Fewlines\Helper\PathHelper;
+use Fewlines\Helper\ArrayHelper;
+use Fewlines\Xml\Tree;
 
 class Xml
 {
 	/**
 	 * Holds the plain xml element
 	 *
-	 * @var \SimpleXMLElement
+	 * @var \Fewlines\Xml\Tree
 	 */
 	private $tree;
 
@@ -36,91 +38,11 @@ class Xml
 	public function __construct($file)
 	{
 		$this->file = $file;
-		$this->tree = (array) new \SimpleXMLElement($file, 0, true);
-		$this->includeXmls();
+		$this->tree = new Tree(new \SimpleXMLElement($file, 0, true));
 	}
 
 	/**
-	 * Include the xmls in the given xml
-	 */
-	private function includeXmls()
-	{
-		if(false == array_key_exists('include', $this->tree))
-		{
-			return;
-		}
-
-		$includes     = $this->tree['include'];
-		$includePaths = array();
-
-		if(is_array($includes))
-		{
-			for($i = 0; $i < count($includes); $i++)
-			{
-				$src   = (array) $includes[$i]->attributes()['src'];
-				$alias = (array) $includes[$i]->attributes()['alias'];
-
-				if(true == is_null($src))
-				{
-					continue;
-				}
-
-				$path = PathHelper::getRelativePath($src[0], $this->file);
-
-				if(true == is_null($alias) || true == empty($alias[0]))
-				{
-					$includePaths[] = $path;
-				}
-				else
-				{
-					$includePaths[$alias[0]] = $path;
-				}
-			}
-		}
-		else
-		{
-			$src   = (array) $includes->attributes()['src'];
-			$alias = (array) $includes->attributes()['alias'];
-
-			if(false == is_null($src))
-			{
-				$path = PathHelper::getRelativePath($src[0], $this->file);
-
-				if(true == is_null($alias) || true == empty($alias[0]))
-				{
-					$includePaths[] = $path;
-				}
-				else
-				{
-					$includePaths[$alias[0]] = $path;
-				}
-			}
-		}
-
-		// Remove include flags from tree
-		unset($this->tree['include']);
-
-		foreach($includePaths as $alias => $path)
-		{
-			$path = PathHelper::addFilePrefix($path, "_");
-			$xml  = new self($path);
-			$tree = $xml->getTree();
-
-			if(true == is_numeric($alias))
-			{
-				$elName = preg_replace("/\.xml|^_/", "", $xml->getBasename());
-			}
-			else
-			{
-				$elName = $alias;
-			}
-
-			$this->tree[$elName] = $tree;
-		}
-	}
-
-	/**
-	 * Gets the tree
+	 * Gets the tree instance
 	 *
 	 * @return array
 	 */
@@ -130,11 +52,69 @@ class Xml
 	}
 
 	/**
-	 * Gets the basename of the xml file
+	 * Gets the tree Element
+	 *
+	 * @return \Fewlines\Xml\Tree\Element
 	 */
-	public function getBaseName()
+	public function getTreeElement()
 	{
-		return pathinfo($this->file, PATHINFO_BASENAME);
+		return $this->tree->getElement();
+	}
+
+	/**
+	 * Gets all element by a
+	 * path sequence. It creates
+	 * the list only for the last path
+	 * segment
+	 *
+	 * @param  string  $path
+	 * @param  boolean $collect
+	 * @return \Fewlines\Xml\Tree\Element|boolean
+	 */
+	public function getElementsByPath($path, $collect = true)
+	{
+		$parts       = explode("/", $path);
+		$parts       = ArrayHelper::clean($parts);
+		$rootName    = $parts[0];
+		$treeElement = $this->getTreeElement();
+
+		if($treeElement->getName() != $rootName)
+		{
+			return false;
+		}
+
+		$result     = $treeElement;
+		$resultList = array();
+
+		for($i = 1, $partsLen = count($parts); $i < $partsLen; $i++)
+		{
+			if(true == $collect && $i == $partsLen-1)
+			{
+				$resultList = $result->getChildrenByName($parts[$i]);
+			}
+
+			$result = $result->getChildByName($parts[$i]);
+		}
+
+		if(true == $collect)
+		{
+			return $resultList;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Gets one element from
+	 * the tree with a given path
+	 * sequence
+	 *
+	 * @param  string $path
+	 * @return \Fewlines\Xml\Tree\Element|boolean
+	 */
+	public function getElementByPath($path)
+	{
+		return $this->getElementsByPath($path, false);
 	}
 }
 
