@@ -98,7 +98,21 @@ class Xml
 
 		if(true == $collect)
 		{
-			return $resultList;
+			if(false == empty($resultList))
+			{
+				return $resultList;
+			}
+			else
+			{
+				if(false == empty($result))
+				{
+					return array($result);
+				}
+				else
+				{
+					return array();
+				}
+			}
 		}
 
 		return $result;

@@ -30,9 +30,11 @@ class Tree
 	 */
 	public function __construct(\SimpleXmlElement $root)
 	{
+		// "Transform" the node to a element
 		$this->tree = new Element($root->getName(),
 			(array) $root->attributes(), trim((string) $root));
 
+		// Add all child elements
 		foreach($root as $node)
 		{
 			$this->addChild($node, $this->tree);
@@ -55,8 +57,6 @@ class Tree
 		$name       = $node->getName();
 		$attributes = (array) $node->attributes();
 		$content    = trim((string) $node);
-		$children   = $node->children();
-
 		$element    = new Element($name, $attributes, $content);
 
 		$parent->addChild($element);

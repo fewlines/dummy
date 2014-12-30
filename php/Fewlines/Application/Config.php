@@ -44,7 +44,7 @@ class Config
 	 *
 	 * @var array
 	 */
-	private $xmls  = array();
+	private $xmls = array();
 
 	/**
 	 * Load config files
@@ -53,10 +53,6 @@ class Config
 	 */
 	public function __construct($configs)
 	{
-		/**
-		 * @todo FIX the fetch of root elements
-		 */
-
 		if(false == is_null(self::$instance))
 		{
 			throw new Exception\ConfigJustInstantiatedException("

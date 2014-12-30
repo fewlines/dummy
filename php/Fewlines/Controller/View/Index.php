@@ -18,6 +18,10 @@ class Index extends \Fewlines\Controller\Template
 {
 	public function indexAction()
 	{
+		/**
+		 * Session handling
+		 */
+
 		//$session = new Session("testCookie", "test");
 		$cook = Session::get('testCookie');
 
@@ -31,8 +35,13 @@ class Index extends \Fewlines\Controller\Template
 			echo "COOK: " . $cook->getCookie()->getContent() . "<br />";
 		}
 
-		// $this->getConfig()->getElementsByPath("application/version");
-		// $this->getConfig()->getElementByPath("database/host");
+		/**
+		 * Config handling
+		 */
+
+		$config = $this->getConfig();
+		$host = $config->getElementByPath("database/host");
+		$version = $config->getElementsByPath("application/version");
 	}
 }
 

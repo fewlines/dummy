@@ -68,6 +68,17 @@ class Element
 	}
 
 	/**
+	 * Returns the content of this element
+	 * if it's parsed as string
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->content;
+	}
+
+	/**
 	 * Transforms the attributes
 	 * to a valid array
 	 *
