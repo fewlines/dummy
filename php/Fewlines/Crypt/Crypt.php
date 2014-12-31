@@ -2,8 +2,7 @@
 /**
  * fewlines CMS
  *
- * Description: A "interface" for the native
- * php sessions and cookies
+ * Description: Crypt and Decrpyter functions
  *
  * @copyright Copyright (c) fewlines
  * @author Davide Perozzi
@@ -29,8 +28,8 @@ class Crypt
 	 */
 	public static function hash($str)
 	{
-		$chars = str_split($str);
-		$hashmap = array();
+		$chars       = str_split($str);
+		$hashmap     = array();
 		$securityKey = self::getKey();
 
 		for($i = 0; $i < count($chars); $i++)
@@ -38,7 +37,7 @@ class Crypt
 			$hashmap[] = md5(sha1($chars[$i] . $i*42 . md5($securityKey)));
 		}
 
-		$charSet = ceil($hashmap[0] / count($hashmap));
+		$charSet     = ceil($hashmap[0] / count($hashmap));
 		$convHashmap = array();
 
 		for($i = 0; $i < count($hashmap); $i++)
@@ -108,7 +107,8 @@ class Crypt
     	$ivDec     = substr($secretTxt, 0, $ivSize);
     	$secretTxt = substr($secretTxt, $ivSize);
 
-    	return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $secretTxt, MCRYPT_MODE_CBC, $ivDec);
+    	return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key,
+    		$secretTxt, MCRYPT_MODE_CBC, $ivDec);
 	}
 
 	/**

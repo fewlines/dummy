@@ -61,7 +61,7 @@ class Application
 		$autoloader = '\Fewlines\Autoloader\Autoloader::loadClass';
 		$this->registerAutoloader($autoloader);
 
-		// Register session
+		// Register sessions
 		Session::startSession();
 		Session::initCookies();
 
@@ -149,9 +149,9 @@ class Application
 	 */
 	private function registerErrorHandler()
 	{
-		set_error_handler(
+		/**set_error_handler(
 			array(new ErrorHandler(), 'handleError')
-		);
+		);*/
 	}
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <database>
-	<host secure="true">localhost</host>
-	<user>12345</user>
-	<name>test</name>
-	<password>12345</password>
+	<host>localhost</host>
+	<user>root</user>
+	<password></password>
+	<database>test</database>
 </database>

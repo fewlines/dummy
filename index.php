@@ -29,6 +29,13 @@
 		)
 	);
 
+	function pr($optIn)
+	{
+		echo "<pre>";
+		print_r($optIn);
+		echo "</pre>";
+	}
+
 	// Instantiate the application
 	$application = new \Fewlines\Application\Application;
 	$application->setConfig($configs);

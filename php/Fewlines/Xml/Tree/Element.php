@@ -11,7 +11,7 @@
 
 namespace Fewlines\Xml\Tree;
 
-use \Fewlines\Helper\ArrayHelper;
+use Fewlines\Helper\ArrayHelper;
 
 class Element
 {
