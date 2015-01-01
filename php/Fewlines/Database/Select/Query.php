@@ -75,6 +75,16 @@ class Query
 	const SET = " SET ";
 
 	/**
+	 * @var string
+	 */
+	const TRUNCATE = " TRUNCATE ";
+
+	/**
+	 * @var string
+	 */
+	const TABLE = " TABLE ";
+
+	/**
 	 * The type of the query
 	 *
 	 * @var string
@@ -150,22 +160,7 @@ class Query
 	 */
 	public function setType($type)
 	{
-		switch(strtolower($type))
-		{
-			case 'insert':
-			case 'update':
-			case 'select':
-			case 'delete':
-				// Nothing to change...
-			break;
-
-			default:
-				$type = 'select';
-			break;
-		}
-
 		$this->type = $type;
-
 		return $this;
 	}
 
@@ -307,6 +302,10 @@ class Query
 
 			case 'delete':
 				return $this->buildDelete();
+			break;
+
+			case 'truncate':
+				return $this->buildTruncate();
 			break;
 		}
 	}
@@ -482,11 +481,29 @@ class Query
 	 */
 	private function buildDelete()
 	{
-		$this->queryString  = self::DELETE;
+		$this->queryString = self::DELETE;
+
+		if(count($this->column) > 0)
+		{
+			$this->queryString .= $this->getColumnString();
+		}
+
 		$this->queryString .= self::FROM;
 		$this->queryString .= self::quoteString($this->table);
 
 		$this->appendWhere();
+
+		return $this;
+	}
+
+	/**
+	 * @return \Fewlines\Database\Select\Query
+	 */
+	private function buildTruncate()
+	{
+		$this->queryString  = self::TRUNCATE;
+		$this->queryString .= self::TABLE;
+		$this->queryString .= self::quoteString($this->table);
 
 		return $this;
 	}

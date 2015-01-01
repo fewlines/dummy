@@ -66,28 +66,11 @@ class Select
 	private $query;
 
 	/**
-	 * Tells if the current object is a update
-	 * query
+	 * Tells what type of query to use
 	 *
-	 * @var boolean
+	 * @var string
 	 */
-	private $isUpdate = false;
-
-	/**
-	 * Tells if the current object is a insert
-	 * query
-	 *
-	 * @var boolean
-	 */
-	private $isInsert = false;
-
-	/**
-	 * Tells if the current object is a insert
-	 * query
-	 *
-	 * @var boolean
-	 */
-	private $isDelete = false;
+	private $type;
 
 	/**
 	 * @param string 				      $table
@@ -151,7 +134,7 @@ class Select
 	 */
 	public function where($condition, $operator = "AND")
 	{
-		// Escape strings
+		// Escape search condition
 		if(array_key_exists(2, $condition))
 		{
 			$condition[2] = "'" . $this->database->realEscapeString($condition[2]) . "'";
@@ -238,7 +221,7 @@ class Select
 	 */
 	public function update($values)
 	{
-		$this->isUpdate = true;
+		$this->type = "update";
 		$this->setValues($values);
 
 		return $this;
@@ -253,7 +236,7 @@ class Select
 	 */
 	public function insert($values)
 	{
-		$this->isInsert = true;
+		$this->type = "insert";
 		$this->setValues($values);
 
 		return $this;
@@ -266,7 +249,18 @@ class Select
 	 */
 	public function delete()
 	{
-		$this->isDelete = true;
+		$this->type = "delete";
+		return $this;
+	}
+
+	/**
+	 * Delete all records from a database
+	 *
+	 * @return \Fewlines\Database\Select
+	 */
+	public function truncate()
+	{
+		$this->type = "truncate";
 		return $this;
 	}
 
@@ -277,27 +271,44 @@ class Select
 	 */
 	public function execute()
 	{
-		// Detect type
-		if(true == $this->isUpdate)
+		$query = "";
+
+		switch($this->type)
 		{
-			$query = $this->getQueryUpdate();
-		}
-		else if(true == $this->isInsert)
-		{
-			$query = $this->getQueryInsert();
-		}
-		else if(true == $this->isDelete)
-		{
-			$query = $this->getQueryDelete();
+			case 'update':
+				$query = $this->getQueryUpdate();
+			break;
+
+			case 'insert':
+				$query = $this->getQueryInsert();
+			break;
+
+			case 'delete':
+				$query = $this->getQueryDelete();
+			break;
+
+			case 'truncate':
+				$query = $this->getQueryTruncate();
+			break;
 		}
 
-		// Execute query
-		$result = $this->database->query($query);
-
-		// Validating result
-		if(true == $result)
+		if(false == empty($query))
 		{
-			return $result;
+			// Execute query
+			$result = $this->database->query($query);
+
+			// Validating result
+			if(true == $result)
+			{
+				return $result;
+			}
+		}
+		else
+		{
+			throw new Exception\ExecuteEmptyQueryException("
+				You are trying to execute a empty query.
+				Please fix it by using a valid method.
+			");
 		}
 
 		return false;
@@ -329,7 +340,7 @@ class Select
 	 *
 	 * @return \Fewlines\Database\Select\Query
 	 */
-	public function getQuerySelect()
+	private function getQuerySelect()
 	{
 		$query = new Select\Query;
 
@@ -351,7 +362,7 @@ class Select
 	 *
 	 * @return \Fewlines\Database\Select\Query
 	 */
-	public function getQueryInsert()
+	private function getQueryInsert()
 	{
 		$query = new Select\Query;
 
@@ -373,7 +384,7 @@ class Select
 	 *
 	 * @return \Fewlines\Database\Select\Query
 	 */
-	public function getQueryUpdate()
+	private function getQueryUpdate()
 	{
 		$query = new Select\Query;
 
@@ -395,13 +406,32 @@ class Select
 	 *
 	 * @return \Fewlines\Database\Select\Query
 	 */
-	public function getQueryDelete()
+	private function getQueryDelete()
 	{
 		$query = new Select\Query;
 
 		$query->setType("delete")
 			  ->setTable($this->table)
 			  ->setWhere($this->where);
+
+		$query = $query->build();
+		$this->checkQuery($query);
+
+		return $query;
+	}
+
+	/**
+	 * Builds the query for the truncate
+	 * operation
+	 *
+	 * @return \Fewlines\Database\Select\Query
+	 */
+	private function getQueryTruncate()
+	{
+		$query = new Select\Query;
+
+		$query->setType("truncate")
+			  ->setTable($this->table);
 
 		$query = $query->build();
 		$this->checkQuery($query);

@@ -48,13 +48,15 @@ class Index extends \Fewlines\Controller\Template
 		 * Database handling
 		 */
 
-		$db           = new Database;
-		$resultInsert = $db->select("tabletest", array("content", "password"))->insert(array("cont", md5("pass" . rand(0,100))))/*->execute()*/;
-		$resultUpdate = $db->select("tabletest", array("content", "password"))->update(array("updatedcontent", "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
-		$resultDelete = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
-		$resultFetch  = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
+		$db              = new Database;
+		$resultInsert    = $db->select("tabletest", array("content", "password"))->insert(array("cont", md5("pass" . rand(0,100))))/*->execute()*/;
+		$resultUpdate    = $db->select("tabletest", array("content", "password"))->update(array("updatedcontent", "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
+		$resultDelete    = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
+		$resultFetch     = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
+		$resultTruncate  = $db->select("tabletest")->truncate()/*->execute()*/;
+		$resultLikeFetch = $db->select("tabletest", "*")->where(array("content", "LIKE", "%co%"))->fetchAll();
 
-		pr($resultFetch);
+		pr($resultLikeFetch);
 	}
 }
 

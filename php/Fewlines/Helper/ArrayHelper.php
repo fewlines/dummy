@@ -22,14 +22,14 @@ class ArrayHelper
 	 */
 	public static function flatten($array)
 	{
-		if (false == is_array($array))
+		if(false == is_array($array))
 		{
-	        return array($array);
-	    }
+			return array($array);
+		}
 
 	    $result = array();
 
-	    foreach ($array as $value)
+	    foreach($array as $value)
 	    {
 	        $result = array_merge($result, self::flatten($value));
 	    }
