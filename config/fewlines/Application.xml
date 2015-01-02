@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <application>
-	<version update="23-12-2014">0.1 Alpha</version>
-	<testhue potatoe="500">
-		<include src="test.xml">
-			<hue src="test1.xml"></hue>
-			<hue src="test2.xml"></hue>
-			<hue src="test3.xml">
-				<version update="test-2">0.2 Alpha</version>
-			</hue>
-		</include>
-	</testhue>
-	<include src="database.xml"></include>
-	<include src="test.xml"></include>
+	<version>0.1 Alpha</version>
 </application>

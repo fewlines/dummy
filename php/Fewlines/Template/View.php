@@ -18,6 +18,13 @@ use Fewlines\Http\Request as HttpRequest;
 class View
 {
 	/**
+	 * The layout which the view uses
+	 *
+	 * @var \Fewlines\Template\Layout
+	 */
+	private $layout;
+
+	/**
 	 * The name of the view (could be overwritten
 	 * by anything e.g. a 404 error)
 	 *
@@ -108,7 +115,8 @@ class View
 	 */
 	public function setViewPath($view)
 	{
-		$viewFile = PathHelper::getRealViewPath($view);
+		$layout   = $this->layout->getLayoutName();
+		$viewFile = PathHelper::getRealViewPath($view, $layout);
 
 		if(!file_exists($viewFile))
 		{
@@ -132,11 +140,15 @@ class View
 	 * Init the view with some options
 	 * called from the layout
 	 *
-	 * @param string $viewName
-	 * @param string $action
+	 * @param string                    $viewName
+	 * @param string                    $action
+	 * @param \Fewlines\Template\Layout $layout
 	 */
-	public function setView($viewName, $action)
+	public function setView($viewName, $action, \Fewlines\Template\Layout $layout)
 	{
+		$this->layout = $layout;
+
+		// Set view components
 		$this->setViewAction($action);
 		$this->setViewName($viewName);
 		$this->setViewPath($viewName);

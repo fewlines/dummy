@@ -9,10 +9,18 @@
  */
 
 namespace Fewlines\Template;
-use Fewlines\Template\View as View;
+
+use Fewlines\Template\View;
 
 class Layout extends View
 {
+	/**
+	 * The name of the layout
+	 *
+	 * @var string
+	 */
+	private $layoutName;
+
 	/**
 	 * Holds the path to the layout
 	 *
@@ -28,16 +36,18 @@ class Layout extends View
 	protected $template;
 
 	/**
+	 * @param string $name
 	 * @param string $path
 	 * @param array  $routeUrlParts
 	 * @param \Fewlines\Template\Template $tpl
 	 */
-	public function __construct($path, $routeUrlParts, \Fewlines\Template\Template $tpl)
+	public function __construct($name, $path, $routeUrlParts, \Fewlines\Template\Template $tpl)
 	{
+		$this->layoutName = $name;
 		$this->layoutPath = $path;
-		$this->template = $tpl;
+		$this->template   = $tpl;
 
-		$this->setView($routeUrlParts['view'], $routeUrlParts['action']);
+		$this->setView($routeUrlParts['view'], $routeUrlParts['action'], $this);
 	}
 
 	/**
@@ -48,6 +58,16 @@ class Layout extends View
 	public function getLayoutPath()
 	{
 		return $this->layoutPath;
+	}
+
+	/**
+	 * Gets the name of the layout
+	 *
+	 * @return string
+	 */
+	public function getLayoutName()
+	{
+		return $this->layoutName;
 	}
 }
 

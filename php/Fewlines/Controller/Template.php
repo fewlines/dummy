@@ -11,9 +11,11 @@
 
 namespace Fewlines\Controller;
 
+use Fewlines\Helper\UrlHelper;
 use Fewlines\Application\Config;
 use Fewlines\Controller\TemplateInterface;
 use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Http\Header as HttpHeader;
 
 class Template implements TemplateInterface
 {
@@ -66,6 +68,27 @@ class Template implements TemplateInterface
 	protected function getConfig()
 	{
 		return Config::getInstance();
+	}
+
+	/**
+	 * Redirects
+	 *
+	 * @param string $url
+	 */
+	protected function redirect($url)
+	{
+		HttpHeader::redirect($url);
+	}
+
+	/**
+	 * Returns the base url
+	 *
+	 * @param  string|array $parts
+	 * @return string
+	 */
+	protected function getBaseUrl($parts = "")
+	{
+		return UrlHelper::getBaseUrl($parts);
 	}
 }
 

@@ -15,12 +15,18 @@ require_once "Fewlines/Autoloader/Autoloader.php";
 
 use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
-use Fewlines\Template\Template as Template;
-use Fewlines\Database\Database as Database;
+use Fewlines\Http\Header as HttpHeader;
+use Fewlines\Helper\UrlHelper;
+use Fewlines\Template\Template;
 use Fewlines\Session\Session;
 
 class Application
 {
+	/**
+	 * @var string
+	 */
+	const INSTALL_VIEW = "install";
+
 	/**
 	 * Tells wether the application was already
 	 * runned or not
@@ -118,8 +124,44 @@ class Application
 	{
 		$this->isRunning = true;
 
+		// Check if application is installed already
+		if(false == $this->isInstalled())
+		{
+			$viewName = $this->template->getLayout()->getRealViewName();
+
+			if($viewName != self::INSTALL_VIEW)
+			{
+				$this->installApplication();
+			}
+			else
+			{
+				$this->template->setLayout(self::INSTALL_VIEW);
+			}
+		}
+
 		// Render the frontend
 		$this->renderApplication();
+	}
+
+	/**
+	 * Check if the application was already
+	 * installed
+	 *
+	 * @return boolean
+	 */
+	private function isInstalled()
+	{
+		return (bool) Config::getInstance()->getElementByPath('installed');
+	}
+
+	/**
+	 * Leads the user to the installation
+	 */
+	private function installApplication()
+	{
+		// Redirect to the install view
+		$url = array(self::INSTALL_VIEW, "step1");
+		HttpHeader::redirect(UrlHelper::getBaseUrl($url));
 	}
 
 	/**

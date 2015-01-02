@@ -40,6 +40,17 @@ class Header
 	{
 		return http_response_code();
 	}
+
+	/**
+	 * Redirects the user
+	 *
+	 * @param  string $location
+	 */
+	public static function redirect($location)
+	{
+		header("Location: " . $location);
+		exit;
+	}
 }
 
 ?>

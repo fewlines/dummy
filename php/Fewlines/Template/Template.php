@@ -57,10 +57,10 @@ class Template extends Renderer
 	public function __construct($routeUrlParts)
 	{
 		$this->routeUrlParts = $routeUrlParts;
-		$this->setLayout();
+		$this->setLayout(DEFAULT_LAYOUT);
 
 		// Init the renderer
-		parent::init();
+		parent::initLayout();
 	}
 
 	/**
@@ -118,11 +118,11 @@ class Template extends Renderer
 
 			$helper = $this->getHelperClass($helperClass);
 
-			if(false == ($helper instanceof \Fewlines\Helper\Viewhelper))
+			if(false == ($helper instanceof \Fewlines\Helper\AbstractViewHelper))
 			{
 			 	throw new Exception\HelperInvalidInstanceException(
 			 		"The view helper \"" . $helperName . "\" was
-			 		NOT extended by \Fewlines\Helper\Viewhelper"
+			 		NOT extended by \Fewlines\Helper\AbstractViewHelper"
 			 	);
 			}
 
@@ -204,6 +204,7 @@ class Template extends Renderer
 	{
 		$this->cachedHelpers[get_class($instance)] = $instance;
 		$instance->init();
+
 		return $instance;
 	}
 
@@ -218,11 +219,12 @@ class Template extends Renderer
 	/**
 	 * Sets the layout
 	 */
-	public function setLayout()
+	public function setLayout($layout)
 	{
 		$path = PathHelper::getRealPath(LAYOUT_PATH);
-		$path = $path . DEFAULT_LAYOUT . '.' . LAYOUT_FILETYPE;
-		$this->layout = new Layout($path, $this->routeUrlParts, $this);
+		$path = $path . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
+
+		$this->layout = new Layout($layout, $path, $this->routeUrlParts, $this);
 	}
 
 	/**

@@ -11,19 +11,12 @@
 namespace Fewlines\Helper\View;
 
 use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Helper\UrlHelper;
 
 class BaseUrl extends \Fewlines\Helper\AbstractViewHelper
 {
-	/**
-	 * Holds the current http request
-	 *
-	 * @var \Fewlines\Http\Request
-	 */
-	private $httpRequest;
-
 	public function init()
 	{
-		$this->httpRequest = HttpRequest::getInstance();
 	}
 
 	/**
@@ -35,12 +28,7 @@ class BaseUrl extends \Fewlines\Helper\AbstractViewHelper
 	 */
 	public function baseUrl($parts = "")
 	{
-		if(is_array($parts))
-		{
-			$parts = implode("/", $parts);
-		}
-
-		return $this->httpRequest->getBaseUrl() . ltrim($parts, "/");
+		return UrlHelper::getBaseUrl($parts);
 	}
 }
 

@@ -28,7 +28,7 @@ class Renderer
 	/**
 	 * Init function (called from child)
 	 */
-	public function init()
+	public function initLayout()
 	{
 		$this->layout = $this->getLayout();
 	}
@@ -52,6 +52,9 @@ class Renderer
 
 	protected function renderLayout()
 	{
+		// Update layout
+		$this->initLayout();
+
 		$file = $this->layout->getLayoutPath();
 		echo $this->getRenderedHtml($file);
 	}
@@ -59,14 +62,11 @@ class Renderer
 	protected function renderView()
 	{
 		// Get view and action from request
-		$view = $this->getRouteUrlPart('view');
+		$view   = $this->getRouteUrlPart('view');
 		$action = $this->getRouteUrlPart('action');
 
-		// Set view and aciton
-		$this->layout->setView($view, $action);
-
 		// Get view and action
-		$file = $this->layout->getViewPath();
+		$file   = $this->layout->getViewPath();
 		$action = $this->layout->getViewAction();
 
 		// Call controller from view (if exists)

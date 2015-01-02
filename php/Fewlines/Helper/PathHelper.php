@@ -79,14 +79,14 @@ class PathHelper
 	 * the default type defined)
 	 *
 	 * @param  string $view
-	 * @return
+	 * @return string
 	 */
 	public static function getRealViewFile($view)
 	{
 		$type = defined('VIEW_FILETYPE') ? VIEW_FILETYPE : 'php';
 		$file = $view;
 
-		if(!preg_match('/\./', $file))
+		if(false == preg_match('/\./', $file))
 		{
 			$file .= '.' . $type;
 		}
@@ -99,15 +99,21 @@ class PathHelper
 	 * as real path
 	 *
 	 * @param  string $view Optional view
+	 * @param  string $layout
 	 * @return string
 	 */
-	public static function getRealViewPath($view = '')
+	public static function getRealViewPath($view = '', $layout = '')
 	{
 		$path = self::getRealPath(VIEW_PATH);
 
-		if(!empty($view))
+		if(false == empty($layout))
 		{
-			$path = $path . self::getRealViewFile($view);
+			$path .= self::getRealPath($layout);
+		}
+
+		if(false == empty($view))
+		{
+			$path .= self::getRealViewFile($view);
 		}
 
 		return $path;
