@@ -12,99 +12,8 @@
 
 namespace Fewlines\Database\Select;
 
-class Query
+class Query extends \Fewlines\Database\Query
 {
-	/**
-	 * @var string
-	 */
-	const SELECT = "SELECT ";
-
-	/**
-	 * @var string
-	 */
-	const UPDATE = "UPDATE ";
-
-	/**
-	 * @var string
-	 */
-	const INSERT = "INSERT ";
-
-	/**
-	 * @var string
-	 */
-	const DELETE = "DELETE ";
-
-	/**
-	 * @var string
-	 */
-	const INTO = " INTO ";
-
-	/**
-	 * @var string
-	 */
-	const VALUES = " VALUES ";
-
-	/**
-	 * @var string
-	 */
-	const FROM = " FROM ";
-
-	/**
-	 * @var string
-	 */
-	const WHERE = " WHERE ";
-
-	/**
-	 * @var string
-	 */
-	const QUOTE = " `%s` ";
-
-	/**
-	 * @var string
-	 */
-	const BRACKET = " (%s) ";
-
-	/**
-	 * @var string
-	 */
-	const LIMIT = " LIMIT %s, %s ";
-
-	/**
-	 * @var string
-	 */
-	const SET = " SET ";
-
-	/**
-	 * @var string
-	 */
-	const TRUNCATE = " TRUNCATE ";
-
-	/**
-	 * @var string
-	 */
-	const TABLE = " TABLE ";
-
-	/**
-	 * The type of the query
-	 *
-	 * @var string
-	 */
-	private $type;
-
-	/**
-	 * The table to operate with
-	 *
-	 * @var string
-	 */
-	private $table;
-
-	/**
-	 * The columns to handle with
-	 *
-	 * @var array
-	 */
-	private $column;
-
 	/**
 	 * Where references
 	 *
@@ -126,55 +35,6 @@ class Query
 	 * @var array
 	 */
 	private $values = array();
-
-	/**
-	 * Tells if the query is valid
-	 *
-	 * @var boolean
-	 */
-	private $isValid = true;
-
-	/**
-	 * Saves the query string builded
-	 *
-	 * @var string
-	 */
-	private $queryString = "";
-
-	/**
-	 * @param string $table
-	 * @return \Fewlines\Database\Select\Query
-	 */
-	public function setTable($table)
-	{
-		$this->table = $table;
-		return $this;
-	}
-
-	/**
-	 * Defines the type of the query.
-	 * Types: select, insert, update
-	 *
-	 * @param string $type
-	 * @return \Fewlines\Database\Select\Query
-	 */
-	public function setType($type)
-	{
-		$this->type = $type;
-		return $this;
-	}
-
-	/**
-	 * Sets the column(s)
-	 *
-	 * @param array $column
-	 * @return \Fewlines\Database\Select\Query
-	 */
-	public function setColumn($column)
-	{
-		$this->column = $column;
-		return $this;
-	}
 
 	/**
 	 * Sets all where references
@@ -213,49 +73,6 @@ class Query
 	}
 
 	/**
-	 * Checks if the query is valid
-	 *
-	 * @return boolean
-	 */
-	public function isValid()
-	{
-		return $this->isValid;
-	}
-
-	/**
-	 * Sets the valid state of the query
-	 *
-	 * @param boolean $isValid
-	 */
-	private function setValid($isValid)
-	{
-		$this->isValid = $isValid;
-	}
-
-	/**
-	 * Quotes a string
-	 *
-	 * @param  string $str
-	 * @return string
-	 */
-	public static function quoteString($str)
-	{
-		return sprintf(self::QUOTE, $str);
-	}
-
-	/**
-	 * Brackets a string
-	 *
-	 * @param  string $str
-	 * @return string
-	 */
-	public static function bracketString($str)
-	{
-		return sprintf(self::BRACKET, $str);
-	}
-
-
-	/**
 	 * Gets the column transformed as string
 	 *
 	 * @return string
@@ -289,55 +106,34 @@ class Query
 		switch($this->type)
 		{
 			case 'select':
-				return $this->buildSelect();
+				$this->buildSelect();
 			break;
 
 			case 'insert':
-				return $this->buildInsert();
+				$this->buildInsert();
 			break;
 
 			case 'update':
-				return $this->buildUpdate();
+				$this->buildUpdate();
 			break;
 
 			case 'delete':
-				return $this->buildDelete();
+				$this->buildDelete();
 			break;
 
 			case 'truncate':
-				return $this->buildTruncate();
+				$this->buildTruncate();
+			break;
+
+			case 'drop':
+				$this->buildDrop();
 			break;
 		}
-	}
 
-	/**
-	 * Gets the query as string to
-	 * execute
-	 *
-	 * @return string
-	 */
-	public function getString()
-	{
-		return $this->queryString;
-	}
+		// Append ending semicolon
+		$this->queryString .= ";";
 
-	/**
-	 * Return the query string if
-	 * the object is used as string
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getString();
-	}
-
-	/**
-	 * Reset the query string
-	 */
-	public function clearString()
-	{
-		$this->queryString = "";
+		return $this;
 	}
 
 	/**
@@ -407,27 +203,30 @@ class Query
 		$this->queryString .= self::INTO;
 		$this->queryString .= self::quoteString($this->table);
 
-		if(false == empty($this->column))
+		// Add columns from value
+		$columnNames   = '';
+		$values        = '';
+		$columnCounter = 0;
+
+		foreach($this->values as $name => $value)
 		{
-			$this->queryString .= self::bracketString($this->getColumnString());
-		}
+			$columnNames .= $name;
+			$values      .= $value->getContent();
 
-		$this->queryString .= self::VALUES;
-
-		// Add values
-		$values = '';
-
-		for($i = 0; $i < $valuesCount; $i++)
-		{
-			$values .= $this->values[$i]->getContent();
-
-			if($i < $valuesCount-1)
+			if($columnCounter < $valuesCount-1)
 			{
-				$values .= ", ";
+				$columnNames .= ", ";
+				$values      .= ", ";
 			}
+
+			$columnCounter++;
 		}
 
+		$this->queryString .= self::bracketString($columnNames);
+		$this->queryString .= self::VALUES;
 		$this->queryString .= self::bracketString($values);
+
+		pr($this->queryString);
 
 		return $this;
 	}
@@ -441,33 +240,20 @@ class Query
 		$this->queryString .= self::quoteString($this->table);
 		$this->queryString .= self::SET;
 
-		$columnCount = count($this->column);
 		$valuesCount = count($this->values);
 
-		if($columnCount != $valuesCount || true == empty($this->column))
-		{
-			$this->setValid(false);
-
-			throw new Exception\ParameterCountDoesNotMatchException("
-				Please check the update parameters. The count does
-				not match.
-				Column count: \"" . $columnCount . "\".
-				Values count: \"" . $valuesCount . "\".
-			");
-		}
-
 		// Assign values to columns
-		for($i = 0; $i < $columnCount; $i++)
+		$counter = 0;
+		foreach($this->values as $name => $value)
 		{
-			$column = $this->column[$i]->getName();
-			$value  = $this->values[$i]->getContent();
+			$this->queryString .=  $name . ' = ' . $value->getContent();
 
-			$this->queryString .=  $column . ' = ' . $value;
-
-			if($i < $columnCount-1)
+			if($counter < $valuesCount-1)
 			{
 				$this->queryString .= ", ";
 			}
+
+			$counter++;
 		}
 
 		// Append where conditions
@@ -502,6 +288,18 @@ class Query
 	private function buildTruncate()
 	{
 		$this->queryString  = self::TRUNCATE;
+		$this->queryString .= self::TABLE;
+		$this->queryString .= self::quoteString($this->table);
+
+		return $this;
+	}
+
+	/**
+	 * @return \Fewlines\Database\Select\Query
+	 */
+	private function buildDrop()
+	{
+		$this->queryString  = self::DROP;
 		$this->queryString .= self::TABLE;
 		$this->queryString .= self::quoteString($this->table);
 

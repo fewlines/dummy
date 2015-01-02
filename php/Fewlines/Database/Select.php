@@ -205,10 +205,10 @@ class Select
 		$values = is_array($values) ? $values : array($values);
 
 		// Create values
-		foreach($values as $value)
+		foreach($values as $key => $value)
 		{
-			$content        = "'" . $this->database->realEscapeString($value) . "'";
-			$this->values[] = new Select\Value($content);
+			$content            = "'" . $this->database->realEscapeString($value) . "'";
+			$this->values[$key] = new Select\Value($content);
 		}
 	}
 
@@ -265,6 +265,17 @@ class Select
 	}
 
 	/**
+	 * Drops the table
+	 *
+	 * @return \Fewlines\Database\Select
+	 */
+	public function drop()
+	{
+		$this->type = "drop";
+		return $this;
+	}
+
+	/**
 	 * Executes the build up query
 	 *
 	 * @return boolean
@@ -289,6 +300,10 @@ class Select
 
 			case 'truncate':
 				$query = $this->getQueryTruncate();
+			break;
+
+			case 'drop':
+				$query = $this->getQueryDrop();
 			break;
 		}
 
@@ -368,7 +383,6 @@ class Select
 
 		$query->setType("insert")
 			  ->setTable($this->table)
-			  ->setColumn($this->column)
 			  ->setWhere($this->where)
 			  ->setValues($this->values);
 
@@ -431,6 +445,25 @@ class Select
 		$query = new Select\Query;
 
 		$query->setType("truncate")
+			  ->setTable($this->table);
+
+		$query = $query->build();
+		$this->checkQuery($query);
+
+		return $query;
+	}
+
+	/**
+	 * Builds the query for the drop table
+	 * operation
+	 *
+	 * @return \Fewlines\Database\Select\Query
+	 */
+	private function getQueryDrop()
+	{
+		$query = new Select\Query;
+
+		$query->setType("drop")
 			  ->setTable($this->table);
 
 		$query = $query->build();

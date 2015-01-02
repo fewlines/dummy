@@ -118,6 +118,30 @@ class Database
 	}
 
 	/**
+	 * Create a new table in the connected database
+	 *
+	 * @param  string $tablename
+	 * @param  arra   $columns
+	 * @return boolean
+	 */
+	public function createTable($tablename, $columns)
+	{
+		$table = new Table\Table;
+		$query = new Table\Query;
+
+		$table->setName($tablename);
+		$table->setColumns($columns);
+
+		$query->setType("create")
+			  ->setTable($table);
+
+		$query = $query->build();
+
+		// Execute query and return result
+		return $this->query($query);
+	}
+
+	/**
 	 * Quotes a string (query)
 	 *
 	 * @param  string $str
