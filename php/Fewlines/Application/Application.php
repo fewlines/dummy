@@ -11,8 +11,6 @@
 
 namespace Fewlines\Application;
 
-require_once "Fewlines/Autoloader/Autoloader.php";
-
 use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
@@ -63,15 +61,11 @@ class Application
 	 */
 	public function __construct()
 	{
-		// Add autoloader
-		$autoloader = '\Fewlines\Autoloader\Autoloader::loadClass';
-		$this->registerAutoloader($autoloader);
-
 		// Register sessions
 		Session::startSession();
 		Session::initCookies();
 
-		// Register all components
+		// Register required components
 		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
@@ -81,11 +75,13 @@ class Application
 	 * Set the dirs which contains the config
 	 * files
 	 *
-	 * @param array $configDirs
+	 * @param  array $configDirs
+	 * @return \Fewlines\Application\Application
 	 */
 	public function setConfig($configDirs)
 	{
 		$this->config = new Config($configDirs);
+		return $this;
 	}
 
 	/**
@@ -175,17 +171,6 @@ class Application
 	}
 
 	/**
-	 * Registers the autoload function
-	 *
-	 * @param  string
-	 * @return booleam
-	 */
-	private function registerAutoloader($fnc)
-	{
-		return spl_autoload_register($fnc);
-	}
-
-	/**
 	 * Set the error handling function
 	 * to transform erros to execptions
 	 */
@@ -196,5 +181,3 @@ class Application
 		);*/
 	}
 }
-
-?>

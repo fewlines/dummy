@@ -49,13 +49,13 @@ class Index extends \Fewlines\Controller\Template
 		 */
 
 		$db              = new Database;
-		$resultInsert    = $db->select("tabletest")->insert(array("content" => "cont", "password" => md5("pass" . rand(0,100))))/*->execute()*/;
-		$resultUpdate    = $db->select("tabletest")->update(array("content" => "updatedcontent", "password" => "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
-		$resultDelete    = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
-		$resultFetch     = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
-		$resultTruncate  = $db->select("tabletest")->truncate()/*->execute()*/;
-		$resultLikeFetch = $db->select("tabletest", "*")->where(array("content", "LIKE", "%co%"))->fetchAll();
-		$resultDropTable = $db->select("tabletest")->drop()/*->execute()*/;
+		// $resultInsert    = $db->select("tabletest")->insert(array("content" => "cont", "password" => md5("pass" . rand(0,100))))/*->execute()*/;
+		// $resultUpdate    = $db->select("tabletest")->update(array("content" => "updatedcontent", "password" => "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
+		// $resultDelete    = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
+		// $resultFetch     = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
+		// $resultTruncate  = $db->select("tabletest")->truncate()/*->execute()*/;
+		// $resultLikeFetch = $db->select("tabletest", "*")->where(array("content", "LIKE", "%co%"))->fetchAll();
+		// $resultDropTable = $db->select("tabletest")->drop()/*->execute()*/;
 
 		/*$resultTableCreate = $db->createTable("tabletest2",
 				array(
