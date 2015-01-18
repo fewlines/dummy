@@ -32,7 +32,7 @@ require_once __DIR__ . '/fl_init.php';
  * -----------------------------------------
  *
  * To reactivate the installation,
- * please go to "ROOT_DIR/config/fewlines/"
+ * please go to "ETC_DIR/cfg/fewlines/"
  * and uncomment the file "Install.xml".
  * Just rename it to "_Install.xml", so the
  * application will ignore it and pretend

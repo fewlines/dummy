@@ -11,7 +11,7 @@
 
 namespace Fewlines\Template;
 
-use Fewlines\Helper\PathHelper as PathHelper;
+use Fewlines\Helper\PathHelper;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Request as HttpRequest;
 

@@ -40,13 +40,17 @@ class Renderer
 	 * @param  string $file
 	 * @return string
 	 */
-	protected function getRenderedHtml($file, $clean = false)
+	protected function getRenderedHtml($file)
 	{
 		ob_start();
+
 		include $file;
+
 		$html = ob_get_contents();
+
 		ob_clean();
 		ob_end_flush();
+
 		return $html;
 	}
 

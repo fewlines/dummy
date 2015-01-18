@@ -14,6 +14,7 @@ namespace Fewlines\Application;
 use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
+use Fewlines\Handler\Exception as ExceptionHandler;
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Template\Template;
 use Fewlines\Session\Session;
@@ -135,8 +136,24 @@ class Application
 			}
 		}
 
-		// Render the frontend
-		$this->renderApplication();
+		try
+		{
+			// Start buffer for application
+			ob_start();
+
+			// Render the frontend
+			$this->renderApplication();
+		}
+		catch(\Exception $err)
+		{
+			// Clear just rendered content
+			ob_end_flush();
+			ob_clean();
+
+			// Change layout to exception
+			$this->template->setLayout(EXCEPTION_LAYOUT);
+			$this->renderApplication();
+		}
 	}
 
 	/**

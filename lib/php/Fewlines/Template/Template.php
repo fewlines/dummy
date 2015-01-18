@@ -10,11 +10,11 @@
 
 namespace Fewlines\Template;
 
-use Fewlines\Template\Layout as Layout;
-use Fewlines\Template\Renderer as Renderer;
-use Fewlines\Helper\PathHelper as PathHelper;
+use Fewlines\Template\Layout;
+use Fewlines\Template\Renderer;
+use Fewlines\Helper\PathHelper;
 
-class Template extends Renderer
+class Template extends Caller
 {
 	/**
 	 * The current layout
@@ -72,95 +72,6 @@ class Template extends Renderer
 	public function __set($name, $content)
 	{
 		$this->$name = $content;
-	}
-
-	/**
-	 * Handles all get requests
-	 *
-	 * @param  string $name
-	 * @return *
-	 */
-	public function __get($name)
-	{
-		if(!property_exists($this, $name))
-		{
-			throw new Exception\PropertyNotFoundException(
-				"Could not receive the property \"" . $name . "\".
-				It does not exist."
-			);
-		}
-
-		return $this->$name;
-	}
-
-	/**
-	 * Calls undefined functions
-	 * (mostly used for view helpers)
-	 *
-	 * @param  string $name
-	 * @param  array  $value
-	 * @return *
-	 */
-	public function __call($name, $args)
-	{
-		if(preg_match($this->viewHelperExp, $name))
-		{
-			$helperName = preg_replace($this->viewHelperExp, '', $name);
-			$helperClass = 'Fewlines\Helper\View\\' . $helperName;
-
-			if(!class_exists($helperClass))
-			{
-				throw new Exception\HelperNotFoundException(
-					"View helper \"" . $helperClass . "\"
-					was not found!"
-				);
-			}
-
-			$helper = $this->getHelperClass($helperClass);
-
-			if(false == ($helper instanceof \Fewlines\Helper\AbstractViewHelper))
-			{
-			 	throw new Exception\HelperInvalidInstanceException(
-			 		"The view helper \"" . $helperName . "\" was
-			 		NOT extended by \Fewlines\Helper\AbstractViewHelper"
-			 	);
-			}
-
-			if(!method_exists($helper, $helperName))
-			{
-				throw new Exception\HelperMethodNotFoundException(
-					"The view helper method \"" . $helperName . "\"
-					was not found!"
-				);
-			}
-
-			$reflection = new \ReflectionMethod($helperClass, $helperName);
-    		$needArgsCount = $reflection->getNumberOfRequiredParameters();
-    		$foundArgsCount = count($args);
-
-    		if($needArgsCount > $foundArgsCount)
-    		{
-    			throw new Exception\HelperArgumentException(
-    				"The view helper method \"" . $helperName ."\"
-    				requires at least " . $needArgsCount . "
-    				parameter(s). Found " . $foundArgsCount
-    			);
-    		}
-
-    		return call_user_func_array(array($helper, $helperName), $args);
-		}
-		else
-		{
-			if(!method_exists($this, $name))
-			{
-				throw new Exception\TemplateMethodNotFoundException(
-					"The method \"" . $name . "\" was not found in
-					" . get_class($this)
-				);
-			}
-
-			return call_user_func_array(array($this, $name), $args);
-		}
 	}
 
 	/**
@@ -235,6 +146,49 @@ class Template extends Renderer
 	public function getLayout()
 	{
 		return $this->layout;
+	}
+
+	/**
+	 * Includes a view inside a view.
+	 * Mostly called in views.
+	 *
+	 * @return string
+	 */
+	public function includeView($viewPath, $wrapper = '')
+	{
+		$bckt = debug_backtrace();
+		$view = PathHelper::getRealViewPath(ltrim($viewPath, '/'));
+		$file = $bckt[0]['file'];
+		$dir  = pathinfo($file, PATHINFO_DIRNAME);
+
+		// Handle relative path
+		if(false == PathHelper::isAbsolute($viewPath))
+		{
+			$path = PathHelper::getRealViewFile(PathHelper::normalizePath($dir . '/' . $viewPath));
+			$view = PathHelper::normalizePath(realpath($path));
+		}
+
+		if(false == $view || false == file_exists($view))
+		{
+			if(false == $view)
+			{
+				$view = $path;
+			}
+
+			throw new Exception\ViewIncludeNotFoundException("
+					The view \"" . $view . "\" was not found
+					and could not be included
+				");
+		}
+
+		$content = $this->getRenderedHtml($view);
+
+		if(false == empty($wrapper))
+		{
+			$content = sprintf($wrapper, $content);
+		}
+
+		return $content;
 	}
 }
 

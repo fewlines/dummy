@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Converts given paths
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Helper;
 
@@ -25,38 +17,6 @@ class PathHelper
 	{
 		$path = self::normalizePath($path);
 		return substr($path, -1) != '/' ? $path . '/' : $path;
-	}
-
-	/**
-	 * Gets the relative path of 2 given
-	 * parts
-	 *
-	 * @param  string $relPath
-	 * @param  string $from
-	 * @return string
-	 */
-	public function getRelativePath($relPath, $from)
-	{
-		$isFile = !is_dir($from);
-		$fromDir = $isFile ? pathinfo($from, PATHINFO_DIRNAME) : $from;
-		$realPath = rtrim($fromDir, "/") . "/";
-
-		preg_match_all("/\.\.\//", $relPath, $back);
-		$back = $back[0];
-
-		for($i = 0; $i < count($back); $i++)
-		{
-			$realPath .= "../";
-		}
-
-		$realPath = self::normalizePath(realpath($realPath));
-
-		if(false == is_dir($relPath))
-		{
-			$realPath = rtrim($realPath, "/") . "/" . pathinfo($relPath, PATHINFO_BASENAME);
-		}
-
-		return $realPath;
 	}
 
 	/**
@@ -85,8 +45,9 @@ class PathHelper
 	{
 		$type = defined('VIEW_FILETYPE') ? VIEW_FILETYPE : 'php';
 		$file = $view;
+		$info = pathinfo($file);
 
-		if(false == preg_match('/\./', $file))
+		if(false == array_key_exists('EXTENSION', $info))
 		{
 			$file .= '.' . $type;
 		}
@@ -143,6 +104,15 @@ class PathHelper
 
 		return $prefixPath;
 	}
-}
 
-?>
+	/**
+	 * Checks if the path is a absolute path
+	 *
+	 * @param  string  $path
+	 * @return boolean
+	 */
+	public static function isAbsolute($path)
+	{
+		return substr($path, 0, 1) == '/';
+	}
+}

@@ -1,18 +1,18 @@
-<?php 
+<?php
 
 /**
  * fewlines CMS
  *
  * --------------------------------------------------
- * 
+ *
  * The init file holds all important config files
  * for the framework of fewlines. Please do NOT change
- * anything in here. 
+ * anything in here.
  *
  * --------------------------------------------------
- * 
+ *
  * All paths required by the application
- * 
+ *
  * --------------------------------------------------
  *
  * Do not change this constants if you aren't
@@ -21,12 +21,15 @@
  */
 
 define("ROOT_DIR",     __DIR__);
-define("FEWLINES_PHP", ROOT_DIR . "/php");
-define("LAYOUT_PATH",  ROOT_DIR . "/templates/fewlines/layout");
-define("VIEW_PATH",    ROOT_DIR . "/templates/fewlines/views");
+define("ETC_PATH",     ROOT_DIR . "/etc");
+define("LIB_PATH",     ROOT_DIR . "/lib");
+define("TPL_PATH",     ETC_PATH . "/tpl");
+define("FEWLINES_PHP", LIB_PATH . "/php");
+define("LAYOUT_PATH",  TPL_PATH . "/fewlines/layout");
+define("VIEW_PATH",    TPL_PATH . "/fewlines/views");
 
 /**
- * Default options for the 
+ * Default options for the
  * views, layout, ...
  */
 
@@ -35,6 +38,7 @@ define("VIEW_FILETYPE",      "phtml");
 define("DEFAULT_ERROR_VIEW", "error");
 define("DEFAULT_LAYOUT",     "default");
 define("INSTALL_LAYOUT",     "install");
+define("EXCEPTION_LAYOUT",   "exception");
 define("AUTLOADER_LC",       "\Fewlines\Autoloader\Autoloader::loadClass");
 define("URL_LAYOUT_ROUTE",   "/view:index/action:index");
 
@@ -53,9 +57,9 @@ set_include_path(implode(PATH_SEPARATOR, array(
  * type
  *
  * ------------------------------------
- * 
- * Config example: 
- * 
+ *
+ * Config example:
+ *
  * array(
  *     "dir"  => PATH_TO_FOLDER
  *     "type" => "xml/php/json/..."
@@ -66,7 +70,7 @@ function getConfig()
 {
 	return array(
 		array(
-			"dir"  => ROOT_DIR . "/config/fewlines",
+			"dir"  => ETC_PATH . "/cfg/fewlines",
 			"type" => "xml"
 		)
 	);
@@ -78,3 +82,19 @@ function getConfig()
 
 require_once "Fewlines/Autoloader/Autoloader.php";
 spl_autoload_register(AUTLOADER_LC);
+
+
+// Global debug function
+function pr($input)
+{
+	echo "<pre>";
+	if(is_bool($input))
+	{
+		var_dump($input);
+	}
+	else
+	{
+		print_r($input);
+	}
+	echo "</pre>";
+}
