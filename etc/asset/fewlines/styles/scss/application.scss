@@ -1,8 +1,32 @@
+/**
+ * Import compass utilities
+ */
+
 @import "compass/reset";
 @import "compass/css3";
 
-@import "constants";
+/**
+ * Include global constants
+ */
+
+@import "constants/**";
 @import "functions/**";
 @import "mixins/**";
 
-@import "layout/**";
+/**
+ * Import fonts
+ */
+
+@import "fonts/**";
+
+/**
+ * Import general stylings (global)
+ */
+
+@import "general/**";
+
+/**
+ * Import layouts
+ */
+
+@import "layout/exception";

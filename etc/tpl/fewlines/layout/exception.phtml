@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Fewlines Exception caught</title>
+		<title>fewlines - Caught exception</title>
+
+		<!-- Css include -->
+		<link href="<?= $this->baseUrlHelper('etc/asset/fewlines/styles/css/application.css') ?>" rel="stylesheet" type="text/css" />
 	</head>
-	<body>
-		<h1>Exception caught</h1>
+	<body class="exception-page">
 		<div id="page">
 			<?= $this->renderView() . "\r\n" ?>
 		</div>

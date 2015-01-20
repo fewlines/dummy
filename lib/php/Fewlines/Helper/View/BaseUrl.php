@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Url helper for views
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Helper\View;
 
@@ -31,5 +23,3 @@ class BaseUrl extends \Fewlines\Helper\AbstractViewHelper
 		return UrlHelper::getBaseUrl($parts);
 	}
 }
-
-?>

@@ -49,6 +49,14 @@ class Template extends Caller
 	public $viewHelperExp = '/helper|Helper/';
 
 	/**
+	 * The arguments of the template parsed
+	 * from the outside of the template
+	 * 
+	 * @var array
+	 */
+	public $arguments = array();
+
+	/**
 	 * Sets the view and layout by the
 	 * given url parts
 	 *
@@ -121,10 +129,44 @@ class Template extends Caller
 
 	/**
 	 * Renders the current template
+	 * 
+	 * @param array|* $args
 	 */
-	public function render()
+	public function render($args = array())
 	{
+		if(true == is_array($args))
+		{
+			$this->setArguments($args);
+		}
+
 		$this->renderLayout();
+	}
+
+	/**
+	 * Sets the argument defined from 
+	 * outside of the application
+	 * 
+	 * @param array $args
+	 */
+	public function setArguments($args)
+	{
+		$this->arguments = $args;
+	}
+
+	/**
+	 * Gets the arguments parsed
+	 * 
+	 * @param  null|integer $index
+	 * @return array|*
+	 */
+	public function getArguments($index = null)
+	{
+		if(false == is_null($index))
+		{
+			return $this->arguments[$index];
+		}
+
+		return $this->arguments;
 	}
 
 	/**
@@ -154,7 +196,7 @@ class Template extends Caller
 	 *
 	 * @return string
 	 */
-	public function includeView($viewPath, $wrapper = '')
+	public function includeView($viewPath, $config = array(), $wrapper = '')
 	{
 		$bckt = debug_backtrace();
 		$view = PathHelper::getRealViewPath(ltrim($viewPath, '/'));
@@ -181,7 +223,7 @@ class Template extends Caller
 				");
 		}
 
-		$content = $this->getRenderedHtml($view);
+		$content = $this->getRenderedHtml($view, $config);
 
 		if(false == empty($wrapper))
 		{

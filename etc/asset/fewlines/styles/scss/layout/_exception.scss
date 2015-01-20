@@ -1,0 +1,33 @@
+.exception-page
+{
+	#page,
+	#page .content
+	{
+		height: 100%;
+	}
+
+	.left,
+	.right
+	{
+		position: relative;
+		float: left;
+		width: 50%;
+		height: 100%;
+		overflow: auto;
+
+		@include box-sizing(border-box);
+	}
+
+	.left
+	{
+		padding: 2% 0 2% 2%;
+	}
+
+	/**
+	 * Import exception component styles
+	 */
+	
+	@import "exception/traceback";
+	@import "exception/details";
+	@import "exception/file-preview";
+}

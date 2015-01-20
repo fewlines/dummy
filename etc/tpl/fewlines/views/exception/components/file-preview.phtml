@@ -1,0 +1,13 @@
+<div class="file-preview">
+	<div class="file">
+		<span class="path"><?= $config['file'] ?></span>
+		<table class="lines">
+			<?php foreach($this->linePreviewHelper($config['file'], $config['line'], array_key_exists('depth', $config) ? $config['depth'] : 6) as $num => $line): ?>
+				<tr class="line <?= $num == $config['line'] ? 'highlight' : '' ?>">
+					<td class="num"><?= $num ?>:</td>
+					<td class="content"><?= $line ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+	</div>
+</div>

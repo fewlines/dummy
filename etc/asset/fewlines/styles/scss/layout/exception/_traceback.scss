@@ -1,0 +1,86 @@
+.traceback
+{
+	border-right: 10px solid $darkGray;
+	font-family: $openSansRegular;
+	counter-reset: trace-counter;
+
+	/**
+	 * Trace box
+	 */
+
+	.trace
+	{
+		position: relative;
+		background: $darkGray;
+		padding: 10px;
+		counter-increment: trace-counter;
+
+		&:not(:last-child)
+		{
+			margin-bottom: 20px;
+		}
+	}
+
+	.trace:before
+	{
+		position: absolute;
+		top: 0;
+		left: -20px;
+		width: 20px;
+		height: 100%;
+		color: $white;
+		text-align: center;
+		font-size: 10px;
+		line-height: 30px;
+		background: $violett;
+		font-family: Arial;
+		content: counter(trace-counter);
+	}
+
+	.trace .class
+	{
+		color: $white;
+		padding-bottom: 10px;
+		margin-bottom: 10px;
+		border-bottom: 1px solid $darkGray2;
+	}
+
+	.trace > .file
+	{
+		color: $lightGray;
+		font-size: 14px;
+
+		.line-number
+		{
+			font-family: $openSansBold;
+			cursor: pointer;
+		}
+
+		.file-preview
+		{
+			font-size: 16px;
+			background: $darkGray;
+			top: 0;
+			left: 50%;
+			right: 0;
+			bottom: 0;
+			padding: 2%;
+			position: fixed;
+			visibility: hidden;
+			opacity: 0;
+			z-index: 10;
+
+			@include transition(
+				opacity .3s,
+				visibility .3s
+			);
+		}
+
+		.line-number:hover + .file-preview
+		{
+			display: block;
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+}

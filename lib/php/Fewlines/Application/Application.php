@@ -107,9 +107,9 @@ class Application
 	/**
 	 * Renders the applications frontend
 	 */
-	private function renderApplication()
+	private function renderApplication($args = array())
 	{
-		$this->template->render();
+		$this->template->render($args);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Application
 
 			// Change layout to exception
 			$this->template->setLayout(EXCEPTION_LAYOUT);
-			$this->renderApplication();
+			$this->renderApplication(array($err));
 		}
 	}
 

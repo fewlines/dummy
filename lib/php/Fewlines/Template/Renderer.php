@@ -35,12 +35,13 @@ class Renderer
 
 	/**
 	 * Includes a php file and returns the content
-	 * output with a buffer
+	 * output with a buffer. Inlcude the config.
 	 *
 	 * @param  string $file
+	 * @param  array  $config
 	 * @return string
 	 */
-	protected function getRenderedHtml($file)
+	protected function getRenderedHtml($file, $config = array())
 	{
 		ob_start();
 
