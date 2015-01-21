@@ -32,23 +32,25 @@ class Error
 			switch ($errno)
 			{
 				case E_USER_ERROR:
-                	$type = 'Fatal Error';
+                	$type = 'FatalError';
                     $exit = true;
                 break;
                 case E_USER_WARNING:
                 case E_WARNING:
                     $type = 'Warning';
+  					echo "<b>Warning: </b>" . $errstr;
                 break;
                 case E_USER_NOTICE:
                 case E_NOTICE:
                 case @E_STRICT:
                     $type = 'Notice';
+                    $exit = true;
                 break;
                 case @E_RECOVERABLE_ERROR:
                     $type = 'Catchable';
                 break;
                 default:
-                    $type = 'Unknown Error';
+                    $type = 'UnknownError';
                     $exit = true;
                 break;
 			}
@@ -56,7 +58,8 @@ class Error
 
 		if(true == $exit)
 		{
-			throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+			$className = "\Fewlines\Handler\Error\Exception\\" . $type . "Exception";
+			throw new $className($errstr, 0, $errno, $errfile, $errline);
 		}
 	}
 }

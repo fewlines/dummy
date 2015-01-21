@@ -5,7 +5,7 @@
 			<?php foreach($this->linePreviewHelper($config['file'], $config['line'], array_key_exists('depth', $config) ? $config['depth'] : 6) as $num => $line): ?>
 				<tr class="line <?= $num == $config['line'] ? 'highlight' : '' ?>">
 					<td class="num"><?= $num ?>:</td>
-					<td class="content"><?= $line ?></td>
+					<td class="content"><pre><?= $line ?></pre></td>
 				</tr>
 			<?php endforeach; ?>
 		</table>

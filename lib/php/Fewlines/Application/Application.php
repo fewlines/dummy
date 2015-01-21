@@ -67,7 +67,6 @@ class Application
 		Session::initCookies();
 
 		// Register required components
-		$this->registerErrorHandler();
 		$this->registerHttpRequest();
 		$this->registerTemplate();
 	}
@@ -109,6 +108,7 @@ class Application
 	 */
 	private function renderApplication($args = array())
 	{
+		$this->registerErrorHandler();
 		$this->template->render($args);
 	}
 
@@ -193,8 +193,8 @@ class Application
 	 */
 	private function registerErrorHandler()
 	{
-		/**set_error_handler(
+		set_error_handler(
 			array(new ErrorHandler(), 'handleError')
-		);*/
+		);
 	}
 }
