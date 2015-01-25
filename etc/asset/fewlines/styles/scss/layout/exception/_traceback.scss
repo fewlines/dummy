@@ -49,11 +49,11 @@
 	{
 		color: $lightGray;
 		font-size: 14px;
+		cursor: pointer;
 
 		.line-number
 		{
 			font-family: $openSansBold;
-			cursor: pointer;
 		}
 
 		.file-preview
@@ -69,6 +69,7 @@
 			visibility: hidden;
 			opacity: 0;
 			z-index: 10;
+			cursor: auto;
 
 			@include transition(
 				opacity .3s,
@@ -76,7 +77,22 @@
 			);
 		}
 
-		.line-number:hover + .file-preview
+		&:after
+		{
+			content: "\00BB";
+			position: absolute;
+			right: 10px;
+			visibility: hidden;
+			color: $white;
+			font-size: 16px;
+		}
+
+		&:hover:after
+		{
+			visibility: visible;
+		}
+
+		&:hover .file-preview
 		{
 			display: block;
 			opacity: 1;

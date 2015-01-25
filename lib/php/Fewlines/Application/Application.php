@@ -89,7 +89,7 @@ class Application
 	 */
 	public function registerHttpRequest()
 	{
-		$this->httpRequest = new HttpRequest();
+		$this->httpRequest = HttpRequest::getInstance();
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Application
 		try
 		{
 			// Start buffer for application
-			ob_start();
+			self::startBuffer();
 
 			// Render the frontend
 			$this->renderApplication();
@@ -147,13 +147,33 @@ class Application
 		catch(\Exception $err)
 		{
 			// Clear just rendered content
-			ob_end_flush();
-			ob_clean();
+			self::clearBuffer();
 
 			// Change layout to exception
 			$this->template->setLayout(EXCEPTION_LAYOUT);
 			$this->renderApplication(array($err));
 		}
+	}
+
+	/**
+	 * Renders a error manual with a new template
+	 * 
+	 * @param  \ErrorException $err 
+	 */
+	public static function renderShutdownError($err)
+	{
+		self::clearBuffer();
+
+		// Create new Template
+		$urlMethods = HttpRequest::getInstance()->getUrlMethodContents();
+		$template   = new Template($urlMethods);
+
+		/**
+		 * Set Exception layout and render it with
+		 * the exception as argument
+		 */
+		$template->setLayout(EXCEPTION_LAYOUT);
+		$template->render(array($err));
 	}
 
 	/**
@@ -178,6 +198,24 @@ class Application
 	}
 
 	/**
+	 * Starts a new buffer
+	 */
+	public static function startBuffer()
+	{
+		ob_start();
+	}
+
+	/**
+	 * Ends a buffer and deletes all output 
+	 * of it
+	 */
+	public static function clearBuffer()
+	{
+		ob_end_flush();
+		ob_clean();
+	}
+
+	/**
 	 * Returns the state of the application
 	 *
 	 * @return boolean
@@ -193,8 +231,14 @@ class Application
 	 */
 	private function registerErrorHandler()
 	{
+		$handler = new ErrorHandler();
+
 		set_error_handler(
-			array(new ErrorHandler(), 'handleError')
+			array($handler, 'handleError')
+		);
+
+		register_shutdown_function(
+			array($handler, 'handleShutdown')
 		);
 	}
 }

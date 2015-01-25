@@ -32,7 +32,7 @@ class LinePreview extends \Fewlines\Helper\AbstractViewHelper
 
 		for($i = $start; $i < $end; $i++)
 		{
-			$lines[$i+1] = $file[$i];
+			$lines[$i+1] = htmlspecialchars($file[$i]);
 		}
 
 		return $lines;

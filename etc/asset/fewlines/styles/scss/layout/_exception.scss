@@ -16,6 +16,12 @@
 		overflow: auto;
 
 		@include box-sizing(border-box);
+
+		&.full
+		{
+			float: none;
+			margin: 0 auto;
+		}
 	}
 
 	.left

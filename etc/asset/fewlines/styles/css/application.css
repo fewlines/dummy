@@ -133,7 +133,12 @@ html {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box; }
-  /* line 21, ../scss/layout/_exception.scss */
+    /* line 20, ../scss/layout/_exception.scss */
+    .exception-page .left.full,
+    .exception-page .right.full {
+      float: none;
+      margin: 0 auto; }
+  /* line 27, ../scss/layout/_exception.scss */
   .exception-page .left {
     padding: 2% 0 2% 2%; }
   /* line 1, ../scss/layout/exception/_traceback.scss */
@@ -176,11 +181,11 @@ html {
     /* line 48, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace > .file {
       color: #BABABA;
-      font-size: 14px; }
-      /* line 53, ../scss/layout/exception/_traceback.scss */
+      font-size: 14px;
+      cursor: pointer; }
+      /* line 54, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file .line-number {
-        font-family: "OpenSans bold", Arial, sans-serif;
-        cursor: pointer; }
+        font-family: "OpenSans bold", Arial, sans-serif; }
       /* line 59, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file .file-preview {
         font-size: 16px;
@@ -194,12 +199,24 @@ html {
         visibility: hidden;
         opacity: 0;
         z-index: 10;
+        cursor: auto;
         -moz-transition: opacity 0.3s, visibility 0.3s;
         -o-transition: opacity 0.3s, visibility 0.3s;
         -webkit-transition: opacity 0.3s, visibility 0.3s;
         transition: opacity 0.3s, visibility 0.3s; }
-      /* line 79, ../scss/layout/exception/_traceback.scss */
-      .exception-page .traceback .trace > .file .line-number:hover + .file-preview {
+      /* line 80, ../scss/layout/exception/_traceback.scss */
+      .exception-page .traceback .trace > .file:after {
+        content: "\00BB";
+        position: absolute;
+        right: 10px;
+        visibility: hidden;
+        color: white;
+        font-size: 16px; }
+      /* line 90, ../scss/layout/exception/_traceback.scss */
+      .exception-page .traceback .trace > .file:hover:after {
+        visibility: visible; }
+      /* line 95, ../scss/layout/exception/_traceback.scss */
+      .exception-page .traceback .trace > .file:hover .file-preview {
         display: block;
         opacity: 1;
         visibility: visible; }

@@ -35,6 +35,11 @@ class Request extends Router
 	 */
 	public static function getInstance()
 	{
+		if(is_null(self::$instance))
+		{
+			new self();
+		}
+
 		return self::$instance;
 	}
 

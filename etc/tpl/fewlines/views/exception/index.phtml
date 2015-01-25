@@ -1,41 +1,46 @@
-<?php $exception = $this->getArguments(0); ?>
+<?php
+	$exception = $this->getArguments(0); 
+	$hasTrace  = count($exception->getTrace()) > 1;
+?>
 
 <!-- Exception details -->
 <div class="content">
-	<div class="left traceback">
-		<?php foreach($exception->getTrace() as $trace): ?>
-			<div class="trace">
-				<?php if(true == array_key_exists('class', $trace)): ?>
-					<div class="class">
-						<?= $trace['class'] ?>
-						<?php if(true == array_key_exists('function', $trace)): ?>
-							<span class="light-gray">(<?= $trace['function'] ?>)</span>
-						<?php endif ?>
-					</div>
-				<?php endif; ?>
-				<?php if(true == array_key_exists('file', $trace)): ?>
-					<div class="file">
-						<?= $trace['file'] ?>
-						<span class="violett line-number">
-							<?php if(true == array_key_exists('line', $trace)): ?>
-								:<?= $trace['line'] ?>
-							<?php endif; ?>
-						</span>
-						<?php 
-							if(true == array_key_exists('line', $trace) && true == array_key_exists('file', $trace))
-							{
-								echo $this->includeView('components/file-preview', array(
-									"file" => $trace['file'], 
-									"line" => $trace['line']
-								));
-							}
-						?>
-					</div>		
-				<?php endif ?>
-			</div>
-		<?php endforeach; ?>
-	</div>
-	<div class="right details">
+	<?php if(true == $hasTrace): ?>
+		<div class="left traceback">
+			<?php foreach($exception->getTrace() as $trace): ?>
+				<div class="trace">
+					<?php if(true == array_key_exists('class', $trace)): ?>
+						<div class="class">
+							<?= $trace['class'] ?>
+							<?php if(true == array_key_exists('function', $trace)): ?>
+								<span class="light-gray">(<?= $trace['function'] ?>)</span>
+							<?php endif ?>
+						</div>
+					<?php endif; ?>
+					<?php if(true == array_key_exists('file', $trace)): ?>
+						<div class="file">
+							<?= $trace['file'] ?>
+							<span class="violett line-number">
+								<?php if(true == array_key_exists('line', $trace)): ?>
+									:<?= $trace['line'] ?>
+								<?php endif; ?>
+							</span>
+							<?php 
+								if(true == array_key_exists('line', $trace) && true == array_key_exists('file', $trace))
+								{
+									echo $this->includeView('components/file-preview', array(
+										"file" => $trace['file'], 
+										"line" => $trace['line']
+									));
+								}
+							?>
+						</div>		
+					<?php endif ?>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
+	<div class="right details <?= false == $hasTrace ? 'full' : '' ?>">
 		<?php if($exception->getMessage()): ?>
 			<div class="message">
 				<span class="class-name"><?= get_class($exception) ?>:</span>
@@ -48,7 +53,7 @@
 					"file"  => $exception->getFile(),
 					"line"  => $exception->getLine(),
 					"depth" => 8
-				)) 
+				)); 
 			?>
 		</div>
 	</div>
