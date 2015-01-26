@@ -51,6 +51,17 @@ class ArrayHelper
 
 		return $array;
 	}
+
+	/**
+	 * Checks if the array is an associative array or not
+	 * 
+	 * @param  array  $array
+	 * @return boolean
+	 */
+	public static function isAssociative($array)
+	{
+		return array_keys($array) !== range(0, count($array) - 1);
+	}
 }
 
 ?>

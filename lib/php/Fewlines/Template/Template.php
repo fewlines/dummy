@@ -194,6 +194,9 @@ class Template extends Caller
 	 * Includes a view inside a view.
 	 * Mostly called in views.
 	 *
+	 * @param  string $viewPath
+	 * @param  array  $config
+	 * @param  string $wrapper
 	 * @return string
 	 */
 	public function includeView($viewPath, $config = array(), $wrapper = '')

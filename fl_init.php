@@ -41,6 +41,7 @@ define("INSTALL_LAYOUT",     "install");
 define("EXCEPTION_LAYOUT",   "exception");
 define("AUTLOADER_LC",       "\Fewlines\Autoloader\Autoloader::loadClass");
 define("URL_LAYOUT_ROUTE",   "/view:index/action:index");
+define("DEVELOPER_DEBUG",    true);
 
 /**
  * Set include paths for the autoloader
@@ -83,18 +84,13 @@ function getConfig()
 require_once "Fewlines/Autoloader/Autoloader.php";
 spl_autoload_register(AUTLOADER_LC);
 
-
-// Global debug function
+/**
+ * Global debug function (beautified output)
+ */
 function pr($input)
 {
 	echo "<pre>";
-	if(is_bool($input))
-	{
-		var_dump($input);
-	}
-	else
-	{
-		print_r($input);
-	}
+	if(is_bool($input)){var_dump($input);}
+	else{print_r($input);}
 	echo "</pre>";
 }

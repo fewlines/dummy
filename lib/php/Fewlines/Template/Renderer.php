@@ -15,9 +15,20 @@ namespace Fewlines\Template;
 
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Helper\PathHelper;
+use Fewlines\Helper\ArrayHelper;
 
 class Renderer
 {
+	/**
+	 * A array of all md5 hashes to save 
+	 * performmance
+	 * 
+	 * @var array
+	 */
+	public static $md5VarHashmap = array(
+		'file', 'config', 'varname', 'content', 'html'
+	);
+
 	/**
 	 * Holds the current layout instance
 	 *
@@ -30,12 +41,30 @@ class Renderer
 	 */
 	public function initLayout()
 	{
+		// Set layout to handle with
 		$this->layout = $this->getLayout();
+
+		// Calculate hashmaps (if they weren't just calculated)
+		if(false == ArrayHelper::isAssociative(self::$md5VarHashmap))
+		{
+			for($i = 0; $i < count(self::$md5VarHashmap); $i++)
+			{
+				$name = self::$md5VarHashmap[$i];
+				self::$md5VarHashmap[$name] = md5($name);
+
+				unset(self::$md5VarHashmap[$i]);
+			}
+		}
 	}
 
 	/**
 	 * Includes a php file and returns the content
-	 * output with a buffer. Inlcude the config.
+	 * output with a buffer.
+	 * 
+	 * Using md5 hashed variables to avoid override of 
+	 * the config variables from the user. Looks weird
+	 * but to save performance the md5 hashes will only 
+	 * be calculated once
 	 *
 	 * @param  string $file
 	 * @param  array  $config
@@ -45,14 +74,34 @@ class Renderer
 	{
 		ob_start();
 
-		include $file;
+		// Cache old vars 
+		${self::$md5VarHashmap['file']}   = $file;
+		${self::$md5VarHashmap['config']} = $config;
 
-		$html = ob_get_contents();
+		// Delete old variables
+		unset($file, $config);
+
+		// Define config variables
+		foreach(
+			${self::$md5VarHashmap['config']}  as 
+			${self::$md5VarHashmap['varname']} => 
+			${self::$md5VarHashmap['content']}
+		){
+			${self::$md5VarHashmap['varname']} = (string) ${self::$md5VarHashmap['varname']};
+			${${self::$md5VarHashmap['varname']}} = ${self::$md5VarHashmap['content']};
+		}
+		
+		// Include the cached file 
+		include ${self::$md5VarHashmap['file']};
+
+		// Get the output of the buffer form the included file
+		${self::$md5VarHashmap['html']} = ob_get_contents();
 
 		ob_clean();
 		ob_end_flush();
 
-		return $html;
+		// Return the saved buffer
+		return ${self::$md5VarHashmap['html']};
 	}
 
 	protected function renderLayout()
