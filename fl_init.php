@@ -23,8 +23,9 @@
 define("ROOT_DIR",     __DIR__);
 define("ETC_PATH",     ROOT_DIR . "/etc");
 define("LIB_PATH",     ROOT_DIR . "/lib");
-define("TPL_PATH",     ETC_PATH . "/tpl");
+define("TPL_PATH",     ETC_PATH . "/template");
 define("FEWLINES_PHP", LIB_PATH . "/php");
+define("LOCALE_PATH",  ETC_PATH . "/locale");
 define("LAYOUT_PATH",  TPL_PATH . "/fewlines/layout");
 define("VIEW_PATH",    TPL_PATH . "/fewlines/views");
 
@@ -71,7 +72,7 @@ function getConfig()
 {
 	return array(
 		array(
-			"dir"  => ETC_PATH . "/cfg/fewlines",
+			"dir"  => ETC_PATH . "/config/fewlines",
 			"type" => "xml"
 		)
 	);

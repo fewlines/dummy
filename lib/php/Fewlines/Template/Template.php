@@ -191,15 +191,14 @@ class Template extends Caller
 	}
 
 	/**
-	 * Includes a view inside a view.
-	 * Mostly called in views.
+	 * Includes a component/view inside a view.
 	 *
 	 * @param  string $viewPath
 	 * @param  array  $config
 	 * @param  string $wrapper
 	 * @return string
 	 */
-	public function includeView($viewPath, $config = array(), $wrapper = '')
+	public function insert($viewPath, $config = array(), $wrapper = '')
 	{
 		$bckt = debug_backtrace();
 		$view = PathHelper::getRealViewPath(ltrim($viewPath, '/'));
@@ -236,5 +235,3 @@ class Template extends Caller
 		return $content;
 	}
 }
-
-?>

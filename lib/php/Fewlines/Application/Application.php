@@ -18,6 +18,7 @@ use Fewlines\Handler\Exception as ExceptionHandler;
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Template\Template;
 use Fewlines\Session\Session;
+use Fewlines\Locale\Locale;
 
 class Application
 {
@@ -62,6 +63,9 @@ class Application
 	 */
 	public function __construct()
 	{
+		// Set locale
+		Locale::set('de');
+
 		// Register sessions
 		Session::startSession();
 		Session::initCookies();

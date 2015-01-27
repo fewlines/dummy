@@ -12,12 +12,12 @@
 	{
 		position: relative;
 		background: $darkGray;
-		padding: 10px;
+		padding: 25px;
 		counter-increment: trace-counter;
 
 		&:not(:last-child)
 		{
-			margin-bottom: 20px;
+			margin-bottom: 2px;
 		}
 	}
 

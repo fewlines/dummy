@@ -138,9 +138,6 @@ html {
     .exception-page .right.full {
       float: none;
       margin: 0 auto; }
-  /* line 27, ../scss/layout/_exception.scss */
-  .exception-page .left {
-    padding: 2% 0 2% 2%; }
   /* line 1, ../scss/layout/exception/_traceback.scss */
   .exception-page .traceback {
     border-right: 10px solid #2e2e2e;
@@ -153,11 +150,11 @@ html {
     .exception-page .traceback .trace {
       position: relative;
       background: #2e2e2e;
-      padding: 10px;
+      padding: 25px;
       counter-increment: trace-counter; }
       /* line 18, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace:not(:last-child) {
-        margin-bottom: 20px; }
+        margin-bottom: 2px; }
     /* line 24, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace:before {
       position: absolute;

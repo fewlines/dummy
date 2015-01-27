@@ -19,6 +19,18 @@ class PathHelper
 		return substr($path, -1) != '/' ? $path . '/' : $path;
 	}
 
+
+	/**
+	 * Creates a valid path from an array
+	 * 
+	 * @param  array $parts 
+	 * @return string
+	 */
+	public static function createPath($parts)
+	{
+		return self::getRealPath(implode("/", $parts));
+	}
+
 	/**
 	 * Normalizes path, so all paths
 	 * will be the same after using this

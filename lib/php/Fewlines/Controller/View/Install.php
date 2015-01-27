@@ -11,6 +11,7 @@
 namespace Fewlines\Controller\View;
 
 use Fewlines\Http\Header as HttpHeader;
+use Fewlines\Locale\Locale;
 
 class Install extends \Fewlines\Controller\Template
 {
@@ -23,12 +24,8 @@ class Install extends \Fewlines\Controller\Template
 
 	public function step1Action()
 	{
-		/**
-		 * @todo CHANGE view rendering behaviour add folder for each layout
-		 * in the view folder
-		 */
-		 echo "<b>step1</b>";
+		$install = Locale::get('install');
+
+		pr($install);
 	}
 }
-
-?>
