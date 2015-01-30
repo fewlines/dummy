@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The index controller
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Controller\View;
 
@@ -24,7 +16,7 @@ class Index extends \Fewlines\Controller\Template
 		 */
 
 		//$session = new Session("testCookie", "test");
-		$cook      = Session::get('testCookie');
+		$cook = Session::get('testCookie');
 
 		if($cook->isSession())
 		{
@@ -76,5 +68,3 @@ class Index extends \Fewlines\Controller\Template
 			);*/
 	}
 }
-
-?>

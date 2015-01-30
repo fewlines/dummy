@@ -54,7 +54,7 @@ class ArrayHelper
 
 	/**
 	 * Checks if the array is an associative array or not
-	 * 
+	 *
 	 * @param  array  $array
 	 * @return boolean
 	 */
@@ -63,5 +63,3 @@ class ArrayHelper
 		return array_keys($array) !== range(0, count($array) - 1);
 	}
 }
-
-?>

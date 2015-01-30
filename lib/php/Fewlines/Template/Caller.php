@@ -5,6 +5,22 @@ namespace Fewlines\Template;
 class Caller extends Renderer
 {
 	/**
+	 * The current layout
+	 * received by the child template
+	 *
+	 * @var \Fewlines\Template\Layout
+	 */
+	private $layout;
+
+	/**
+	 * @param \Fewlines\Template\Layout $layout
+	 */
+	public function initCaller($layout)
+	{
+		$this->layout = $layout;
+	}
+
+	/**
 	 * Handles all get requests
 	 *
 	 * @param  string $name
@@ -12,7 +28,14 @@ class Caller extends Renderer
 	 */
 	public function __get($name)
 	{
-		if(!property_exists($this, $name))
+		$controller = $this->layout->getController();
+
+		if(false == is_null($controller) &&
+			true == property_exists($controller, $name))
+		{
+			return $controller->{$name};
+		}
+		else if(false == property_exists($this, $name))
 		{
 			throw new Exception\PropertyNotFoundException(
 				"Could not receive the property \"" . $name . "\".
@@ -20,7 +43,7 @@ class Caller extends Renderer
 			);
 		}
 
-		return $this->$name;
+		return $this->{$name};
 	}
 
 	/**
@@ -33,12 +56,12 @@ class Caller extends Renderer
 	 */
 	public function __call($name, $args)
 	{
-		if(preg_match($this->viewHelperExp, $name))
+		if(true == preg_match($this->viewHelperExp, $name))
 		{
-			$helperName = preg_replace($this->viewHelperExp, '', $name);
+			$helperName  = preg_replace($this->viewHelperExp, '', $name);
 			$helperClass = 'Fewlines\Helper\View\\' . $helperName;
 
-			if(!class_exists($helperClass))
+			if(false == class_exists($helperClass))
 			{
 				throw new Exception\HelperNotFoundException(
 					"View helper \"" . $helperClass . "\"
@@ -56,7 +79,7 @@ class Caller extends Renderer
 			 	);
 			}
 
-			if(!method_exists($helper, $helperName))
+			if(false == method_exists($helper, $helperName))
 			{
 				throw new Exception\HelperMethodNotFoundException(
 					"The view helper method \"" . $helperName . "\"
@@ -64,8 +87,8 @@ class Caller extends Renderer
 				);
 			}
 
-			$reflection = new \ReflectionMethod($helperClass, $helperName);
-    		$needArgsCount = $reflection->getNumberOfRequiredParameters();
+			$reflection     = new \ReflectionMethod($helperClass, $helperName);
+    		$needArgsCount  = $reflection->getNumberOfRequiredParameters();
     		$foundArgsCount = count($args);
 
     		if($needArgsCount > $foundArgsCount)
@@ -81,12 +104,23 @@ class Caller extends Renderer
 		}
 		else
 		{
-			if(!method_exists($this, $name))
+			$controller = $this->layout->getController();
+
+			if(false == is_null($controller) &&
+				true == method_exists($controller, $name))
 			{
-				throw new Exception\TemplateMethodNotFoundException(
-					"The method \"" . $name . "\" was not found in
-					" . get_class($this)
-				);
+				return call_user_func_array(array($controller, $name), $args);
+			}
+			else if(false == method_exists($this, $name))
+			{
+				$msg = "The method \"" . $name . "\" was not found in " . get_class($this);
+
+				if(false == is_null($controller))
+				{
+					$msg .= " or in the controller . " . get_class($controller);
+				}
+
+				throw new Exception\TemplateMethodNotFoundException($msg);
 			}
 
 			return call_user_func_array(array($this, $name), $args);

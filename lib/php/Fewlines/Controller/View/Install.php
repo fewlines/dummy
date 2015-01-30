@@ -24,8 +24,6 @@ class Install extends \Fewlines\Controller\Template
 
 	public function step1Action()
 	{
-		$install = Locale::get('install');
 
-		pr($install);
 	}
 }

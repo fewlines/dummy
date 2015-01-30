@@ -134,7 +134,7 @@ class Application
 			{
 				$this->installApplication();
 			}
-			else
+			else if($viewName == self::INSTALL_VIEW)
 			{
 				$this->template->setLayout(self::INSTALL_VIEW);
 			}
@@ -161,8 +161,8 @@ class Application
 
 	/**
 	 * Renders a error manual with a new template
-	 * 
-	 * @param  \ErrorException $err 
+	 *
+	 * @param  \ErrorException $err
 	 */
 	public static function renderShutdownError($err)
 	{
@@ -210,7 +210,7 @@ class Application
 	}
 
 	/**
-	 * Ends a buffer and deletes all output 
+	 * Ends a buffer and deletes all output
 	 * of it
 	 */
 	public static function clearBuffer()

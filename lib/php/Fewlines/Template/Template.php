@@ -13,6 +13,7 @@ namespace Fewlines\Template;
 use Fewlines\Template\Layout;
 use Fewlines\Template\Renderer;
 use Fewlines\Helper\PathHelper;
+use Fewlines\Locale\Locale;
 
 class Template extends Caller
 {
@@ -51,7 +52,7 @@ class Template extends Caller
 	/**
 	 * The arguments of the template parsed
 	 * from the outside of the template
-	 * 
+	 *
 	 * @var array
 	 */
 	public $arguments = array();
@@ -66,6 +67,9 @@ class Template extends Caller
 	{
 		$this->routeUrlParts = $routeUrlParts;
 		$this->setLayout(DEFAULT_LAYOUT);
+
+		// Init caller
+		parent::initCaller($this->layout);
 
 		// Init the renderer
 		parent::initLayout();
@@ -129,7 +133,7 @@ class Template extends Caller
 
 	/**
 	 * Renders the current template
-	 * 
+	 *
 	 * @param array|* $args
 	 */
 	public function render($args = array())
@@ -143,9 +147,9 @@ class Template extends Caller
 	}
 
 	/**
-	 * Sets the argument defined from 
+	 * Sets the argument defined from
 	 * outside of the application
-	 * 
+	 *
 	 * @param array $args
 	 */
 	public function setArguments($args)
@@ -155,7 +159,7 @@ class Template extends Caller
 
 	/**
 	 * Gets the arguments parsed
-	 * 
+	 *
 	 * @param  null|integer $index
 	 * @return array|*
 	 */
@@ -188,6 +192,18 @@ class Template extends Caller
 	public function getLayout()
 	{
 		return $this->layout;
+	}
+
+	/**
+	 * Translates a path to a translation
+	 * string
+	 *
+	 * @param  string $path
+	 * @return string
+	 */
+	protected function translate($path)
+	{
+		return Locale::get($path);
 	}
 
 	/**

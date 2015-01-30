@@ -11,6 +11,7 @@
 namespace Fewlines\Template;
 
 use Fewlines\Template\View;
+use Fewlines\Http\Request as HttpRequest;
 
 class Layout extends View
 {
@@ -47,6 +48,14 @@ class Layout extends View
 		$this->layoutPath = $path;
 		$this->template   = $tpl;
 
+		if($this->getLayoutName() == EXCEPTION_LAYOUT)
+		{
+			$httpRequest = HttpRequest::getInstance();
+
+			$routeUrlParts['view']   = $httpRequest->getDefaultDestination('view');
+			$routeUrlParts['action'] = $httpRequest->getDefaultDestination('action');
+		}
+
 		$this->setView($routeUrlParts['view'], $routeUrlParts['action'], $this);
 	}
 
@@ -70,5 +79,3 @@ class Layout extends View
 		return $this->layoutName;
 	}
 }
-
-?>

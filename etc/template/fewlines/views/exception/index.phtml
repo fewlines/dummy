@@ -1,5 +1,5 @@
 <?php
-	$exception = $this->getArguments(0); 
+	$exception = $this->getArguments(0);
 	$hasTrace  = count($exception->getTrace()) > 1;
 ?>
 
@@ -25,16 +25,16 @@
 									:<?= $trace['line'] ?>
 								<?php endif; ?>
 							</span>
-							<?php 
+							<?php
 								if(true == array_key_exists('line', $trace) && true == array_key_exists('file', $trace))
 								{
 									echo $this->insert('components/file-preview', array(
-										"file" => $trace['file'], 
+										"file" => $trace['file'],
 										"line" => $trace['line']
 									));
 								}
 							?>
-						</div>		
+						</div>
 					<?php endif ?>
 				</div>
 			<?php endforeach; ?>
@@ -48,12 +48,12 @@
 			</div>
 		<?php endif; ?>
 		<div class="preview">
-			<?= 
+			<?=
 				$this->insert('components/file-preview', array(
 					"file"  => $exception->getFile(),
 					"line"  => $exception->getLine(),
 					"depth" => 8
-				)); 
+				));
 			?>
 		</div>
 	</div>

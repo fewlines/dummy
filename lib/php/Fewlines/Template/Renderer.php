@@ -20,9 +20,9 @@ use Fewlines\Helper\ArrayHelper;
 class Renderer
 {
 	/**
-	 * A array of all md5 hashes to save 
+	 * A array of all md5 hashes to save
 	 * performmance
-	 * 
+	 *
 	 * @var array
 	 */
 	public static $md5VarHashmap = array(
@@ -60,10 +60,10 @@ class Renderer
 	/**
 	 * Includes a php file and returns the content
 	 * output with a buffer.
-	 * 
-	 * Using md5 hashed variables to avoid override of 
+	 *
+	 * Using md5 hashed variables to avoid override of
 	 * the config variables from the user. Looks weird
-	 * but to save performance the md5 hashes will only 
+	 * but to save performance the md5 hashes will only
 	 * be calculated once
 	 *
 	 * @param  string $file
@@ -74,7 +74,7 @@ class Renderer
 	{
 		ob_start();
 
-		// Cache old vars 
+		// Cache old vars
 		${self::$md5VarHashmap['file']}   = $file;
 		${self::$md5VarHashmap['config']} = $config;
 
@@ -83,15 +83,15 @@ class Renderer
 
 		// Define config variables
 		foreach(
-			${self::$md5VarHashmap['config']}  as 
-			${self::$md5VarHashmap['varname']} => 
+			${self::$md5VarHashmap['config']}  as
+			${self::$md5VarHashmap['varname']} =>
 			${self::$md5VarHashmap['content']}
 		){
 			${self::$md5VarHashmap['varname']} = (string) ${self::$md5VarHashmap['varname']};
 			${${self::$md5VarHashmap['varname']}} = ${self::$md5VarHashmap['content']};
 		}
-		
-		// Include the cached file 
+
+		// Include the cached file
 		include ${self::$md5VarHashmap['file']};
 
 		// Get the output of the buffer form the included file

@@ -13,7 +13,6 @@ namespace Fewlines\Controller;
 
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Application\Config;
-use Fewlines\Controller\TemplateInterface;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
 
@@ -91,5 +90,3 @@ class Template implements TemplateInterface
 		return UrlHelper::getBaseUrl($parts);
 	}
 }
-
-?>

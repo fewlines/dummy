@@ -118,7 +118,7 @@ class View
 		$layout   = $this->layout->getLayoutName();
 		$viewFile = PathHelper::getRealViewPath($view, $layout);
 
-		if(!file_exists($viewFile))
+		if(false == file_exists($viewFile))
 		{
 			$viewFile = $this->set404Eror();
 		}
@@ -202,6 +202,17 @@ class View
 	}
 
 	/**
+	 * Returns the instantiated controller
+	 * if exists
+	 *
+	 * @return *
+	 */
+	public function getController()
+	{
+		return $this->controller;
+	}
+
+	/**
 	 * Init the controller of the current view
 	 * (if exists)
 	 *
@@ -238,8 +249,6 @@ class View
 			);
 		}
 
-		$this->controller->$method();
+		$this->controller->{$method}();
 	}
 }
-
-?>

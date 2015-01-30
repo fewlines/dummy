@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Fewlines\Csv;
 
@@ -6,15 +6,15 @@ class Csv
 {
 	/**
 	 * Caches csv file to prevent reloading
-	 * 
+	 *
 	 * @var array
 	 */
 	private static $cache = array();
 
 	/**
 	 * Create a new csv instance to operate with
-	 * 
-	 * @param string $file 
+	 *
+	 * @param string $file
 	 */
 	public function __construct($file)
 	{
@@ -22,17 +22,18 @@ class Csv
 	}
 
 	/**
-	 * Gets the content of a csv file 
+	 * Gets the content of a csv file
 	 * and saves it as array
-	 * 
-	 * @param  string $file 
+	 *
+	 * @param  string $file
 	 * @return array
 	 */
-	public static function getFile($file)
+	public static function getFile($file, $reload = false)
 	{
 		$data = array();
 
-		if(array_key_exists($file, self::$cache))
+		if(array_key_exists($file, self::$cache) &&
+			false == $reload)
 		{
 			// Get data from cache
 			$data = self::$cache[$file];
@@ -77,11 +78,11 @@ class Csv
 	}
 
 	/**
-	 * Transforms a grid to defined columns 
+	 * Transforms a grid to defined columns
 	 * e.g. locales
-	 * 
+	 *
 	 * @param  array   $data
-	 * @param  integer $columns 
+	 * @param  integer $columns
 	 * @return array
 	 */
 	private static function transform($data, $columns)
