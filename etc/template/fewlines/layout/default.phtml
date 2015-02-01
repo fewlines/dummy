@@ -6,6 +6,10 @@
 	<body>
 		<h1>fewlines</h1>
 		<h2>View</h2>
+		<?php
+			$config = $this->getConfig('head');
+			pr($config);
+		?>
 
 		<div id="page">
 			<?= $this->renderView() . "\r\n" ?>

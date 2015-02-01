@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Handles the config files
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Application;
 
@@ -155,5 +147,3 @@ class Config
 		return false;
 	}
 }
-
-?>

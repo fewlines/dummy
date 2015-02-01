@@ -14,6 +14,7 @@ use Fewlines\Template\Layout;
 use Fewlines\Template\Renderer;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Locale\Locale;
+use Fewlines\Application\Config;
 
 class Template extends Caller
 {
@@ -204,6 +205,29 @@ class Template extends Caller
 	protected function translate($path)
 	{
 		return Locale::get($path);
+	}
+
+	/**
+	 * Gets a config element by a given
+	 * path
+	 *
+	 * @param  string $path
+	 * @return \Fewlines\Xml\Element|false
+	 */
+	protected function getConfig($path)
+	{
+		return Config::getInstance()->getElementByPath($path);
+	}
+
+	/**
+	 * Gets config elements from a element
+	 *
+	 * @param  string $path
+	 * @return array
+	 */
+	protected function getConfigs($path)
+	{
+		return Config::getInstance()->getElementsByPath($path);
 	}
 
 	/**
