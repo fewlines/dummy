@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<form>
+	<install>
+		<elements>
+			<input type="text" name="firstname"></input>
+			<input type="text" name="lastname"></input>
+			<input type="submit" name="submit-install"></input>
+		</elements>
+	</install>
+</form>

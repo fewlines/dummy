@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Handles the config files
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Xml;
 
@@ -69,7 +61,7 @@ class Xml
 	 *
 	 * @param  string  $path
 	 * @param  boolean $collect
-	 * @return \Fewlines\Xml\Tree\Element|boolean
+	 * @return \Fewlines\Xml\Tree\Element|boolean|array
 	 */
 	public function getElementsByPath($path, $collect = true)
 	{
@@ -131,5 +123,3 @@ class Xml
 		return $this->getElementsByPath($path, false);
 	}
 }
-
-?>

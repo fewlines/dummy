@@ -52,9 +52,10 @@ class Config
 					Use the static function \"getInstance\" instead.
 				");
 		}
-
+		
 		self::$instance = $this;
-		$files          = array();
+
+		$files = array();
 
  		for($i = 0; $i < count($configs); $i++)
 		{

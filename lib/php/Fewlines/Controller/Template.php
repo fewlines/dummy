@@ -55,7 +55,7 @@ class Template implements TemplateInterface
 	 */
 	public function init(\Fewlines\Template\Template $template)
 	{
-		$this->template = $template;
+		$this->template    = $template;
 		$this->httpRequest = httpRequest::getInstance();
 	}
 

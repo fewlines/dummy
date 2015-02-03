@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Helper to handle urls
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Helper;
 
@@ -30,5 +22,3 @@ class UrlHelper extends \Fewlines\Helper\View\BaseUrl
 		return HttpRequest::getInstance()->getBaseUrl() . ltrim($parts, "/");
 	}
 }
-
-?>

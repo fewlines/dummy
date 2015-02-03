@@ -4,9 +4,7 @@ namespace Fewlines\Helper\View;
 
 class LinePreview extends \Fewlines\Helper\AbstractViewHelper
 {
-	public function init()
-	{
-	}
+	public function init(){}
 
 	/**
 	 * Get a part of a file 

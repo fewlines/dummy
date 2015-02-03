@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Holds one xml tag with
- * attributes etc.
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Xml\Tree;
 
@@ -243,5 +234,3 @@ class Element
 		return $this->getChildrenByName($name, false, $recursive);
 	}
 }
-
-?>

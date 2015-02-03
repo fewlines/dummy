@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Helper to handle some
- * array functions
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Helper;
 

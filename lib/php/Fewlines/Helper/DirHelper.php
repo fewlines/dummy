@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Helper to scan dirs
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Helper;
 
@@ -111,5 +103,3 @@ class DirHelper
 		return $tree;
 	}
 }
-
-?>

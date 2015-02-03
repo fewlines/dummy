@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Define and sets the route
- * for the user
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Http;
 
@@ -281,5 +272,3 @@ class Router extends Header
 		return $realParts;
 	}
 }
-
-?>

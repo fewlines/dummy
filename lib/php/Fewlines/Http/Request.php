@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Holds all requests that affect the
- * url
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Http;
 
@@ -109,5 +100,3 @@ class Request extends Router
 		return $this->getRouteUrlParts($this->getUrlLayoutRouter());
 	}
 }
-
-?>

@@ -6,9 +6,16 @@ use Fewlines\Session\Session;
 use Fewlines\Crypt\Crypt;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Database\Database;
+use Fewlines\Form\Form;
 
 class Index extends \Fewlines\Controller\Template
 {
+	public function testformAction()
+	{
+		$config = $this->getConfig()->getElementByPath("form/install");
+		$form   = new Form($config);
+	}
+
 	public function indexAction()
 	{
 		/**
