@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: This class calls all the necessary functions
- * to build the rendered view
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Application;
 

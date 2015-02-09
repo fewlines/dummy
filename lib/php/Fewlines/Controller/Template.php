@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The controller for
- * all views (holds standard functions)
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Controller;
 

@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The layout which extends with the view
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Template;
 

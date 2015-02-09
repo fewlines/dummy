@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The install controller
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Controller\View;
 

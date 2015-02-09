@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: A interface for the native
- * php sessions and cookies
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Session;
 
@@ -101,4 +92,3 @@ class Result
 		return is_null($this->cookie) && is_null($this->session);
 	}
 }
-?>

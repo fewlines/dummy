@@ -1,17 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: This class controls
- * the connection between the
- * application and the database.
- * Just use this interface for smaller
- * code. Does not support all sql functions.
- * Use "->query" if something is not found you need.
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database;
 
@@ -201,5 +188,3 @@ class Database
 		return $this->link->error;
 	}
 }
-
-?>

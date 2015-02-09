@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Value reference
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database\Select;
 
@@ -37,5 +29,3 @@ class Value
 		return $this->content;
 	}
 }
-
-?>

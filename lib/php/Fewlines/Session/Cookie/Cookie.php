@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The native cookie object
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Session\Cookie;
 
@@ -215,5 +207,3 @@ class Cookie
 		return $this->getExtractedContent($content);
 	}
 }
-
-?>

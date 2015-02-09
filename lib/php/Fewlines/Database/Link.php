@@ -1,14 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Holds information
- * about a connection between the
- * application and the database
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database;
 
@@ -101,5 +91,3 @@ class Link
 		return $this->link->$property;
 	}
 }
-
-?>

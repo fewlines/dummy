@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: HTTP header class
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Http;
 
@@ -52,5 +44,3 @@ class Header
 		exit;
 	}
 }
-
-?>

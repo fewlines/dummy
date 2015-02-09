@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The tree of
- * one xml instance
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Xml;
 
@@ -81,5 +72,3 @@ class Tree
 		return $this->tree;
 	}
 }
-
-?>

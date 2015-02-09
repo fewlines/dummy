@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Handle all erroes (404, 500..)
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Controller\View;
 
@@ -49,5 +41,3 @@ class Error extends \Fewlines\Controller\Template
 		return $message;
 	}
 }
-
-?>

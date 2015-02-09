@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Catch all errors and throws
- * a ErrorException instead
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Handler;
 
@@ -123,5 +114,3 @@ class Error
 		}
 	}
 }
-
-?>

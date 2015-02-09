@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Crypt and Decrpyter functions
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Crypt;
 
@@ -97,7 +89,7 @@ class Crypt
 		if(false == self::isCrypted($str))
 		{
 			throw new Exception\InvalidStringToDecryptException("
-				The string given was not encrypted
+				The string given was not encrypted with this key
 			");
 		}
 
@@ -122,5 +114,3 @@ class Crypt
 		return (bool) preg_match('/;' . self::hash(self::getKey()) . '/', $str);
 	}
 }
-
-?>

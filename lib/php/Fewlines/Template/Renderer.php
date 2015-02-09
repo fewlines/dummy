@@ -1,15 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: A simple html renderer for the template
- * using new buffer
- *
- * Note: Should only be extended by \Fewlines\Template\Template
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Template;
 
@@ -130,5 +119,3 @@ class Renderer
 		echo $this->getRenderedHtml($file);
 	}
 }
-
-?>

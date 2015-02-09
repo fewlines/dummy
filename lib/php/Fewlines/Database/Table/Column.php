@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Column of the table
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database\Table;
 
@@ -173,5 +165,3 @@ class Column
 		return $this->collate;
 	}
 }
-
-?>
