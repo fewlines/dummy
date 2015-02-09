@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Query for table operations
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database\Table;
 
@@ -119,5 +111,3 @@ class Query extends \Fewlines\Database\Query
 		return $this;
 	}
 }
-
-?>

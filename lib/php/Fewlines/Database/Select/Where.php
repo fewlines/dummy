@@ -1,13 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: This class holds
- * one where condition
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database\Select;
 
@@ -54,5 +45,3 @@ class Where
 		return $this->operator;
 	}
 }
-
-?>

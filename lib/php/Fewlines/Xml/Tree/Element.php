@@ -121,11 +121,25 @@ class Element
 	/**
 	 * Returns a all attributes
 	 *
+	 * @param  array $exclude
 	 * @return array
 	 */
-	public function getAttributes()
+	public function getAttributes($exclude = array())
 	{
-		return $this->attributes;
+		$attributes = $this->attributes;
+
+		if(false == empty($exclude))
+		{
+			foreach($exclude as $value)
+			{
+				if(array_key_exists($value, $attributes))
+				{
+					unset($attributes[$value]);
+				}
+			}
+		}
+
+		return $attributes;
 	}
 
 	/**

@@ -1,12 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: Table object
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database\Table;
 
@@ -157,5 +149,3 @@ class Table
 		return array_key_exists($key, $options) ? $options[$key] : false;
 	}
 }
-
-?>

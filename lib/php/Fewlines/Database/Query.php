@@ -1,14 +1,4 @@
 <?php
-/**
- * fewlines CMS
- *
- * Description: The query object which builds
- * query and holds information for the last
- * query to send to the server
- *
- * @copyright Copyright (c) fewlines
- * @author Davide Perozzi
- */
 
 namespace Fewlines\Database;
 
@@ -261,5 +251,3 @@ class Query
 		return sprintf(self::BRACKET, $str);
 	}
 }
-
-?>

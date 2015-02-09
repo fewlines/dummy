@@ -15,5 +15,3 @@ class ExecuteEmptyQueryException extends \Exception
 {
 
 }
-
-?>
