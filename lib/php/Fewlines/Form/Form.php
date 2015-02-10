@@ -22,6 +22,11 @@ class Form
 	const XML_ELEMENTS_TAG = 'elements';
 
 	/**
+	 * @var
+	 */
+	const SETTER_PREFIX = 'set';
+
+	/**
 	 * The config tree 
 	 * 
 	 * @var \Fewlines\Xml\Tree\Element|null
@@ -116,35 +121,44 @@ class Form
 			// Add the form elements from the config as element
 			if(false != $elements && $elements->countChildren() > 0)
 			{
-				$children = $elements->getChildren();
-				
-				foreach($children as $element)
-				{
-					$name = $element->getName();
+				$this->addElementsByXmlConfig($elements->getChildren());
+			}
+		}
 
-					switch(strtolower($name))
+		pr($this->elements);
+	}
+
+	/**
+	 * Adds elements from a xml config
+	 * @param array $elements 
+	 */
+	private function addElementsByXmlConfig($elements)
+	{
+		foreach($elements as $element)
+		{
+			$tag = $element->getName();
+
+			switch(strtolower($tag))
+			{
+				case Input::HTML_TAG:
+					$type       = $element->getAttribute('type');
+					$inputName  = $element->getAttribute('name');
+					$attributes = $element->getAttributes(array('name'));
+
+					if(false == empty($type) && 
+						false == empty($inputName))
 					{
-						case Input::HTML_TAG:
-							$type       = $element->getAttribute('type');
-							$inputName  = $element->getAttribute('name');
-							$attributes = $element->getAttributes(array('name'));
-
-							if(false == empty($type) && 
-								false == empty($inputName))
-							{
-								$this->addElement(Input::HTML_TAG, $inputName, $attributes);
-							}
-						break;
-
-						case Select::HTML_TAG:
-
-						break;
-
-						case Textarea::HTML_TAG:
-
-						break;
+						$this->addElement(Input::HTML_TAG, $inputName, $attributes);
 					}
-				}
+				break;
+
+				case Select::HTML_TAG:
+
+				break;
+
+				case Textarea::HTML_TAG:
+
+				break;
 			}
 		}
 	}
@@ -174,8 +188,11 @@ class Form
 
 				$element = new $class;
 				
-				// $element->setName()
-				// ....
+				// Set element name
+				$element->setName($name);
+
+				// Set other attributes
+				$this->addElementAttributes($element, $attributes);
 			break;
 
 			case Select::HTML_TAG:
@@ -190,6 +207,23 @@ class Form
 		if(false == is_null($element))
 		{
 			$this->elements[] = $element;
+		}
+	}
+
+	/**
+	 * @param *     $elementf
+	 * @param array $attributes 
+	 */
+	public function addElementAttributes($element, $attributes)
+	{
+		foreach($attributes as $name => $value)
+		{
+			$method = self::SETTER_PREFIX . ucfirst($name);
+
+			if(true == method_exists($element, $method))
+			{
+				$element->$method($value);
+			}	
 		}
 	}
 }

@@ -1,0 +1,8 @@
+<?php if(APPLICATION_ENV == 'development'): ?>
+	<?= $this->getScriptHelper('third-party/closure-library/closure/goog/base.js') ?>
+	<?= $this->getScriptHelper('fewlines/dependencies.js') ?>
+	<script>goog.require('Fewlines.Application')</script>
+<?php else: ?>
+	<?= $this->getScriptHelper('fewlines/Fewlines.min.js') ?>
+<?php endif; ?>
+<script>Fewlines.bootstrap()</script>

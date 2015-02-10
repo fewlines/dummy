@@ -30,6 +30,14 @@ define("LAYOUT_PATH",  TPL_PATH . "/fewlines/layout");
 define("VIEW_PATH",    TPL_PATH . "/fewlines/views");
 
 /**
+ * Define the application environment
+ */
+
+defined("APPLICATION_ENV") || (
+	define("APPLICATION_ENV", getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production')
+);
+
+/**
  * Default options for the
  * views, layout, ...
  */
