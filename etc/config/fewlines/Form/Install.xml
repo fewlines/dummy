@@ -5,6 +5,9 @@
 			<input type="text" name="firstname"></input>
 			<input type="text" name="lastname"></input>
 			<input type="submit" name="submit-install"></input>
+			<select name="type">
+				<option></option>
+			</select>
 		</elements>
 	</install>
 </form>

@@ -124,8 +124,6 @@ class Form
 				$this->addElementsByXmlConfig($elements->getChildren());
 			}
 		}
-
-		pr($this->elements);
 	}
 
 	/**
@@ -136,9 +134,7 @@ class Form
 	{
 		foreach($elements as $element)
 		{
-			$tag = $element->getName();
-
-			switch(strtolower($tag))
+			switch(strtolower($element->getName()))
 			{
 				case Input::HTML_TAG:
 					$type       = $element->getAttribute('type');
@@ -153,7 +149,10 @@ class Form
 				break;
 
 				case Select::HTML_TAG:
+					$inputName  = $element->getAttribute('name');
+					$attributes = $element->getAttributes(array('name'));
 
+					$this->addElement(Select::HTML_TAG, $inputName, $attributes);
 				break;
 
 				case Textarea::HTML_TAG:
@@ -196,7 +195,7 @@ class Form
 			break;
 
 			case Select::HTML_TAG:
-
+				pr($name);
 			break;
 
 			case Textarea::HTML_TAG:

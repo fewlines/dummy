@@ -8,4 +8,40 @@ class Select extends \Fewlines\Form\Element
 	 * @var string
 	 */
 	const HTML_TAG = 'select';
+
+	/**
+	 * @var array
+	 */
+	protected $options = array();
+
+	/**
+	 * @return array
+	 */
+	public function getOptions()
+	{
+		return $this->options;
+	}
+
+	/**
+	 * @param array $options
+	 */
+	public function setOptions($options)
+	{
+		if(false == is_array($options))
+		{
+			throw new Exception\SelectOptionsNoArayException("
+				The options given are not an array.
+			");
+		}
+
+		$this->options = $options;
+	}
+
+	/**
+	 * @param string $option 
+	 */
+	public function addOption($option)
+	{
+		$this->options[] = $option;
+	}
 }
