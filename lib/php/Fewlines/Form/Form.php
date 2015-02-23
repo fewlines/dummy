@@ -124,6 +124,8 @@ class Form
 				$this->addElementsByXmlConfig($elements->getChildren());
 			}
 		}
+
+		pr($this->elements);
 	}
 
 	/**
@@ -150,9 +152,14 @@ class Form
 
 				case Select::HTML_TAG:
 					$inputName  = $element->getAttribute('name');
+					$options    = $element->getChildrenByName('option');
 					$attributes = $element->getAttributes(array('name'));
+					$attributes['options'] = $options;
 
-					$this->addElement(Select::HTML_TAG, $inputName, $attributes);
+					if(false == empty($inputName))
+					{
+						$this->addElement(Select::HTML_TAG, $inputName, $attributes);
+					}
 				break;
 
 				case Textarea::HTML_TAG:
@@ -195,7 +202,33 @@ class Form
 			break;
 
 			case Select::HTML_TAG:
-				pr($name);
+				$class = __NAMESPACE__ . "\\Element\\Select";
+				$element = new $class;
+
+				if(array_key_exists('options', $attributes) && 
+					is_array($attributes['options']))
+				{
+					$options = $attributes['options'];
+
+					for($i = 0; $i < count($options); $i++)
+					{
+						$value    = (string) $options[$i];
+						$selected = $options[$i]->getAttribute("selected");
+						
+						if(empty($selected)) 
+						{
+							$selected = "false";
+						}
+
+						$element->addOption(Select::createOption($value, $selected));
+					}
+
+					unset($attributes['options']);
+				}
+
+				$element->setName($name);
+
+				$this->addElementAttributes($element, $attributes);
 			break;
 
 			case Textarea::HTML_TAG:
@@ -221,7 +254,7 @@ class Form
 
 			if(true == method_exists($element, $method))
 			{
-				$element->$method($value);
+				$element->{$method}($value);
 			}	
 		}
 	}

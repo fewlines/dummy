@@ -44,4 +44,19 @@ class Select extends \Fewlines\Form\Element
 	{
 		$this->options[] = $option;
 	}
+
+	/**
+	 * @param  string $value   
+	 * @param  string|boolean $selected
+	 * @return \Fewlines\Form\Element\Select\Option          
+	 */
+	public static function createOption($value, $selected)
+	{
+		$option = new Select\Option;
+
+		$option->setValue($value);
+		$option->setSelected($selected);
+
+		return $option;
+	}
 }
