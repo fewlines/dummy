@@ -20,11 +20,6 @@ class Input extends \Fewlines\Form\Element
 	protected $placeholder;
 
 	/**
-	 * @var boolean
-	 */
-	protected $readonly;
-
-	/**
 	 * @var string
 	 */
 	protected $value;
@@ -63,6 +58,11 @@ class Input extends \Fewlines\Form\Element
 	protected $alt;
 
 	/**
+	 * @var integer
+	 */
+	protected $maxlength;
+
+	/**
 	 * @param string $placeholder
 	 */
 	public function setPlaceholder($placeholder)
@@ -76,23 +76,7 @@ class Input extends \Fewlines\Form\Element
 	public function getPlaceholder()
 	{
 		return $this->placeholder;
-	}	
-
-	/**
-	 * @param boolean $isReadonly
-	 */
-	public function setReadonly($isReadonly)
-	{
-		$this->readonly = filter_var($isReadonly, FILTER_VALIDATE_BOOLEAN);
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isReadonly()
-	{
-		return $this->readonly;
-	}	
+	}		
 
 	/**
 	 * @param string $type
@@ -204,5 +188,21 @@ class Input extends \Fewlines\Form\Element
 	public function getAlt()
 	{
 		return $this->alt;
+	}
+
+	/**
+	 * @param integer|string $maxlength
+	 */
+	public function setMaxlength($maxlength)
+	{
+		$this->maxlength = $maxlength;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getMaxlength()
+	{
+		return $this->maxlength;
 	}
 }

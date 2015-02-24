@@ -29,6 +29,26 @@ abstract class Element
 	protected $disabled;
 
 	/**
+	 * @var boolean
+	 */
+	protected $readonly;
+
+	/**
+	 * @var array
+	 */
+	protected $classes;
+
+	/**
+	 * @var string
+	 */
+	protected $id;
+
+	/**
+	 * @var array
+	 */
+	protected $attributes = array();
+
+	/**
 	 * @param string $name 
 	 */
 	public function setName($name)
@@ -45,12 +65,36 @@ abstract class Element
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function isDisabled()
+	{
+		return $this->disabled;
+	}	
+
+	/**
 	 * @param boolean|string $isRequired 
 	 */
 	public function setRequired($isRequired)
 	{
 		$this->required = filter_var($isRequired, FILTER_VALIDATE_BOOLEAN);
 	}
+
+	/**
+	 * @param boolean $isReadonly
+	 */
+	public function setReadonly($isReadonly)
+	{
+		$this->readonly = filter_var($isReadonly, FILTER_VALIDATE_BOOLEAN);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isReadonly()
+	{
+		return $this->readonly;
+	}	
 
 	/**
 	 * @param integer|string $tabindex
@@ -77,10 +121,64 @@ abstract class Element
 	}
 
 	/**
-	 * @return boolean
+	 * @param string|array $classes
 	 */
-	public function isDisabled()
+	public function setClasses($classes)
 	{
-		return $this->disabled;
+		if(true == is_array($classes))
+		{
+			$this->classes = $classes;
+		}
+		else
+		{
+			$this->classes = explode(" ", $classes);
+		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+
+	/**
+	 * @param string $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}	
+
+	/**
+	 * @param string $name  
+	 * @param string $content
+	 */
+	public function addAttribute($name, $content)
+	{
+		$this->attributes[$name] = $content;
+	}
+
+	/**
+	 * @param  string $name 
+	 * @return string
+	 */
+	public function getAttribute($name)
+	{
+		if(array_key_exists($name, $this->attributes))
+		{
+			return $this->attributes[$name];
+		}
+
+		return '';
 	}
 }

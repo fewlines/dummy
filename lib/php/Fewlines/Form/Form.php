@@ -3,13 +3,9 @@
 namespace Fewlines\Form;
 
 use Fewlines\Form\Element\Input;
-use Fewlines\Form\Element\Input\Checkbox as CheckboxInput;
-use Fewlines\Form\Element\Input\Password as PasswordInput;
-use Fewlines\Form\Element\Input\Radio as RadioInput;
-use Fewlines\Form\Element\Input\Submit as SubmitInput;
-use Fewlines\Form\Element\Input\Text as TextInput;
 use Fewlines\Form\Element\Select;
 use Fewlines\Form\Element\Textarea;
+use Fewlines\Helper\ParseContentHelper;
 
 class Form
 {
@@ -105,6 +101,11 @@ class Form
 	private $elements = array();
 
 	/**
+	 * @var array
+	 */
+	private $attributes = array();
+
+	/**
 	 * Init a form (with a given xml config)
 	 *
 	 * @param \Fewlines\Xml\Tree\Element|null $config
@@ -114,7 +115,8 @@ class Form
 		if(true == $config instanceof \Fewlines\Xml\Tree\Element)
 		{
 			$this->config = $config;
-
+			$this->setFormAttributesByConfig();
+	
 			// Get form items defined in the xml config
 			$elements = $this->config->getChildByName(self::XML_ELEMENTS_TAG);
 
@@ -124,8 +126,242 @@ class Form
 				$this->addElementsByXmlConfig($elements->getChildren());
 			}
 		}
+	}
 
-		pr($this->elements);
+	/**
+	 * @param string $name
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @param string $method 
+	 */
+	public function setMethod($method)
+	{
+		$method = strtolower($method);
+
+		if($method != 'post' && $method != 'get')
+		{
+			throw new Exception\MethodDoesNotExistException("
+				The method \"" . $method . "\" does not exist.
+				Use \"POST\" or \"GET\".
+			");
+		}
+
+		$this->method = $method;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->method;
+	}
+
+	/**
+	 * @param string $target 
+	 */
+	public function setTarget($target)
+	{
+		$this->target = $target;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTarget()
+	{
+		return $this->target;
+	}
+
+	/**
+	 * @param string $charset
+	 */
+	public function setAcceptCharset($charset)
+	{
+		$this->acceptCharset = $charset;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAcceptCharset()
+	{
+		return $this->acceptCharset;
+	}
+
+	/**
+	 * @param boolean|string $noValidate 
+	 */
+	public function setNoValidate($noValidate)
+	{
+		$this->noValidate = filter_var($noValidate, FILTER_VALIDATE_BOOLEAN);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isNovalidate()
+	{
+		return $this->noValidate;
+	}
+
+	/**
+	 * @param string $autoComplete
+	 */
+	public function setAutoComplete($autoComplete)
+	{
+		$autoComplete = strtolower($autoComplete);
+
+		if($autoComplete != 'on' && $autoComplete != 'off')
+		{
+			throw new Exception\AutoCompleteValueInvalidException("
+				Please define a valid trigger. ON or OFF.
+			");
+		}
+
+		$this->autoComplete = $autoComplete;
+	}
+
+	/**
+	 * @param string $action
+	 */
+	public function setAction($action)
+	{
+		$this->action = $action;
+	}	
+
+	/**
+	 * @return string
+	 */
+	public function getAction()
+	{
+		return $this->action;
+	}
+	
+	/**
+	 * @param string $encType
+	 */
+	public function setEncType($encType)
+	{
+		$encType = strtolower($encType);
+
+		if($encType != 'application/x-www-form-urlencoded' && 
+		   	$encType != 'multipart/form-data' && 
+		   	$encType != 'text/plain')
+	   {
+	   		throw new Exception\InvalidEncTypeException("
+				Please enter a valid enctype for the 
+				formular.
+	   		");
+	   }
+
+	   $this->encType = $encType;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEncType()
+	{
+		return $this->encType;
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $content
+	 */
+	public function addAttribute($name, $content)
+	{
+		$this->attributes[$name] = $content;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+
+	/**
+	 * @param  string $name
+	 * @return string     
+	 */
+	public function getAttribute($name)
+	{	
+		if(array_key_exists($name, $this->attributes))
+		{
+			return $this->attributes[$name];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Adds the attributes from the given config 
+	 * to itself
+	 */
+	private function setFormAttributesByConfig()
+	{	
+		if($this->config instanceof \Fewlines\Xml\Tree\Element)
+		{
+			foreach($this->config->getAttributes() as $name => $content)
+			{
+				ParseContentHelper::parseLine($content);
+
+				switch(strtolower($name))
+				{
+					case 'name':
+						$this->setName($content);
+					break;
+
+					case 'method':
+						$this->setMethod($content);
+					break;
+
+					case 'target':
+						$this->setTarget($content);
+					break;
+
+					case 'accept-charset':
+						$this->setAcceptCharset($content);
+					break;
+
+					case 'novalidate':
+						$this->setNoValidate($content);
+					break;
+
+					case 'autocomplete':
+						$this->setAutoComplete($content);
+					break;
+
+					case 'action':
+						$this->setAction($content);
+					break;
+
+					case 'enctype':
+						$this->setEncType($content);
+					break;
+
+					default:
+						$this->addAttribute($name, $content);
+					break;
+				}
+			}	
+		}
 	}
 
 	/**
@@ -163,7 +399,14 @@ class Form
 				break;
 
 				case Textarea::HTML_TAG:
+					$inputName  = $element->getAttribute('name');
+					$attributes = $element->getAttributes(array('name'));
+					$attributes['content'] = (string) $element;
 
+					if(false == empty($inputName))
+					{
+						$this->addElement(Textarea::HTML_TAG, $inputName, $attributes);
+					}
 				break;
 			}
 		}
@@ -202,7 +445,7 @@ class Form
 			break;
 
 			case Select::HTML_TAG:
-				$class = __NAMESPACE__ . "\\Element\\Select";
+				$class   = __NAMESPACE__ . "\\Element\\Select";
 				$element = new $class;
 
 				if(array_key_exists('options', $attributes) &&
@@ -235,7 +478,14 @@ class Form
 			break;
 
 			case Textarea::HTML_TAG:
+				$class   = __NAMESPACE__ . "\\Element\\Textarea";
+				$element = new $class;	
 
+				// Set name
+				$element->setName($name);
+
+				// Add attributes
+				$this->addElementAttributes($element, $attributes);
 			break;
 		}
 
@@ -246,18 +496,25 @@ class Form
 	}
 
 	/**
-	 * @param *     $elementf
+	 * @param *     $element
 	 * @param array $attributes
 	 */
 	public function addElementAttributes($element, $attributes)
 	{
-		foreach($attributes as $name => $value)
+		foreach($attributes as $name => $content)
 		{
 			$method = self::SETTER_PREFIX . ucfirst($name);
 
+			// Parse content
+			// ParseContentHelper::parseLine($content);
+
 			if(true == method_exists($element, $method))
 			{
-				$element->{$method}($value);
+				$element->{$method}($content);
+			}
+			else
+			{
+				$element->addAttribute($name, $content);
 			}
 		}
 	}
