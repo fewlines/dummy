@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Fewlines\Form;
 
@@ -16,7 +16,7 @@ class Form
 	/**
 	 * The element taname of the config element
 	 * which contains all inputs etc.
-	 * 
+	 *
 	 * @var string
 	 */
 	const XML_ELEMENTS_TAG = 'elements';
@@ -27,36 +27,36 @@ class Form
 	const SETTER_PREFIX = 'set';
 
 	/**
-	 * The config tree 
-	 * 
+	 * The config tree
+	 *
 	 * @var \Fewlines\Xml\Tree\Element|null
 	 */
 	private $config = null;
 
 	/**
 	 * Identifer for the form
-	 * 
+	 *
 	 * @var string
 	 */
 	private $name = '';
 
 	/**
 	 * The method of the form
-	 * 
+	 *
 	 * @var string
 	 */
 	private $method = 'post';
 
 	/**
 	 * The type to open the action
-	 * 
-	 * @var string 
+	 *
+	 * @var string
 	 */
 	private $target = '_self';
 
 	/**
 	 * Charset used in the submitted form
-	 * 
+	 *
 	 * @var string
 	 */
 	private $acceptCharset = 'UTF-8';
@@ -64,49 +64,49 @@ class Form
 	/**
 	 * Tells if the browser will check the form after
 	 * a submit
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $noValidate = false;
 
 	/**
-	 * Telss if autocomplete should be 
+	 * Telss if autocomplete should be
 	 * allowd or not
-	 * 
+	 *
 	 * @var string
 	 */
 	private $autoComplete = 'on';
 
 	/**
 	 * The desitnation file after a submit
-	 * 
+	 *
 	 * @var string
 	 */
 	private $action = '';
 
 	/**
-	 * How the data will be encoded after 
+	 * How the data will be encoded after
 	 * submitting it
 	 *
 	 * Types:
 	 * 	- application/x-www-form-urlencoded
 	 *  - multipart/form-data
 	 *  - text/plain
-	 * 
+	 *
 	 * @var string
 	 */
 	private $encType = 'application/x-www-form-urlencoded';
 
 	/**
 	 * The elements in the formular
-	 * 
+	 *
 	 * @var array
 	 */
 	private $elements = array();
 
 	/**
 	 * Init a form (with a given xml config)
-	 * 
+	 *
 	 * @param \Fewlines\Xml\Tree\Element|null $config
 	 */
 	public function __construct(\Fewlines\Xml\Tree\Element $config = null)
@@ -130,7 +130,7 @@ class Form
 
 	/**
 	 * Adds elements from a xml config
-	 * @param array $elements 
+	 * @param array $elements
 	 */
 	private function addElementsByXmlConfig($elements)
 	{
@@ -143,7 +143,7 @@ class Form
 					$inputName  = $element->getAttribute('name');
 					$attributes = $element->getAttributes(array('name'));
 
-					if(false == empty($type) && 
+					if(false == empty($type) &&
 						false == empty($inputName))
 					{
 						$this->addElement(Input::HTML_TAG, $inputName, $attributes);
@@ -170,12 +170,12 @@ class Form
 	}
 
 	/**
-	 * Adds a form item to the 
+	 * Adds a form item to the
 	 * formular
-	 * 
-	 * @param string $type    
-	 * @param string $name       
-	 * @param array  $attributes 
+	 *
+	 * @param string $type
+	 * @param string $name
+	 * @param array  $attributes
 	 */
 	public function addElement($type, $name, $attributes = array())
 	{
@@ -193,7 +193,7 @@ class Form
 				$class .= ucfirst($attributes['type']);
 
 				$element = new $class;
-				
+
 				// Set element name
 				$element->setName($name);
 
@@ -205,29 +205,32 @@ class Form
 				$class = __NAMESPACE__ . "\\Element\\Select";
 				$element = new $class;
 
-				if(array_key_exists('options', $attributes) && 
+				if(array_key_exists('options', $attributes) &&
 					is_array($attributes['options']))
 				{
 					$options = $attributes['options'];
 
-					for($i = 0; $i < count($options); $i++)
+					for($i = 0, $len = count($options); $i < $len; $i++)
 					{
-						$value    = (string) $options[$i];
+						$content  = (string) $options[$i];
+						$value    = $options[$i]->getAttribute("value");
 						$selected = $options[$i]->getAttribute("selected");
-						
-						if(empty($selected)) 
+
+						if(empty($selected))
 						{
 							$selected = "false";
 						}
 
-						$element->addOption(Select::createOption($value, $selected));
+						$element->addOption(Select::createOption($content, $value, $selected));
 					}
 
 					unset($attributes['options']);
 				}
 
+				// Set name of the select field
 				$element->setName($name);
 
+				// Add all other attributes
 				$this->addElementAttributes($element, $attributes);
 			break;
 
@@ -244,7 +247,7 @@ class Form
 
 	/**
 	 * @param *     $elementf
-	 * @param array $attributes 
+	 * @param array $attributes
 	 */
 	public function addElementAttributes($element, $attributes)
 	{
@@ -255,7 +258,7 @@ class Form
 			if(true == method_exists($element, $method))
 			{
 				$element->{$method}($value);
-			}	
+			}
 		}
 	}
 }

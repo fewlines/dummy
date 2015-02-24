@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Element\Select;
 
-class Option 
+class Option
 {
 	/**
 	 * @var string
@@ -10,9 +10,30 @@ class Option
 	protected $value;
 
 	/**
+	 * @var string
+	 */
+	protected $content;
+
+	/**
 	 * @var boolean
 	 */
 	protected $selected;
+
+	/**
+	 * @param string $content
+	 */
+	public function setContent($content)
+	{
+		$this->content = $content;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContent()
+	{
+		return $this->content;
+	}
 
 	/**
 	 * @param string $value

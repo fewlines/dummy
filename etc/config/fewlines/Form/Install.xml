@@ -6,10 +6,10 @@
 			<input type="text" name="lastname"></input>
 			<input type="submit" name="submit-install"></input>
 			<select name="type">
-				<option selected="true">Option1</option>
-				<option>Option2</option>
-				<option>Option3</option>
-				<option selected="true">Option4</option>
+				<option selected="true" value="opt1">Option1</option>
+				<option value="opt2">Option2</option>
+				<option value="opt3">Option3</option>
+				<option value="opt4">Option4</option>
 			</select>
 		</elements>
 	</install>

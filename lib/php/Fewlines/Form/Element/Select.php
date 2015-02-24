@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Element;
 
@@ -38,7 +38,7 @@ class Select extends \Fewlines\Form\Element
 	}
 
 	/**
-	 * @param string $option 
+	 * @param string $option
 	 */
 	public function addOption($option)
 	{
@@ -46,14 +46,16 @@ class Select extends \Fewlines\Form\Element
 	}
 
 	/**
-	 * @param  string $value   
+	 * @param  string $content
+	 * @param  string $value
 	 * @param  string|boolean $selected
-	 * @return \Fewlines\Form\Element\Select\Option          
+	 * @return \Fewlines\Form\Element\Select\Option
 	 */
-	public static function createOption($value, $selected)
+	public static function createOption($content, $value, $selected)
 	{
 		$option = new Select\Option;
 
+		$option->setContent($content);
 		$option->setValue($value);
 		$option->setSelected($selected);
 
