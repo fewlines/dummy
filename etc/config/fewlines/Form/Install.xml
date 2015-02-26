@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
-	<install name="potatoe" action="{{baseUrl('test/url/to/your/mother', true)}}">
+	<install name="potatoe" action="hey/fuck/you">
 		<elements>
 			<input type="text" name="firstname"></input>
 			<input type="text" name="lastname"></input>

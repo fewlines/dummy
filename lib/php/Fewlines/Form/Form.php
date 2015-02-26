@@ -115,6 +115,8 @@ class Form
 		if(true == $config instanceof \Fewlines\Xml\Tree\Element)
 		{
 			$this->config = $config;
+			
+			// Add own attributes (of the form element)
 			$this->setFormAttributesByConfig();
 	
 			// Get form items defined in the xml config
@@ -320,8 +322,6 @@ class Form
 		{
 			foreach($this->config->getAttributes() as $name => $content)
 			{
-				ParseContentHelper::parseLine($content);
-
 				switch(strtolower($name))
 				{
 					case 'name':
@@ -419,6 +419,7 @@ class Form
 	 * @param string $type
 	 * @param string $name
 	 * @param array  $attributes
+	 * @return \Fewlines\Form\Form
 	 */
 	public function addElement($type, $name, $attributes = array())
 	{
@@ -454,10 +455,26 @@ class Form
 					$options = $attributes['options'];
 
 					for($i = 0, $len = count($options); $i < $len; $i++)
-					{
-						$content  = (string) $options[$i];
-						$value    = $options[$i]->getAttribute("value");
-						$selected = $options[$i]->getAttribute("selected");
+					{	
+						if($options[$i] instanceof \Fewlines\Xml\Tree\Element)
+						{
+							$content  = (string) $options[$i];
+							$value    = $options[$i]->getAttribute("value");
+							$selected = $options[$i]->getAttribute("selected");
+						}
+						else if(true == is_array($options[$i]))
+						{
+							$content  = $options[$i]['content'];
+							$value    = $options[$i]['value'];
+							$selected = array_key_exists('selected', $options[$i]) ? $options[$i]['selected'] : '';
+						}
+						else
+						{
+							throw new Exception\SelectOptionInvalidException("
+								The option given has no valid format to 
+								convert it.
+							");
+						}
 
 						if(empty($selected))
 						{
@@ -493,6 +510,8 @@ class Form
 		{
 			$this->elements[] = $element;
 		}
+
+		return $this;
 	}
 
 	/**
@@ -504,9 +523,6 @@ class Form
 		foreach($attributes as $name => $content)
 		{
 			$method = self::SETTER_PREFIX . ucfirst($name);
-
-			// Parse content
-			// ParseContentHelper::parseLine($content);
 
 			if(true == method_exists($element, $method))
 			{

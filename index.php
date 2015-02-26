@@ -6,7 +6,7 @@
  *  - Copyright:  fewlines
  *  - Developers: Davide Perozzi
  *
- *  - inspired by Zend Framework (http://framework.zend.com/)
+ *  - Framework inspired by Zend Framework (http://framework.zend.com/)
  *
  * -------------------------------------
  *
