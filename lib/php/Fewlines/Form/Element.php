@@ -1,19 +1,19 @@
-<?php 
+<?php
 
 namespace Fewlines\Form;
 
-abstract class Element
+abstract class Element extends \Fewlines\Dom\Element
 {
 	/**
 	 * The name of the element
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $name;
 
 	/**
 	 * Defines if the element is required
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $required;
@@ -49,7 +49,7 @@ abstract class Element
 	protected $attributes = array();
 
 	/**
-	 * @param string $name 
+	 * @param string $name
 	 */
 	public function setName($name)
 	{
@@ -70,10 +70,10 @@ abstract class Element
 	public function isDisabled()
 	{
 		return $this->disabled;
-	}	
+	}
 
 	/**
-	 * @param boolean|string $isRequired 
+	 * @param boolean|string $isRequired
 	 */
 	public function setRequired($isRequired)
 	{
@@ -94,7 +94,7 @@ abstract class Element
 	public function isReadonly()
 	{
 		return $this->readonly;
-	}	
+	}
 
 	/**
 	 * @param integer|string $tabindex
@@ -157,10 +157,10 @@ abstract class Element
 	public function getId()
 	{
 		return $this->id;
-	}	
+	}
 
 	/**
-	 * @param string $name  
+	 * @param string $name
 	 * @param string $content
 	 */
 	public function addAttribute($name, $content)
@@ -169,7 +169,7 @@ abstract class Element
 	}
 
 	/**
-	 * @param  string $name 
+	 * @param  string $name
 	 * @return string
 	 */
 	public function getAttribute($name)

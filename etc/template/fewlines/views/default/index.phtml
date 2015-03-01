@@ -4,3 +4,8 @@
 
 	<input type="submit" name="submit-test">
 </form>
+
+<?php foreach($this->form->getElements() as $element): ?>
+	<?php $element->setContent("huehue"); ?>
+	<?= $element->render() ?>
+<?php endforeach; ?>

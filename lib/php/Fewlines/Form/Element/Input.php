@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Element;
 
@@ -31,28 +31,28 @@ class Input extends \Fewlines\Form\Element
 
 	/**
 	 * For image types
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $src;
 
 	/**
 	 * For image types
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $ismap;
 
 	/**
 	 * For image types
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $usemap;
 
 	/**
 	 * For image types
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $alt;
@@ -61,6 +61,15 @@ class Input extends \Fewlines\Form\Element
 	 * @var integer
 	 */
 	protected $maxlength;
+
+	/**
+	 * Set type of the dom element for the renderer
+	 */
+	public function __construct()
+	{
+		$this->setDomTag(self::INPUT_TAG);
+		$this->setDomStr(self::INPUT_STR);
+	}
 
 	/**
 	 * @param string $placeholder
@@ -76,7 +85,7 @@ class Input extends \Fewlines\Form\Element
 	public function getPlaceholder()
 	{
 		return $this->placeholder;
-	}		
+	}
 
 	/**
 	 * @param string $type
@@ -108,7 +117,7 @@ class Input extends \Fewlines\Form\Element
 	public function getValue()
 	{
 		return $this->value;
-	}	
+	}
 
 	/**
 	 * @param string $src
@@ -140,7 +149,7 @@ class Input extends \Fewlines\Form\Element
 	public function getSize()
 	{
 		return $this->size;
-	}	
+	}
 
 	/**
 	 * @param string|boolean $ismap
@@ -172,7 +181,7 @@ class Input extends \Fewlines\Form\Element
 	public function getUsemap()
 	{
 		return $this->usemap;
-	}	
+	}
 
 	/**
 	 * @param string $alt

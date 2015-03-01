@@ -6,6 +6,7 @@ use Fewlines\Form\Element\Input;
 use Fewlines\Form\Element\Select;
 use Fewlines\Form\Element\Textarea;
 use Fewlines\Helper\ParseContentHelper;
+use Fewlines\Dom\Dom as DomHelper;
 
 class Form
 {
@@ -106,19 +107,26 @@ class Form
 	private $attributes = array();
 
 	/**
+	 * @var \Fewlines\Dom\Dom
+	 */
+	private $domHelper;
+
+	/**
 	 * Init a form (with a given xml config)
 	 *
 	 * @param \Fewlines\Xml\Tree\Element|null $config
 	 */
 	public function __construct(\Fewlines\Xml\Tree\Element $config = null)
 	{
+		$this->domHelper = DomHelper::getInstance();
+
 		if(true == $config instanceof \Fewlines\Xml\Tree\Element)
 		{
 			$this->config = $config;
-			
+
 			// Add own attributes (of the form element)
 			$this->setFormAttributesByConfig();
-	
+
 			// Get form items defined in the xml config
 			$elements = $this->config->getChildByName(self::XML_ELEMENTS_TAG);
 
@@ -147,7 +155,7 @@ class Form
 	}
 
 	/**
-	 * @param string $method 
+	 * @param string $method
 	 */
 	public function setMethod($method)
 	{
@@ -173,7 +181,7 @@ class Form
 	}
 
 	/**
-	 * @param string $target 
+	 * @param string $target
 	 */
 	public function setTarget($target)
 	{
@@ -205,7 +213,7 @@ class Form
 	}
 
 	/**
-	 * @param boolean|string $noValidate 
+	 * @param boolean|string $noValidate
 	 */
 	public function setNoValidate($noValidate)
 	{
@@ -243,7 +251,7 @@ class Form
 	public function setAction($action)
 	{
 		$this->action = $action;
-	}	
+	}
 
 	/**
 	 * @return string
@@ -252,7 +260,7 @@ class Form
 	{
 		return $this->action;
 	}
-	
+
 	/**
 	 * @param string $encType
 	 */
@@ -260,12 +268,12 @@ class Form
 	{
 		$encType = strtolower($encType);
 
-		if($encType != 'application/x-www-form-urlencoded' && 
-		   	$encType != 'multipart/form-data' && 
+		if($encType != 'application/x-www-form-urlencoded' &&
+		   	$encType != 'multipart/form-data' &&
 		   	$encType != 'text/plain')
 	   {
 	   		throw new Exception\InvalidEncTypeException("
-				Please enter a valid enctype for the 
+				Please enter a valid enctype for the
 				formular.
 	   		");
 	   }
@@ -300,10 +308,10 @@ class Form
 
 	/**
 	 * @param  string $name
-	 * @return string     
+	 * @return string
 	 */
 	public function getAttribute($name)
-	{	
+	{
 		if(array_key_exists($name, $this->attributes))
 		{
 			return $this->attributes[$name];
@@ -313,11 +321,19 @@ class Form
 	}
 
 	/**
-	 * Adds the attributes from the given config 
+	 * @return array
+	 */
+	public function getElements()
+	{
+		return $this->elements;
+	}
+
+	/**
+	 * Adds the attributes from the given config
 	 * to itself
 	 */
 	private function setFormAttributesByConfig()
-	{	
+	{
 		if($this->config instanceof \Fewlines\Xml\Tree\Element)
 		{
 			foreach($this->config->getAttributes() as $name => $content)
@@ -360,7 +376,7 @@ class Form
 						$this->addAttribute($name, $content);
 					break;
 				}
-			}	
+			}
 		}
 	}
 
@@ -455,7 +471,7 @@ class Form
 					$options = $attributes['options'];
 
 					for($i = 0, $len = count($options); $i < $len; $i++)
-					{	
+					{
 						if($options[$i] instanceof \Fewlines\Xml\Tree\Element)
 						{
 							$content  = (string) $options[$i];
@@ -471,7 +487,7 @@ class Form
 						else
 						{
 							throw new Exception\SelectOptionInvalidException("
-								The option given has no valid format to 
+								The option given has no valid format to
 								convert it.
 							");
 						}
@@ -496,7 +512,7 @@ class Form
 
 			case Textarea::HTML_TAG:
 				$class   = __NAMESPACE__ . "\\Element\\Textarea";
-				$element = new $class;	
+				$element = new $class;
 
 				// Set name
 				$element->setName($name);

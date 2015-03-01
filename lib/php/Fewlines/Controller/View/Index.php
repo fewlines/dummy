@@ -16,7 +16,9 @@ class Index extends \Fewlines\Controller\Template
 		$config = $this->getConfig()->getElementByPath("form/install");
 		$form   = new Form($config);
 
-		pr($form);
+		// $this->view->form = $form;
+		$this->assign('form', $form);
+		// pr($form);
 	}
 
 	public function indexAction()

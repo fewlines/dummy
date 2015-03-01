@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Element;
 
@@ -43,7 +43,7 @@ class Textarea extends \Fewlines\Form\Element
 	 * The wrap style of the content after a submit:
 	 * 	- hard
 	 *  - soft
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $wrap;
@@ -52,6 +52,15 @@ class Textarea extends \Fewlines\Form\Element
 	 * @var boolean
 	 */
 	protected $autofocus;
+
+	/**
+	 * Define dom element type
+	 */
+	public function __construct()
+	{
+		$this->setDomTag(self::TEXTAREA_TAG);
+		$this->setDomStr(self::TEXTAREA_STR);
+	}
 
 	/**
 	 * @param integer|string $rows
@@ -99,7 +108,7 @@ class Textarea extends \Fewlines\Form\Element
 	public function getPlaceholder()
 	{
 		return $this->placeholder;
-	}	
+	}
 
 	/**
 	 * @param string $form
@@ -107,7 +116,7 @@ class Textarea extends \Fewlines\Form\Element
 	public function setForm($form)
 	{
 		$this->form = $form;
-	}	
+	}
 
 	/**
 	 * @return string
@@ -131,7 +140,7 @@ class Textarea extends \Fewlines\Form\Element
 	public function getMaxlength()
 	{
 		return $this->maxlength;
-	}	
+	}
 
 	/**
 	 * @param string $wrap
@@ -139,7 +148,7 @@ class Textarea extends \Fewlines\Form\Element
 	public function setWrap($wrap)
 	{
 		$this->wrap = $wrap;
-	}	
+	}
 
 	/**
 	 * @return string
@@ -148,14 +157,14 @@ class Textarea extends \Fewlines\Form\Element
 	{
 		return $this->wrap;
 	}
-	
+
 	/**
 	 * @param string|boolean $autofocus
 	 */
 	public function setAutofocus($autofocus)
 	{
 		$this->autofocus = filter_var($autofocus, FILTER_VALIDATE_BOOLEAN);
-	}	
+	}
 
 	/**
 	 * @return string
@@ -166,7 +175,7 @@ class Textarea extends \Fewlines\Form\Element
 	}
 
 	/**
-	 * @param string $content 
+	 * @param string $content
 	 */
 	public function setContent($content)
 	{

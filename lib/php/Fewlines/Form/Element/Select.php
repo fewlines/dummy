@@ -15,6 +15,15 @@ class Select extends \Fewlines\Form\Element
 	protected $options = array();
 
 	/**
+	 * Define dom elements type
+	 */
+	public function __construct()
+	{
+		$this->setDomTag(self::SELECT_TAG);
+		$this->setDomStr(self::SELECT_STR);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getOptions()
