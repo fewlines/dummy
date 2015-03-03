@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
-	<install name="potatoe" action="hey/fuck/you">
-		<elements>
-			<input type="text" name="firstname"></input>
-			<input type="text" name="lastname"></input>
-			<input type="submit" name="submit-install"></input>
-			<select name="type">
-				<option selected="true" value="opt1">Option1</option>
-				<option value="opt2">Option2</option>
-				<option value="opt3">Option3</option>
-				<option value="opt4">Option4</option>
-			</select>
-			<textarea rows="40" cols="200" maxlength="200" required="true" name="hue" classes="hue"></textarea>
-		</elements>
+	<install name="potatoe" action="/hey/fuck/you" method="post">
+		<input type="text" placeholder="Vorname"  name="firstname"></input>
+		<input type="text" placeholder="Nachname" name="lastname"></input>
+		<select name="type" hue="hue">
+			<option value="opt1">Option1</option>
+			<option value="opt2" selected="true">Option2</option>
+			<option value="opt3">Option3</option>
+			<option value="opt4">Option4</option>
+		</select>
+		<input type="submit" name="submit-install" value="Absenden"></input>
 	</install>
 </form>

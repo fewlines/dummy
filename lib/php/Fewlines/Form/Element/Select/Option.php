@@ -2,7 +2,7 @@
 
 namespace Fewlines\Form\Element\Select;
 
-class Option
+class Option extends \Fewlines\Dom\Element
 {
 	/**
 	 * @var string
@@ -18,6 +18,15 @@ class Option
 	 * @var boolean
 	 */
 	protected $selected;
+
+	/**
+	 * Set Dom configs
+	 */
+	public function __construct()
+	{
+		$this->setDomStr(self::OPTION_STR);
+		$this->setDomTag(self::OPTION_TAG);
+	}
 
 	/**
 	 * @param string $content

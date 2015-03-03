@@ -105,6 +105,14 @@ abstract class Element extends \Fewlines\Dom\Element
 	}
 
 	/**
+	 * @return integer
+	 */
+	public function getTabindex()
+	{
+		return $this->tabindex;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getName()
@@ -180,5 +188,13 @@ abstract class Element extends \Fewlines\Dom\Element
 		}
 
 		return '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAttributes()
+	{
+		return $this->attributes;
 	}
 }

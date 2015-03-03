@@ -44,6 +44,12 @@ class Select extends \Fewlines\Form\Element
 		}
 
 		$this->options = $options;
+
+		// Add childs to dom
+		foreach($options as $option)
+		{
+			$this->addChild($option);
+		}
 	}
 
 	/**
@@ -52,6 +58,9 @@ class Select extends \Fewlines\Form\Element
 	public function addOption($option)
 	{
 		$this->options[] = $option;
+
+		// Add child to dom
+		$this->addChild($option);
 	}
 
 	/**
@@ -67,6 +76,13 @@ class Select extends \Fewlines\Form\Element
 		$option->setContent($content);
 		$option->setValue($value);
 		$option->setSelected($selected);
+
+		// Set option as attributes for the dom element
+		// to render
+		$option->setAttributes(array(
+				'value'    => $value, 
+				'selected' => $selected
+			));
 
 		return $option;
 	}

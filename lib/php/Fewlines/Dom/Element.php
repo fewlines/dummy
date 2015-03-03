@@ -77,27 +77,37 @@ class Element extends Element\Renderer
 	/**
 	 * @var string
 	 */
-	private $content = '';
-
-	/**
-	 * @var array
-	 */
-	private $attributes = array();
+	const OPTION_TAG = 'option';
 
 	/**
 	 * @var string
 	 */
-	private $domTag;
+	const OPTION_STR = '<option %s>%s</option>';
 
 	/**
 	 * @var string
 	 */
-	private $domStr;
+	protected $content = '';
 
 	/**
 	 * @var array
 	 */
-	private $children = array();
+	protected $attributes = array();
+
+	/**
+	 * @var string
+	 */
+	protected $domTag;
+
+	/**
+	 * @var string
+	 */
+	protected $domStr;
+
+	/**
+	 * @var array
+	 */
+	protected $children = array();
 
 	/**
 	 * @param string $content
@@ -124,25 +134,33 @@ class Element extends Element\Renderer
 	}
 
 	/**
-	 * @param string $str
+	 * @param \Fewlines\Dom\Element $child
 	 */
-	public function setDomStr($str)
+	public function addChild(\Fewlines\Dom\Element $child)
 	{
-		$this->domStr = $str;
+		$this->children[] = $child;
 	}
 
 	/**
-	 * @param string $tag
+	 * @param string $domStr
 	 */
-	public function setDomTag($tag)
+	public function setDomStr($domStr)
 	{
-		$this->domTag = $tag;
+		$this->domStr = $domStr;
+	}
+
+	/**
+	 * @param string $domTag
+	 */
+	public function setDomTag($domTag)
+	{
+		$this->domTag = $domTag;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getTag()
+	public function getDomTag()
 	{
 		return $this->domTag;
 	}
@@ -183,31 +201,75 @@ class Element extends Element\Renderer
 	}
 
 	/**
+	 * @param  array   $children
+	 * @param  integer $childrenPos
 	 * @return string
 	 */
-	public function render()
+	public function render($children = array(), $childrenPos = 0)
 	{
-		$content = $this->content;
+		$content = '';
 
-		// Add child elements to content
-		for($i = 0, $len = count($this->children); $i < $len; $i++)
+		if($childrenPos === 0)
 		{
-			$content .= $this->children[$i]->render();
+			$this->appendChildrenContent($content, $children);
 		}
 
-		return $this->renderStr($this->str, $this->getAttributeString(), $content);
+		$content .= $this->content;
+
+		if($childrenPos === 1)
+		{
+			$this->appendChildrenContent($content, $children);	
+		}
+
+		// Append default children
+		$this->appendChildrenContent($content, $this->children);
+
+		if($childrenPos != 0 && $childrenPos != 1)
+		{
+			$this->appendChildrenContent($content, $children);
+		}
+
+		return $this->renderStr($this->domStr, $this->getAttributeString(), $content);
+	}
+
+	/**
+	 * @param  string $content 
+	 * @param  array  $children
+	 * @return string          
+	 */
+	public function appendChildrenContent(&$content, $children)
+	{
+		for($i = 0, $len = count($children); $i < $len; $i++)
+		{
+			if($children[$i] instanceof \Fewlines\Dom\Element)
+			{
+				$content .= $children[$i]->render();
+			}
+		}
 	}
 
 	/**
 	 * @param  array $attributes
 	 * @return string
 	 */
-	private function getAttributeString()
+	public function getAttributeString()
 	{
 		$attrStr = '';
 
-		foreach($this->attributes as $name => $content)
+		foreach($this->getAttributes() as $name => $content)
 		{
+			if(trim($content) == "false")
+			{
+				continue;
+			}
+
+			// Do not insert content for "boolean attributes"
+			if(trim($content) == "true")
+			{
+				$attrStr .= $name . ' ';
+				continue;
+			}
+
 			$attrStr .= $name . '="' . $content . '" ';
 		}
 

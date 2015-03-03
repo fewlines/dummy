@@ -63,6 +63,16 @@ class Dom
 				$element->setDomTag(Element::FORM_TAG);
 				$element->setDomStr(Element::FORM_STR);
 			break;
+
+			case Element::SELECT_TAG:
+				$element->setDomTag(Element::SELECT_TAG);
+				$element->setDomStr(Element::SELECT_STR);
+			break;
+
+			case Element::OPTION_TAG:
+				$element->setDomTag(Element::OPTION_TAG);
+				$element->setDomStr(Element::OPTION_STR);
+			break;
 		}
 
 		return $element;

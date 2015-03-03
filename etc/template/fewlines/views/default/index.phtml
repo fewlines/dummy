@@ -1,11 +1,9 @@
-<form method="post" action="<?= $this->baseUrlHelper('index/testform') ?>">
-	<input type="text" placeholder="Vorname" class="form-item" name="firstname"/>
-	<input type="text" placeholder="Nachname" class="form-item" name="lastname"/>
-
-	<input type="submit" name="submit-test">
-</form>
-
-<?php foreach($this->form->getElements() as $element): ?>
-	<?php $element->setContent("huehue"); ?>
-	<?= $element->render() ?>
-<?php endforeach; ?>
+<?php if($this->form): ?>
+	<form <?= $this->form->getAttributeString();?>>
+		<?php foreach($this->form->getElements() as $element): ?>
+			<div class="form-item <?= $element->getDomTag() ?>">
+				<?= $element->render() ?>
+			</div>
+		<?php endforeach; ?>
+	</form>
+<?php endif; ?>

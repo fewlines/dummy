@@ -8,7 +8,7 @@ use Fewlines\Form\Element\Textarea;
 use Fewlines\Helper\ParseContentHelper;
 use Fewlines\Dom\Dom as DomHelper;
 
-class Form
+class Form extends \Fewlines\Dom\Element 
 {
 	/**
 	 * The element taname of the config element
@@ -102,14 +102,14 @@ class Form
 	private $elements = array();
 
 	/**
-	 * @var array
-	 */
-	private $attributes = array();
-
-	/**
 	 * @var \Fewlines\Dom\Dom
 	 */
 	private $domHelper;
+
+	/**
+	 * @var array
+	 */
+	protected $attributes = array();	
 
 	/**
 	 * Init a form (with a given xml config)
@@ -118,6 +118,11 @@ class Form
 	 */
 	public function __construct(\Fewlines\Xml\Tree\Element $config = null)
 	{
+		// Set dom relevant flags
+		$this->setDomStr(self::FORM_STR);
+		$this->setDomTag(self::FORM_TAG);
+
+		// Create domhelper
 		$this->domHelper = DomHelper::getInstance();
 
 		if(true == $config instanceof \Fewlines\Xml\Tree\Element)
@@ -128,12 +133,12 @@ class Form
 			$this->setFormAttributesByConfig();
 
 			// Get form items defined in the xml config
-			$elements = $this->config->getChildByName(self::XML_ELEMENTS_TAG);
+			$elements = $this->config->getChildren();
 
 			// Add the form elements from the config as element
-			if(false != $elements && $elements->countChildren() > 0)
+			if(false != $elements && $elements > 0)
 			{
-				$this->addElementsByXmlConfig($elements->getChildren());
+				$this->addElementsByXmlConfig($elements);
 			}
 		}
 	}
@@ -144,6 +149,7 @@ class Form
 	public function setName($name)
 	{
 		$this->name = $name;
+		$this->addAttribute('name', $name);
 	}
 
 	/**
@@ -170,6 +176,7 @@ class Form
 		}
 
 		$this->method = $method;
+		$this->addAttribute('method', $method);
 	}
 
 	/**
@@ -186,6 +193,7 @@ class Form
 	public function setTarget($target)
 	{
 		$this->target = $target;
+		$this->addAttribute('target', $target);
 	}
 
 	/**
@@ -202,6 +210,7 @@ class Form
 	public function setAcceptCharset($charset)
 	{
 		$this->acceptCharset = $charset;
+		$this->addAttribute('accept-charset', $acceptCharset);
 	}
 
 	/**
@@ -218,6 +227,7 @@ class Form
 	public function setNoValidate($noValidate)
 	{
 		$this->noValidate = filter_var($noValidate, FILTER_VALIDATE_BOOLEAN);
+		$this->addAttribute('novalidate', $noValidate);
 	}
 
 	/**
@@ -243,6 +253,7 @@ class Form
 		}
 
 		$this->autoComplete = $autoComplete;
+		$this->addAttribute('autocomplete', $autoComplete);
 	}
 
 	/**
@@ -251,6 +262,7 @@ class Form
 	public function setAction($action)
 	{
 		$this->action = $action;
+		$this->addAttribute('action', $action);
 	}
 
 	/**
@@ -279,6 +291,7 @@ class Form
 	   }
 
 	   $this->encType = $encType;
+	   $this->addAttribute('enctype', $encType);
 	}
 
 	/**
@@ -393,7 +406,7 @@ class Form
 				case Input::HTML_TAG:
 					$type       = $element->getAttribute('type');
 					$inputName  = $element->getAttribute('name');
-					$attributes = $element->getAttributes(array('name'));
+					$attributes = $element->getAttributes();
 
 					if(false == empty($type) &&
 						false == empty($inputName))
@@ -405,7 +418,7 @@ class Form
 				case Select::HTML_TAG:
 					$inputName  = $element->getAttribute('name');
 					$options    = $element->getChildrenByName('option');
-					$attributes = $element->getAttributes(array('name'));
+					$attributes = $element->getAttributes();
 					$attributes['options'] = $options;
 
 					if(false == empty($inputName))
@@ -416,7 +429,7 @@ class Form
 
 				case Textarea::HTML_TAG:
 					$inputName  = $element->getAttribute('name');
-					$attributes = $element->getAttributes(array('name'));
+					$attributes = $element->getAttributes();
 					$attributes['content'] = (string) $element;
 
 					if(false == empty($inputName))
@@ -453,12 +466,6 @@ class Form
 				$class .= ucfirst($attributes['type']);
 
 				$element = new $class;
-
-				// Set element name
-				$element->setName($name);
-
-				// Set other attributes
-				$this->addElementAttributes($element, $attributes);
 			break;
 
 			case Select::HTML_TAG:
@@ -502,24 +509,21 @@ class Form
 
 					unset($attributes['options']);
 				}
-
-				// Set name of the select field
-				$element->setName($name);
-
-				// Add all other attributes
-				$this->addElementAttributes($element, $attributes);
 			break;
 
 			case Textarea::HTML_TAG:
 				$class   = __NAMESPACE__ . "\\Element\\Textarea";
 				$element = new $class;
-
-				// Set name
-				$element->setName($name);
-
-				// Add attributes
-				$this->addElementAttributes($element, $attributes);
 			break;
+		}
+
+		if($element instanceof \Fewlines\Form\Element)
+		{
+			// Set element name
+			$element->setName($name);
+
+			// Set other attributes
+			$this->addElementAttributes($element, $attributes);
 		}
 
 		if(false == is_null($element))
@@ -544,10 +548,8 @@ class Form
 			{
 				$element->{$method}($content);
 			}
-			else
-			{
-				$element->addAttribute($name, $content);
-			}
+			
+			$element->addAttribute($name, $content);
 		}
 	}
 }
