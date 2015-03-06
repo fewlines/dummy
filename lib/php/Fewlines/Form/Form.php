@@ -5,10 +5,10 @@ namespace Fewlines\Form;
 use Fewlines\Form\Element\Input;
 use Fewlines\Form\Element\Select;
 use Fewlines\Form\Element\Textarea;
-use Fewlines\Helper\ParseContentHelper;
+use Fewlines\Helper\FunctionParseHelper;
 use Fewlines\Dom\Dom as DomHelper;
 
-class Form extends \Fewlines\Dom\Element 
+class Form extends \Fewlines\Dom\Element
 {
 	/**
 	 * The element taname of the config element
@@ -109,7 +109,7 @@ class Form extends \Fewlines\Dom\Element
 	/**
 	 * @var array
 	 */
-	protected $attributes = array();	
+	protected $attributes = array();
 
 	/**
 	 * Init a form (with a given xml config)
@@ -379,6 +379,7 @@ class Form extends \Fewlines\Dom\Element
 
 					case 'action':
 						$this->setAction($content);
+						FunctionParseHelper::parseLine($content);
 					break;
 
 					case 'enctype':
@@ -548,7 +549,7 @@ class Form extends \Fewlines\Dom\Element
 			{
 				$element->{$method}($content);
 			}
-			
+
 			$element->addAttribute($name, $content);
 		}
 	}

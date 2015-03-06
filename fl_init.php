@@ -50,6 +50,7 @@ define("INSTALL_LAYOUT",     "install");
 define("EXCEPTION_LAYOUT",   "exception");
 define("AUTLOADER_LC",       "\Fewlines\Autoloader\Autoloader::loadClass");
 define("URL_LAYOUT_ROUTE",   "/view:index/action:index");
+define("FNC_REGEX_PARSER",   "/\{\{([^\}]*)\}\}/");
 define("DEVELOPER_DEBUG",    true);
 
 /**
@@ -64,7 +65,9 @@ set_include_path(implode(PATH_SEPARATOR, array(
 /**
  * A collection a all config folders
  * and the filetype to define the config
- * type
+ * type. The given folder will scan all files
+ * by the type (recursive). Same xml trees
+ * won't be merged.
  *
  * ------------------------------------
  *
@@ -96,6 +99,7 @@ spl_autoload_register(AUTLOADER_LC);
 /**
  * Global debug function (beautified output)
  */
+
 function pr($input)
 {
 	echo "<pre>";

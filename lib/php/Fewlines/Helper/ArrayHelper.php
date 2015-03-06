@@ -55,14 +55,23 @@ class ArrayHelper
 	}
 
 	/**
-	 * @param  array $array 
+	 * @param  boolean $recursive
+	 * @param  array   $array
 	 * @return array
 	 */
-	public static function trimValues($array)
+	public static function trimValues($array, $recursive = false)
 	{
 		foreach($array as $key => $value)
 		{
-			$array[$key] = trim($value);
+			if(true == is_array($value) && true == $recursive)
+			{
+				$array[$key] = self::trimValues($value);
+			}
+			else
+			{
+				$array[$key] = trim($value);
+			}
+
 		}
 
 		return $array;

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
-	<install name="potatoe" action="/hey/fuck/you" method="post">
+	<install name="potatoe" action="{{
+			baseurl('test/base/url', locale('test.test.test'));
+			testurl('test')
+		}}" method="post">
 		<input type="text" placeholder="Vorname"  name="firstname"></input>
 		<input type="text" placeholder="Nachname" name="lastname"></input>
 		<select name="type" hue="hue">

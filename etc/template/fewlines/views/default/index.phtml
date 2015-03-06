@@ -1,4 +1,4 @@
-<?php if($this->form): ?>
+<?php if(isset($this->form)): ?>
 	<form <?= $this->form->getAttributeString();?>>
 		<?php foreach($this->form->getElements() as $element): ?>
 			<div class="form-item <?= $element->getDomTag() ?>">
