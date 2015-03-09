@@ -66,7 +66,72 @@ class FunctionParseHelper
 	public static function getFunctionDetails($function)
 	{
 		$name = preg_replace("/\((.*)\)/", "", $function);
-		$args = explode(",", preg_replace("/(.*)\((.*)\)/", "$2", $function));
+		
+		function parse($s) 
+		{
+		    $context 	  = array();
+		    $contextStack = array(&$context);
+		    $name 	      = '';
+
+		    for($i = 0, $len = strlen($s); $i < $len; $i++) 
+		    {
+ 				$name = trim($name);
+		        
+		        switch($s[$i]) 
+		        {
+		            case ',':
+		                if($name != '' && false == array_key_exists($name, $context))
+		                {
+		                   	$context[] = $name;
+		                }
+
+		                $name = '';
+		            break;
+
+		            case '(':
+		                $context[$name] = array();
+		                $contextStack[] = &$context;
+		                $context 		= &$context[$name];
+		               	
+		               	$name = '';
+		            break;
+
+		            case ')':
+		                if($name != '' && false == array_key_exists($name, $context))
+		                {
+		                    $context[] = $name;
+		                }
+		                
+		                array_pop($contextStack);
+		                
+		                // if(count($contextStack) == 0) throw new \Exception('Unmatched parenthesis');
+		                
+		                $context = &$contextStack[count($contextStack)-1];
+		                $name = '';
+		            break;
+
+		            default:
+		                $name .= $s[$i];
+		        }
+		    }
+		    
+		    if($name != '' && false == array_key_exists($name, $context))
+		    {
+		        $context[$name] = array();
+		    }
+		    
+		    // if(count($contextStack) != 1) throw new Exception('Unmatched parenthesis');
+		   
+		    return array_pop($contextStack);
+		}
+
+		$args = preg_replace("/^(.*?)\((.*?)\)$/", "$2", $function);
+		//$args = preg_replace("/[,]/", "/R/", $args);
+		
+		pr(parse($args));
+		exit;
+
+		$args = explode("/R/", $args);
 		$args = ArrayHelper::trimValues($args);
 		$args = self::castFunctionArguments($args);
 
@@ -85,18 +150,34 @@ class FunctionParseHelper
 	 */
 	public static function castFunctionArguments($args)
 	{
-		for($i = 0, $len = count($args[$i]); $i < $len; $i++)
+		for($i = 0, $len = count($args); $i < $len; $i++)
 		{
 			$arg = trim($args[$i]);
 
 			switch(true)
 			{
+				case preg_match('/^(.*)\((.*)\)$/', $arg):
+					// Function
+				break;
+
 				case preg_match(self::REGEX_STRING_MARKER, $arg):
 					$args[$i] = preg_replace(self::REGEX_STRING_MARKER, "$1$2", $arg);
+				break;
 
-					pr($args[$i]);
+				case preg_match('/false|true/', $arg):
+					$args[$i] = filter_var($args[$i], FILTER_VALIDATE_BOOLEAN);
+				break;
+
+				case is_numeric($arg):
+					$args[$i] = (float) $arg;
+				break;	
+
+				default:
+					// Invalid value
 				break;
 			}
+
+			pr($args[$i]);
 		}
 
 		return $args;
