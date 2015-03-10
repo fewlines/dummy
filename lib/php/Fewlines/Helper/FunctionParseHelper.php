@@ -3,9 +3,15 @@
 namespace Fewlines\Helper;
 
 use Fewlines\Helper\ArrayHelper;
+use Fewlines\Helper\UrlHelper;
 
 class FunctionParseHelper
 {
+	/**
+	 * @var string
+	 */
+	const DEFAULT_STRING_KEY = "defaultStr";
+
 	/**
 	 * @var string
 	 */
@@ -27,7 +33,9 @@ class FunctionParseHelper
 	public static function parseLine($line)
 	{
 		$functions = self::getStringFunctions(trim($line));
-		$strings   = self::executeStringFunctions($functions);
+		$result    = self::executeStringFunctions($functions);
+
+		return $result;
 	}
 
 	/**
@@ -40,6 +48,7 @@ class FunctionParseHelper
 	public static function getStringFunctions($str)
 	{
 		preg_match_all(FNC_REGEX_PARSER, $str, $matches);
+		$str = preg_replace(FNC_REGEX_PARSER, "%s", $str);
 
 		$functions    = array();
 		$resultsCount = count($matches[1]);
@@ -53,6 +62,8 @@ class FunctionParseHelper
 		}
 
 		$functions = ArrayHelper::trimValues($functions, true);
+		$functions[self::DEFAULT_STRING_KEY] = $str;
+
 		return $functions;
 	}
 
@@ -66,19 +77,47 @@ class FunctionParseHelper
 	public static function getFunctionDetails($function)
 	{
 		$name = preg_replace("/\((.*)\)/", "", $function);
-		
-		function parse($s) 
-		{
-		    $context 	  = array();
+		$args = preg_replace("/^(.*?)\((.*?)\)$/", "$2", $function);
+		$args = self::castFunctionArguments(self::parseParanthesis($args));
+
+		return array(
+			"name" => $name,
+			"args" => $args
+		);
+	}
+
+	/**
+	 * Transform the arguments of a function string 
+	 * to a valid array
+	 * 
+	 * @param  string $str
+	 * @return array
+	 */
+	private static function parseParanthesis($str)
+	{
+			$context 	  = array();
 		    $contextStack = array(&$context);
 		    $name 	      = '';
+		    $strOpened    = false;
 
-		    for($i = 0, $len = strlen($s); $i < $len; $i++) 
+		    for($i = 0, $len = strlen($str); $i < $len; $i++) 
 		    {
  				$name = trim($name);
 		        
-		        switch($s[$i]) 
-		        {
+ 				if($str[$i] == "'" || $str[$i] == '"')
+ 				{
+ 					if(true == $strOpened)
+ 					{
+ 						$strOpened = false;
+ 					}
+ 					else
+ 					{
+ 						$strOpened = true;
+ 					}
+ 				}
+
+		        switch($str[$i]) 
+		        {		        	
 		            case ',':
 		                if($name != '' && false == array_key_exists($name, $context))
 		                {
@@ -89,56 +128,65 @@ class FunctionParseHelper
 		            break;
 
 		            case '(':
-		                $context[$name] = array();
-		                $contextStack[] = &$context;
-		                $context 		= &$context[$name];
-		               	
-		               	$name = '';
+		            	if(true == $strOpened)
+		            	{
+		            		$name .= $str[$i];
+		            	}
+		            	else
+		            	{
+			                $context[$name] = array();
+			                $contextStack[] = &$context;
+			                $context 		= &$context[$name];
+			               	
+			               	$name = '';
+		               	}
 		            break;
 
 		            case ')':
-		                if($name != '' && false == array_key_exists($name, $context))
-		                {
-		                    $context[] = $name;
+						if(true == $strOpened)
+						{
+							$name .= $str[$i];
+						}
+						else
+						{
+			                if($name != '' && false == array_key_exists($name, $context))
+			                {
+			                    $context[] = $name;
+			                }
+			                
+			                array_pop($contextStack);
+			                
+			                if(count($contextStack) == 0)
+			                {
+			                	throw new Exception\FunctionParserUnmatchedParanthesisException(
+			                		'Unmatched parenthesis: ' . $str
+			                	);
+			                }
+			                
+			                $context = &$contextStack[count($contextStack)-1];
+			                $name 	 = '';
 		                }
-		                
-		                array_pop($contextStack);
-		                
-		                // if(count($contextStack) == 0) throw new \Exception('Unmatched parenthesis');
-		                
-		                $context = &$contextStack[count($contextStack)-1];
-		                $name = '';
 		            break;
 
 		            default:
-		                $name .= $s[$i];
+		                $name .= $str[$i];
+		            break;
 		        }
 		    }
 		    
 		    if($name != '' && false == array_key_exists($name, $context))
 		    {
-		        $context[$name] = array();
+		        $context[] = $name;
 		    }
 		    
-		    // if(count($contextStack) != 1) throw new Exception('Unmatched parenthesis');
+		    if(count($contextStack) != 1) 
+		    {
+		    	throw new Exception\FunctionParserUnmatchedParanthesisException(
+					'Unmatched parenthesis: ' . $str
+				);
+		    }
 		   
 		    return array_pop($contextStack);
-		}
-
-		$args = preg_replace("/^(.*?)\((.*?)\)$/", "$2", $function);
-		//$args = preg_replace("/[,]/", "/R/", $args);
-		
-		pr(parse($args));
-		exit;
-
-		$args = explode("/R/", $args);
-		$args = ArrayHelper::trimValues($args);
-		$args = self::castFunctionArguments($args);
-
-		return array(
-			"name" => $name,
-			"args" => $args
-		);
 	}
 
 	/**
@@ -150,37 +198,76 @@ class FunctionParseHelper
 	 */
 	public static function castFunctionArguments($args)
 	{
-		for($i = 0, $len = count($args); $i < $len; $i++)
+		foreach($args as $key => $value)
 		{
-			$arg = trim($args[$i]);
-
-			switch(true)
+			if(true == is_array($value))
 			{
-				case preg_match('/^(.*)\((.*)\)$/', $arg):
-					// Function
-				break;
-
-				case preg_match(self::REGEX_STRING_MARKER, $arg):
-					$args[$i] = preg_replace(self::REGEX_STRING_MARKER, "$1$2", $arg);
-				break;
-
-				case preg_match('/false|true/', $arg):
-					$args[$i] = filter_var($args[$i], FILTER_VALIDATE_BOOLEAN);
-				break;
-
-				case is_numeric($arg):
-					$args[$i] = (float) $arg;
-				break;	
-
-				default:
-					// Invalid value
-				break;
+				$args[$key] = self::castFunctionArguments($value);
 			}
+			else
+			{
+				switch(true)
+				{
+					/*case preg_match('/array/', $value):
+						pr($value);
+					break;*/
 
-			pr($args[$i]);
+					case preg_match(self::REGEX_STRING_MARKER, $value):
+						$args[$key] = preg_replace(self::REGEX_STRING_MARKER, "$1$2", $value);
+					break;
+
+					case preg_match('/false|true/', $value):
+						$args[$key] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+					break;
+
+					case is_numeric($value):
+						$args[$key] = (float) $value;
+					break;
+
+					default:
+						throw new Exception\FunctionParserInvalidArgumentException('
+							Invalid argument found: "' . $value . '"
+						');
+					break;
+				}
+			}
 		}
 
 		return $args;
+	}
+
+	/**
+	 * @param  string $name
+	 * @param  array  $params
+	 * @return string
+	 */
+	private static function getFunctionString($name, $params)
+	{
+		$result = "";
+
+		// Parse arguments
+		foreach($params as $key => $value)
+		{
+			if(true == is_array($value))
+			{
+				$params[$key] = self::getFunctionString($key, $value);
+			}
+		}
+
+		$params = ArrayHelper::clean($params);
+
+		switch(strtolower($name))
+		{
+			case 'baseurl':
+				$result .= (string) call_user_func_array('\Fewlines\Helper\UrlHelper::baseUrl', $params);
+			break;
+
+			default:
+				$result .= (string) call_user_func_array($name, $params);
+			break;	
+		}
+
+		return $result;
 	}
 
 	/**
@@ -192,23 +279,32 @@ class FunctionParseHelper
 	 */
 	public static function executeStringFunctions($functions)
 	{
-		$result = "";
+		$resultArray = array();
+		$defaultStr  = "";
+
+		// Get default string to buffer content
+		if(array_key_exists(self::DEFAULT_STRING_KEY, $functions))
+		{
+			$defaultStr = $functions[self::DEFAULT_STRING_KEY];
+			unset($functions[self::DEFAULT_STRING_KEY]);
+		}
+
+		$functions = ArrayHelper::flatten($functions);
 
 		for($i = 0, $len = count($functions); $i < $len; $i++)
 		{
-			$fnc = $functions[$i];
-
-			if(true == is_array($fnc))
-			{
-				$result .= self::executeStringFunctions($fnc);
-			}
-			else
-			{
-				$details = self::getFunctionDetails($fnc);
-
-			}
+			$details = self::getFunctionDetails($functions[$i]);
+			$resultArray[] .= self::getFunctionString($details['name'], $details['args']);
 		}
 
-		return $result;
+		$resultAll = $defaultStr;
+
+		// Parse result with cached default content
+		foreach($resultArray as $result)
+		{
+			$resultAll = preg_replace('/%s/', $result, $resultAll, 1);
+		}
+
+		return $resultAll;
 	}
 }

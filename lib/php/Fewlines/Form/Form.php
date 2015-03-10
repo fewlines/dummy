@@ -351,6 +351,8 @@ class Form extends \Fewlines\Dom\Element
 		{
 			foreach($this->config->getAttributes() as $name => $content)
 			{
+				$content = FunctionParseHelper::parseLine($content);
+
 				switch(strtolower($name))
 				{
 					case 'name':
@@ -379,7 +381,6 @@ class Form extends \Fewlines\Dom\Element
 
 					case 'action':
 						$this->setAction($content);
-						FunctionParseHelper::parseLine($content);
 					break;
 
 					case 'enctype':
