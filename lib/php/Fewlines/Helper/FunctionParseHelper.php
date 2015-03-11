@@ -208,10 +208,6 @@ class FunctionParseHelper
 			{
 				switch(true)
 				{
-					/*case preg_match('/array/', $value):
-						pr($value);
-					break;*/
-
 					case preg_match(self::REGEX_STRING_MARKER, $value):
 						$args[$key] = preg_replace(self::REGEX_STRING_MARKER, "$1$2", $value);
 					break;
@@ -243,7 +239,7 @@ class FunctionParseHelper
 	 */
 	private static function getFunctionString($name, $params)
 	{
-		$result = "";
+		$result = "";;
 
 		// Parse arguments
 		foreach($params as $key => $value)

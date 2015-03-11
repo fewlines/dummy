@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
-	<install name="potatoe" action="{{baseurl(array())}}" method="post">
-		<input type="text" placeholder="Vorname"  name="firstname"></input>
+	<install name="potatoe" action="{{baseurl('index/testform')}}" method="post">
+		<input type="text" placeholder="Vorname"  name="firstname">
+			<validation>
+				<options regex="" minlengt="" maxlength="" required="true"></options>
+			</validation>	
+		</input>
 		<input type="text" placeholder="Nachname" name="lastname"></input>
 		<select name="type" hue="hue">
 			<option value="opt1">Option1</option>

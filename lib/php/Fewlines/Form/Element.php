@@ -44,6 +44,11 @@ abstract class Element extends \Fewlines\Dom\Element
 	protected $id;
 
 	/**
+	 * @var \Fewlines\Form\Validation
+	 */
+	protected $validation;
+
+	/**
 	 * @var array
 	 */
 	protected $attributes = array();
