@@ -25,6 +25,7 @@ define("ETC_PATH",     ROOT_DIR . "/etc");
 define("LIB_PATH",     ROOT_DIR . "/lib");
 define("TPL_PATH",     ETC_PATH . "/template");
 define("FEWLINES_PHP", LIB_PATH . "/php");
+define("LIB_PHP_TP",   LIB_PATH . "/third-party");
 define("LOCALE_PATH",  ETC_PATH . "/locale");
 define("LAYOUT_PATH",  TPL_PATH . "/fewlines/layout");
 define("VIEW_PATH",    TPL_PATH . "/fewlines/views");
@@ -59,7 +60,7 @@ define("DEVELOPER_DEBUG",    true);
  */
 
 set_include_path(implode(PATH_SEPARATOR, array(
-		FEWLINES_PHP, get_include_path()
+		FEWLINES_PHP, LIB_PHP_TP, get_include_path()
 	)));
 
 /**

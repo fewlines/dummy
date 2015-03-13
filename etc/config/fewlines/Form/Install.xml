@@ -3,8 +3,15 @@
 	<install name="potatoe" action="{{baseurl('index/testform')}}" method="post">
 		<input type="text" placeholder="Vorname"  name="firstname">
 			<validation>
-				<options regex="" minlengt="" maxlength="" required="true"></options>
-			</validation>	
+				<options regex="" minlength="" maxlength="" required="true"></options>
+				<errors>
+					<regex>Regular expression not matched</regex>
+					<minlength>Minlength madafaka</minlength>
+					<maxlength>Maxlength bitch</maxlength>
+					<required>Required field</required>
+					<default>Default error if none is catched</default>
+				</errors>
+			</validation>
 		</input>
 		<input type="text" placeholder="Nachname" name="lastname"></input>
 		<select name="type" hue="hue">
@@ -14,5 +21,13 @@
 			<option value="opt4">Option4</option>
 		</select>
 		<input type="submit" name="submit-install" value="Absenden"></input>
+		<validation>
+			<!-- Provisional options (not needed for global errors) -->
+			<options regex="" minlength="" maxlength="" required="true"></options>
+			<errors>
+				<minlength>Global minlength error</minlength>
+				<default>Global default error</default>
+			</errors>
+		</validation>
 	</install>
 </form>

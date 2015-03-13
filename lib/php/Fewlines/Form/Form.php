@@ -112,6 +112,11 @@ class Form extends \Fewlines\Dom\Element
 	protected $attributes = array();
 
 	/**
+	 * @var \Fewlines\Form\Validation
+	 */
+	private $validation;
+
+	/**
 	 * Init a form (with a given xml config)
 	 *
 	 * @param \Fewlines\Xml\Tree\Element|null $config
@@ -125,7 +130,7 @@ class Form extends \Fewlines\Dom\Element
 		// Create domhelper
 		$this->domHelper = DomHelper::getInstance();
 
-		if(true == $config instanceof \Fewlines\Xml\Tree\Element)
+		if(true == ($config instanceof \Fewlines\Xml\Tree\Element))
 		{
 			$this->config = $config;
 
@@ -139,6 +144,16 @@ class Form extends \Fewlines\Dom\Element
 			if(false != $elements && $elements > 0)
 			{
 				$this->addElementsByXmlConfig($elements);
+			}
+
+			// Add global validation for all inputs (if exists)
+			$validation = $this->config->getChildByName('validation', false);
+			if(true == ($validation instanceof \Fewlines\Xml\Tree\Element))
+			{
+				$this->validation = new Validation(
+						$validation->getChildByName('errors', false),
+						$validation->getChildByName('options', false)
+					);
 			}
 		}
 	}

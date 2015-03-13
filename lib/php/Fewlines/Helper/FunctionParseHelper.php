@@ -87,9 +87,9 @@ class FunctionParseHelper
 	}
 
 	/**
-	 * Transform the arguments of a function string 
+	 * Transform the arguments of a function string
 	 * to a valid array
-	 * 
+	 *
 	 * @param  string $str
 	 * @return array
 	 */
@@ -100,10 +100,10 @@ class FunctionParseHelper
 		    $name 	      = '';
 		    $strOpened    = false;
 
-		    for($i = 0, $len = strlen($str); $i < $len; $i++) 
+		    for($i = 0, $len = strlen($str); $i < $len; $i++)
 		    {
  				$name = trim($name);
-		        
+
  				if($str[$i] == "'" || $str[$i] == '"')
  				{
  					if(true == $strOpened)
@@ -116,8 +116,8 @@ class FunctionParseHelper
  					}
  				}
 
-		        switch($str[$i]) 
-		        {		        	
+		        switch($str[$i])
+		        {
 		            case ',':
 		                if($name != '' && false == array_key_exists($name, $context))
 		                {
@@ -137,7 +137,7 @@ class FunctionParseHelper
 			                $context[$name] = array();
 			                $contextStack[] = &$context;
 			                $context 		= &$context[$name];
-			               	
+
 			               	$name = '';
 		               	}
 		            break;
@@ -153,16 +153,16 @@ class FunctionParseHelper
 			                {
 			                    $context[] = $name;
 			                }
-			                
+
 			                array_pop($contextStack);
-			                
+
 			                if(count($contextStack) == 0)
 			                {
 			                	throw new Exception\FunctionParserUnmatchedParanthesisException(
 			                		'Unmatched parenthesis: ' . $str
 			                	);
 			                }
-			                
+
 			                $context = &$contextStack[count($contextStack)-1];
 			                $name 	 = '';
 		                }
@@ -173,19 +173,19 @@ class FunctionParseHelper
 		            break;
 		        }
 		    }
-		    
+
 		    if($name != '' && false == array_key_exists($name, $context))
 		    {
 		        $context[] = $name;
 		    }
-		    
-		    if(count($contextStack) != 1) 
+
+		    if(count($contextStack) != 1)
 		    {
 		    	throw new Exception\FunctionParserUnmatchedParanthesisException(
 					'Unmatched parenthesis: ' . $str
 				);
 		    }
-		   
+
 		    return array_pop($contextStack);
 	}
 
@@ -258,9 +258,13 @@ class FunctionParseHelper
 				$result .= (string) call_user_func_array('\Fewlines\Helper\UrlHelper::baseUrl', $params);
 			break;
 
+			case 'locale':
+				$result .= (string) call_user_func('\Fewlines\Locale\Locale::get', $params);
+			break;
+
 			default:
 				$result .= (string) call_user_func_array($name, $params);
-			break;	
+			break;
 		}
 
 		return $result;
