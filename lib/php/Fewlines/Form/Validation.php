@@ -21,6 +21,7 @@ class Validation
 	public function __construct($errors = array(), $options = array())
 	{
 		// Use xml object to set the errors
+		// Otherwise use an array (Manually)
 		if(true == ($errors instanceof \Fewlines\Xml\Tree\Element))
 		{
 			foreach($errors->getChildren() as $child)
@@ -28,12 +29,27 @@ class Validation
 				$this->addError($child->getName(), $child->getContent());
 			}
 		}
+		else if(true == is_array($errors))
+		{
+			foreach($errors as $type => $message)
+			{
+				$this->addError($type, $message);
+			}
+		}
 
 		// Use xml object to set the options
 		// of the validation
+		// Otherwise use an array (Manually)
 		if(true == ($options instanceof \Fewlines\Xml\Tree\Element))
 		{
 			foreach($options->getAttributes() as $type => $value)
+			{
+				$this->addOption($type, $value);
+			}
+		}
+		else if(true == is_array($options))
+		{
+			foreach($options as $type => $value)
 			{
 				$this->addOption($type, $value);
 			}
@@ -46,7 +62,14 @@ class Validation
 	 */
 	public function addOption($type, $value = "")
 	{
-		// ...
+		if(true == empty($type))
+		{
+			throw new Exception\InvalidOptionValidationTypeException(
+				"No valid type given to create an option object"
+			);
+		}
+
+		$this->options[] = new Validation\Option($type, $value);
 	}
 
 	/**

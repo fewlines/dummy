@@ -16,6 +16,18 @@ class Index extends \Fewlines\Controller\Template
 		$config = $this->getConfig()->getElementByPath("form/install");
 		$form   = new Form($config);
 
+		$form->addElement('input', 'testName', array(
+			'type' => 'text',
+			'placeholder' => 'Test me'
+		), array(
+			'options' => array(
+				'regex' => '/testreg/'
+			),
+			'errors' => array(
+				'regex' => 'Fucked up regex'
+			)
+		));
+
 		// $this->view->form = $form;
 		$this->assign('form', $form);
 		// pr($form);

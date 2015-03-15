@@ -5,8 +5,8 @@ namespace Fewlines\Autoloader;
 class Autoloader
 {
 	/**
-	 * Simply loads a class with 
-	 * the given path
+	 * Simply loads a class with
+	 * the given path (trimmed to the basics)
 	 *
 	 * @param  string $path
 	 * @return boolean

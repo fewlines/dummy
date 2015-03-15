@@ -151,11 +151,15 @@ class Form extends \Fewlines\Dom\Element
 			if(true == ($validation instanceof \Fewlines\Xml\Tree\Element))
 			{
 				$this->validation = new Validation(
-						$validation->getChildByName('errors', false),
-						$validation->getChildByName('options', false)
+						$validation->getChildByName('errors', false)
 					);
 			}
 		}
+	}
+
+	public function validate()
+	{
+
 	}
 
 	/**
@@ -418,6 +422,8 @@ class Form extends \Fewlines\Dom\Element
 	{
 		foreach($elements as $element)
 		{
+			$validation = $element->getChildByName('validation', false);
+
 			switch(strtolower($element->getName()))
 			{
 				case Input::HTML_TAG:
@@ -428,7 +434,7 @@ class Form extends \Fewlines\Dom\Element
 					if(false == empty($type) &&
 						false == empty($inputName))
 					{
-						$this->addElement(Input::HTML_TAG, $inputName, $attributes);
+						$this->addElement(Input::HTML_TAG, $inputName, $attributes, $validation);
 					}
 				break;
 
@@ -440,7 +446,7 @@ class Form extends \Fewlines\Dom\Element
 
 					if(false == empty($inputName))
 					{
-						$this->addElement(Select::HTML_TAG, $inputName, $attributes);
+						$this->addElement(Select::HTML_TAG, $inputName, $attributes, $validation);
 					}
 				break;
 
@@ -451,7 +457,7 @@ class Form extends \Fewlines\Dom\Element
 
 					if(false == empty($inputName))
 					{
-						$this->addElement(Textarea::HTML_TAG, $inputName, $attributes);
+						$this->addElement(Textarea::HTML_TAG, $inputName, $attributes, $validation);
 					}
 				break;
 			}
@@ -465,9 +471,10 @@ class Form extends \Fewlines\Dom\Element
 	 * @param string $type
 	 * @param string $name
 	 * @param array  $attributes
+	 * @param array|\Fewlines\Xml\Tree\Element $validation
 	 * @return \Fewlines\Form\Form
 	 */
-	public function addElement($type, $name, $attributes = array())
+	public function addElement($type, $name, $attributes = array(), $validation = array())
 	{
 		$element = null;
 
@@ -541,12 +548,45 @@ class Form extends \Fewlines\Dom\Element
 
 			// Set other attributes
 			$this->addElementAttributes($element, $attributes);
+
+			// Set validation
+			if($validation != false)
+			{
+				if(true == ($validation instanceof \Fewlines\Xml\Tree\Element))
+				{
+					$element->setValidation(
+							$validation->getChildByName('errors'),
+							$validation->getChildByName('options')
+						);
+				}
+				else if(true == is_array($validation))
+				{
+					if(true == array_key_exists('options', $validation) &&
+						true ==  array_key_exists('errors', $validation))
+					{
+						$element->setValidation(
+								$validation['errors'],
+								$validation['options']
+							);
+					}
+					else
+					{
+						throw new Exception\ValidationParametersEmptyException(
+							"Please set the keys errors and options for a valid
+							validation of the given element. Use it in the
+							last argument section as array."
+						);
+					}
+				}
+			}
 		}
 
 		if(false == is_null($element))
 		{
 			$this->elements[] = $element;
 		}
+
+		pr($element);
 
 		return $this;
 	}

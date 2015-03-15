@@ -23,7 +23,7 @@
 		<input type="submit" name="submit-install" value="Absenden"></input>
 		<validation>
 			<!-- Provisional options (not needed for global errors) -->
-			<options regex="" minlength="" maxlength="" required="true"></options>
+			<!-- <options regex="" minlength="" maxlength="" required="true"></options> -->
 			<errors>
 				<minlength>Global minlength error</minlength>
 				<default>Global default error</default>

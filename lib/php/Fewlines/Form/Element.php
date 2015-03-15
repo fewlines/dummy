@@ -202,4 +202,13 @@ abstract class Element extends \Fewlines\Dom\Element
 	{
 		return $this->attributes;
 	}
+
+	/**
+	 * @param array|\Fewlines\Xml\Tree\Element $errors
+	 * @param array|\Fewlines\Xml\Tree\Element $options
+	 */
+	public function setValidation($errors, $options)
+	{
+		$this->validation = new Validation($errors, $options);
+	}
 }
