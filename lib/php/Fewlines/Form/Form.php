@@ -11,7 +11,7 @@ use Fewlines\Dom\Dom as DomHelper;
 class Form extends \Fewlines\Dom\Element
 {
 	/**
-	 * The element taname of the config element
+	 * The element tagame of the config element
 	 * which contains all inputs etc.
 	 *
 	 * @var string
@@ -159,7 +159,87 @@ class Form extends \Fewlines\Dom\Element
 
 	public function validate()
 	{
+		$values = array();
 
+		foreach($this->elements as $element)
+		{
+			$values[$element->getName()] = $this->getElementValue($element);
+		}
+
+		pr($values);
+
+		foreach($values as $name => $content)
+		{
+			// pr($content);
+		}
+
+		// pr($values);
+	}
+
+	/**
+	 * @param  string $name 
+	 * @return array|null|\Fewlines\Form\Element\Element
+	 */
+	public function getElementsByName($name, $collect = true)
+	{
+		$result = array();
+
+		foreach($this->elements as $element)
+		{
+			if($element->getName() == $name) 
+			{
+				if(false == $collect)
+				{
+					return $element;
+				}	
+
+				$result[] = $element;
+			}
+		}
+
+		if(true == $collect)
+		{
+			return $result;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * @param  string $name
+	 * @return \Fewlines\Form\Element\Element|null
+	 */
+	public function getElementByName($name)
+	{
+		return $this->getElementsByName($name, false);
+	}
+
+	/**
+	 * @param  \Fewlines\Form\Element\Element $name
+	 * @return *
+	 */
+	private function getElementValue($element) 
+	{
+		if($this->method == 'post')
+		{
+			$content = $_POST;
+		}
+		else
+		{
+			$content = $_GET;
+		}
+
+		$name = $element->getName();
+
+		// Sort of arrays of checkboxes
+		if(true == ($element instanceof \Fewlines\Form\Element\Input\Checkbox))
+		{
+			$name = $element->getName();
+		}
+
+		return array_key_exists($name, $content) ? $content[$name] : '';
 	}
 
 	/**
@@ -478,6 +558,14 @@ class Form extends \Fewlines\Dom\Element
 	{
 		$element = null;
 
+		// Force name tag to be set as attribute 
+		// for the dom element
+		if(false == array_key_exists('name', $attributes))
+		{
+			$attributes['name'] = $name;
+		}
+
+		// Create element by type
 		switch(strtolower($type))
 		{
 			case Input::HTML_TAG:
@@ -585,8 +673,6 @@ class Form extends \Fewlines\Dom\Element
 		{
 			$this->elements[] = $element;
 		}
-
-		pr($element);
 
 		return $this;
 	}

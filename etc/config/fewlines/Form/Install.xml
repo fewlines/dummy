@@ -13,14 +13,23 @@
 				</errors>
 			</validation>
 		</input>
-		<input type="text" placeholder="Nachname" name="lastname"></input>
+		
+		<input type="radio" value="hue1" name="hue"></input>
+		<input type="radio" value="hue2" name="hue"></input>
+
+		<input type="checkbox" value="test1" name="chktest[]"></input>
+		<input type="checkbox" value="test2" name="chktest[]"></input>
+		<input type="checkbox" value="test3" name="chktest[]"></input>
+
 		<select name="type" hue="hue">
 			<option value="opt1">Option1</option>
 			<option value="opt2" selected="true">Option2</option>
 			<option value="opt3">Option3</option>
 			<option value="opt4">Option4</option>
 		</select>
+
 		<input type="submit" name="submit-install" value="Absenden"></input>
+		
 		<validation>
 			<!-- Provisional options (not needed for global errors) -->
 			<!-- <options regex="" minlength="" maxlength="" required="true"></options> -->
