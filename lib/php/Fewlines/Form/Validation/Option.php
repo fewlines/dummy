@@ -27,6 +27,12 @@ class Option
 	public function __construct($type, $value = "")
 	{
 		$this->type = $type;
+
+		if($value == "false" || $value == "true") 
+		{
+			$value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+		}
+
 		$this->value = $value;
 	}
 

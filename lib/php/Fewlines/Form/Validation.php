@@ -15,6 +15,11 @@ class Validation
 	private $errors = array();
 
 	/**
+	 * @var array
+	 */
+	private $validators = array();
+
+	/**
 	 * @param array|\Fewlines\Xml\Tree\Element $errors
 	 * @param array|\Fewlines\Xml\Tree\Element $options
 	 */
@@ -54,6 +59,22 @@ class Validation
 				$this->addOption($type, $value);
 			}
 		}
+
+		// Create validators
+		for($i = 0, $len = count($this->options); $i < $len; $i++)
+		{
+			$option = $this->options[$i];
+
+			/*switch($option->getType())
+			{
+				case 'regex':
+				case 'minlength':
+				case 'maxlength':
+				case 'required':
+
+				break;
+			}*/
+		}
 	}
 
 	/**
@@ -86,5 +107,10 @@ class Validation
 		}
 
 		$this->errors[] = new Validation\Error($type, $message);
+	}
+
+	public function validate()
+	{
+
 	}
 }

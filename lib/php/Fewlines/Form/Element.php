@@ -211,4 +211,12 @@ abstract class Element extends \Fewlines\Dom\Element
 	{
 		$this->validation = new Validation($errors, $options);
 	}
+
+	/**
+	 * @return \Fewlines\Form\Validation
+	 */
+	public function getValidation()
+	{
+		return $this->validation;
+	}
 }
