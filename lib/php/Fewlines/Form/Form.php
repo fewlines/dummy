@@ -163,10 +163,10 @@ class Form extends \Fewlines\Dom\Element
 
 		foreach($this->elements as $element)
 		{
-			$values[$element->getName()] = $this->getElementValue($element);
-		}
 
-		pr($values);
+			// $values[$element->getName()] = ;
+			$element->validate($this->getElementValue($element));
+		}
 
 		foreach($values as $name => $content)
 		{

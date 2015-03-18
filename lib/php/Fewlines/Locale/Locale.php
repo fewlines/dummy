@@ -120,4 +120,14 @@ class Locale
 			break;
 		}
 	}
+
+	/**
+	 * Returns the current location key
+	 * 
+	 * @return string
+	 */
+	public static function getKey()
+	{
+		return self::$locale;
+	}
 }

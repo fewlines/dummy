@@ -2,7 +2,7 @@
 
 namespace Fewlines\Form\Validation\Validator;
 
-class Email extends \Fewlines\Form\Validation\Validator
+class Blank extends \Fewlines\Form\Validation\Validator
 {
 	/**
 	 * @param  string $value 
@@ -12,7 +12,7 @@ class Email extends \Fewlines\Form\Validation\Validator
 	{
 		if(true == $this->content)
 		{
-			return (bool) filter_var($value, FILTER_VALIDATE_EMAIL);
+			return trim(preg_replace('/ |\t|\r|\r\n/', '', $value)) != '';
 		}
 
 		return true;

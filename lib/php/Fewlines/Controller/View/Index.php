@@ -16,7 +16,7 @@ class Index extends \Fewlines\Controller\Template
 		$config = $this->getConfig()->getElementByPath("form/install");
 		$form   = new Form($config);
 
-		$form->addElement('input', 'test', array(
+		/*$form->addElement('input', 'test', array(
 			'type' => 'text',
 			'placeholder' => 'Test me',
 		), array(
@@ -26,7 +26,7 @@ class Index extends \Fewlines\Controller\Template
 			'errors' => array(
 				'regex' => 'Fucked up regex'
 			)
-		));
+		));*/
 
 		$this->assign('form', $form);
 

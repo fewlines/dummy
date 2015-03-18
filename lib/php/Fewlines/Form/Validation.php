@@ -59,22 +59,6 @@ class Validation
 				$this->addOption($type, $value);
 			}
 		}
-
-		// Create validators
-		for($i = 0, $len = count($this->options); $i < $len; $i++)
-		{
-			$option = $this->options[$i];
-
-			/*switch($option->getType())
-			{
-				case 'regex':
-				case 'minlength':
-				case 'maxlength':
-				case 'required':
-
-				break;
-			}*/
-		}
 	}
 
 	/**
@@ -90,8 +74,32 @@ class Validation
 			);
 		}
 
-		$this->options[] = new Validation\Option($type, $value);
+		$option    = new Validation\Option($type, $value);
+		$validator = $this->createValidatorByOption($option);
+
+		if($validator != false)
+		{
+			$this->validators[$validator->getType()] = $validator;
+		}
+
+		$this->options[] = $option;
 	}
+
+	/**
+	 * @param  \Fewlines\Form\Validation\Option $option
+	 * @return \Fewlines\Form\Validation\Validator|boolean
+	 */
+	private function createValidatorByOption(\Fewlines\Form\Validation\Option $option) 
+	{
+		$class = "\\" . __NAMESPACE__ . "\\Validation\\Validator\\" . ucfirst(trim($option->getType()));
+
+		if(true === class_exists($class))
+		{
+			return new $class($option->getValue());
+		}
+
+		return false;
+	}	
 
 	/**
 	 * @param string $type
@@ -109,8 +117,17 @@ class Validation
 		$this->errors[] = new Validation\Error($type, $message);
 	}
 
-	public function validate()
+	/**
+	 * @param  string $value 
+	 * @return 
+	 */
+	public function validate($value)
 	{
-
+		foreach($this->validators as $type => $validator)
+		{
+			echo $type . ": ";
+			var_dump($validator->validate($value));
+			echo "<br />";
+		}
 	}
 }

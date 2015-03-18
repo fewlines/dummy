@@ -213,10 +213,14 @@ abstract class Element extends \Fewlines\Dom\Element
 	}
 
 	/**
-	 * @return \Fewlines\Form\Validation
+	 * @param  string|array|number $value 
+	 * @return 
 	 */
-	public function getValidation()
+	public function validate($value)
 	{
-		return $this->validation;
+		if(false == is_null($this->validation))
+		{
+			$this->validation->validate($value);
+		}
 	}
 }

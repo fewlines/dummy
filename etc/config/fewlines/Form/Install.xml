@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
 	<install name="potatoe" action="{{baseurl('index/testform')}}" method="post">
-		<input type="text" placeholder="Vorname"  name="firstname">
+		<input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
 			<validation>
-				<options regex="" minlength="" maxlength="" required="true"></options>
+				<options regex="/^[0-9]{1,}$/" minlength="2" maxlength="5" blank="false" email="true" zipcode="de" date="dd/mm/yy"></options>
 				<errors>
 					<regex>Regular expression not matched</regex>
 					<minlength>Minlength madafaka</minlength>
 					<maxlength>Maxlength bitch</maxlength>
-					<required>Required field</required>
-					<default>Default error if none is catched</default>
+					<empty>It's empty!</empty>
+					<email>No correct mail given</email>
 				</errors>
 			</validation>
 		</input>
