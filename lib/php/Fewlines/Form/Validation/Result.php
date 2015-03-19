@@ -5,20 +5,110 @@ namespace Fewlines\Form\Validation;
 class Result
 {
 	/**
+	 * The result of the validation 
+	 * saved as associative array
+	 * 
 	 * @var array
 	 */
-	private $validations = array();
+	private $validation;
 
 	/**
-	 * @return array
+	 * The error list to replace with the 
+	 * matching type (validator)
+	 * 
+	 * @var array
 	 */
-	public function getValidations()
+	private $errors;
+
+	/**
+	 * Default errors handles the fallback 
+	 * for all uncatched errors
+	 * 
+	 * @var array
+	 */
+	private $defaultErrors;
+
+	/**
+	 * Parse the initial errors to operate with
+	 * later after the user fetches the result.
+	 * Also set the optional default errors for 
+	 * a fallback if no error is given
+	 * 
+	 * @param array $errors
+	 */
+	public function __construct($errors, $defaultErrors = array())
 	{
-		return $this->validations;
+		$this->errors = $errors;
+		$this->defaultErrors = $defaultErrors;
 	}
 
-	public function setValidation($option, $message)
+	/**
+	 * Adds a result to the current validation 
+	 * made of the type (validator) and the result 
+	 * which should always be a boolean that tells 
+	 * if the validation of this validator passed
+	 * 
+	 * @param string  $type  
+	 * @param boolean $result
+	 */
+	public function addResult($type, $result)
 	{
-		$this->validations[$option] = $message;
+		$this->validation[$type] = $result;
 	}
+
+	/**
+	 * @param  string $type 
+	 * @return \Fewlines\Form\Validation\Error
+	 */
+	private function getErrorByType($type)
+	{
+		for($i = 0, $len = count($this->errors); $i < $len; $i++) 
+		{
+			$error = $this->errors[$i];
+
+			if($error->getType() == $type)
+			{
+				return $error;
+			}
+		}
+
+		// Fallback to default errors given
+		for($i = 0, $len = count($this->defaultErrors); $i < $len; $i++)
+		{
+			$error = $this->defaultErrors[$i];
+
+			if($error->getType() == $type)
+			{
+				return $error;
+			}
+		}
+
+		// Create new error to notify the user no error was found
+		return new Error($type, $type . ': Error message not found');
+	}
+
+	/**
+	 * Simply connects the result type and 
+	 * the error message and returns a result 
+	 * in form of an associative array
+	 * 
+	 * @return array
+	 */
+	public function getResult()
+	{
+		$result = array();
+
+		foreach($this->validation as $type => $isValid)
+		{
+			$error = $this->getErrorByType($type);
+
+			if(true == ($error instanceof \Fewlines\Form\Validation\Error) && 
+				false == $isValid)
+			{
+				$result[$type] = $error->getMessage();
+			}
+		}
+
+		return $result;
+	}	
 }

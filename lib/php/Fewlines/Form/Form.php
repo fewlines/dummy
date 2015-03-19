@@ -130,21 +130,13 @@ class Form extends \Fewlines\Dom\Element
 		// Create domhelper
 		$this->domHelper = DomHelper::getInstance();
 
+		// Add config by xml
 		if(true == ($config instanceof \Fewlines\Xml\Tree\Element))
 		{
 			$this->config = $config;
 
 			// Add own attributes (of the form element)
 			$this->setFormAttributesByConfig();
-
-			// Get form items defined in the xml config
-			$elements = $this->config->getChildren();
-
-			// Add the form elements from the config as element
-			if(false != $elements && $elements > 0)
-			{
-				$this->addElementsByXmlConfig($elements);
-			}
 
 			// Add global validation for all inputs (if exists)
 			$validation = $this->config->getChildByName('validation', false);
@@ -154,27 +146,31 @@ class Form extends \Fewlines\Dom\Element
 						$validation->getChildByName('errors', false)
 					);
 			}
+
+			// Get form items defined in the xml config
+			$elements = $this->config->getChildren();
+
+			// Add the form elements from the config as element
+			if(false != $elements && $elements > 0)
+			{
+				$this->addElementsByXmlConfig($elements);
+			}
 		}
 	}
 
 	public function validate()
 	{
-		$values = array();
+		$result = array();
 
 		foreach($this->elements as $element)
 		{
-
-			// $values[$element->getName()] = ;
-			$element->validate($this->getElementValue($element));
+			if($element->hasValidation())
+			{
+				$result[$element->getName()] = $element->validate($this->getElementValue($element))->getResult();
+			}
 		}
 
-		foreach($values as $name => $content)
-		{
-			// if()
-			echo "<br />";
-		}
-
-		// pr($values);
+		pr($result);
 	}
 
 	/**
@@ -645,7 +641,8 @@ class Form extends \Fewlines\Dom\Element
 				{
 					$element->setValidation(
 							$validation->getChildByName('errors'),
-							$validation->getChildByName('options')
+							$validation->getChildByName('options'),
+							$this->getValidationErrors()
 						);
 				}
 				else if(true == is_array($validation))
@@ -655,7 +652,8 @@ class Form extends \Fewlines\Dom\Element
 					{
 						$element->setValidation(
 								$validation['errors'],
-								$validation['options']
+								$validation['options'],
+								$this->getValidationErrors()
 							);
 					}
 					else
@@ -695,5 +693,20 @@ class Form extends \Fewlines\Dom\Element
 
 			$element->addAttribute($name, $content);
 		}
+	}
+
+	/**
+	 * Gets the validation errors 
+	 * 
+	 * @return array
+	 */
+	public function getValidationErrors()
+	{
+		if(true == ($this->validation instanceof \Fewlines\Form\Validation))
+		{
+			return $this->validation->getErrors();
+		}
+
+		return array();
 	}
 }

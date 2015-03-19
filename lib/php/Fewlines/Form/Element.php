@@ -206,10 +206,21 @@ abstract class Element extends \Fewlines\Dom\Element
 	/**
 	 * @param array|\Fewlines\Xml\Tree\Element $errors
 	 * @param array|\Fewlines\Xml\Tree\Element $options
+	 * @param array|\Fewlines\Xml\Tree\Element $defaultErrors
 	 */
-	public function setValidation($errors, $options)
+	public function setValidation($errors, $options, $defaultErrors = array())
 	{
-		$this->validation = new Validation($errors, $options);
+		$this->validation = new Validation($errors, $options, $defaultErrors);
+	}
+
+	/**
+	 * Checks if validation is given
+	 * 
+	 * @return boolean
+	 */
+	public function hasValidation()
+	{
+		return is_null($this->validation) === false;
 	}
 
 	/**
@@ -218,9 +229,9 @@ abstract class Element extends \Fewlines\Dom\Element
 	 */
 	public function validate($value)
 	{
-		if(false == is_null($this->validation))
+		if(true == $this->hasValidation())
 		{
-			$this->validation->validate($value);
+			return $this->validation->validate($value);
 		}
 	}
 }
