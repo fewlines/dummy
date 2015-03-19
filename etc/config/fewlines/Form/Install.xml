@@ -3,17 +3,23 @@
 	<install name="potatoe" action="{{baseurl('index/testform')}}" method="post">
 		<input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
 			<validation>
-				<options regex="/^[0-9]{1,}$/" minlength="2" maxlength="5" blank="false" email="true" zipcode="de" date="dd/mm/yy"></options>
+				<options regex="/^[0-9]{1,}$/"
+						 minlength="2"
+						 maxlength="5"
+						 blank="true"
+						 email="true"
+						 zipcode="de"
+						 date="true"></options>
 				<errors>
 					<regex>Regular expression not matched</regex>
 					<minlength>Minlength madafaka</minlength>
 					<maxlength>Maxlength bitch</maxlength>
-					<empty>It's empty!</empty>
+					<blank>It's empty!</blank>
 					<email>No correct mail given</email>
 				</errors>
 			</validation>
 		</input>
-		
+
 		<input type="radio" value="hue1" name="hue"></input>
 		<input type="radio" value="hue2" name="hue"></input>
 
@@ -29,7 +35,7 @@
 		</select>
 
 		<input type="submit" name="submit-install" value="Absenden"></input>
-		
+
 		<validation>
 			<!-- Provisional options (not needed for global errors) -->
 			<!-- <options regex="" minlength="" maxlength="" required="true"></options> -->

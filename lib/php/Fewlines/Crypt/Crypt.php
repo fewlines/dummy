@@ -10,7 +10,7 @@ class Crypt
 	 *
 	 * @var string
 	 */
-	const KEY = '§!(=$&/)%ERWZQT';
+	const KEY = '§!(=$&/)%ERWEKLÖ=)(")PÖY092=):YQT';
 
 	/**
 	 * Hashes a string

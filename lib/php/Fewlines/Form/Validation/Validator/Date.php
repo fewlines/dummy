@@ -1,15 +1,38 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Validation\Validator;
 
 class Date extends \Fewlines\Form\Validation\Validator
 {
 	/**
-	 * @param  string $value 
+	 * @param  string $value
 	 * @return boolean
 	 */
-	public function validate($value) 
+	public function validate($value)
 	{
-		// @todo: Write date validation with pattern
+		if(false == empty($this->content) && true == is_string($this->content))
+		{
+			$date = \DateTime::createFromFormat($this->content, $value);
+
+	 		return $date && $date->format($this->content) == $value;
+		}
+		else if(true == $this->content)
+		{
+			$time = strtotime($value);
+
+			if(false != $time)
+			{
+				$date = explode("-", date("Y-m-d", $time));
+				list($year, $month, $day) = $date;
+
+				return checkdate($month, $day, $year);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
