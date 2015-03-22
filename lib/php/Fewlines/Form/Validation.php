@@ -187,10 +187,20 @@ class Validation
 
 	/**
 	 * @param  string $value 
+	 * @param  \Fewlines\Form\Element $element
 	 * @return \Fewlines\Form\Validation
 	 */
-	public function validate($value)
+	public function validate($value, $element = null)
 	{
+		pr($value);
+
+		if(true == is_array($value))
+		{	
+			pr($element);
+
+			return $this;
+		}
+
 		foreach($this->validators as $type => $validator)
         {
 			$this->result->addResult($type, $validator->validate($value));

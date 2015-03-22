@@ -38,12 +38,16 @@
 				</errors>
 			</validation>
 		</input>
+		
+		<!-- <input type="checkbox" value="test1" name="chktest[]"></input>
+		<input type="checkbox" value="test2" name="chktest[]"></input> -->
+		<input type="checkbox" value="test3" name="chktest[]">
+			<validation>
+				<options ></options>
+			</validation>
+		</input>
 
-		<input type="checkbox" value="test1" name="chktest[]"></input>
-		<input type="checkbox" value="test2" name="chktest[]"></input>
-		<input type="checkbox" value="test3" name="chktest[]"></input>
-
-		<select name="type" hue="hue">
+		<!-- <select name="type" hue="hue">
 			<option value="opt1">Option1</option>
 			<option value="opt2" selected="true">Option2</option>
 			<option value="opt3">Option3</option>
@@ -54,7 +58,7 @@
 					<regex>Please select Option1 or Option4</regex>
 				</errors>
 			</validation>
-		</select>
+		</select> -->
 
 		<input type="submit" name="submit-install" value="Absenden"></input>
 
