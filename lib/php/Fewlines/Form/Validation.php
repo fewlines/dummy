@@ -186,25 +186,79 @@ class Validation
 	}
 
 	/**
-	 * @param  string $value 
+	 * @param  string $type
+	 * @return boolean
+	 */
+	public function hasOption($type)
+	{
+		for($i = 0, $len = count($this->options); $i < $len; $i++)
+		{
+			if($this->options[$i]->getType() == $type)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param  string $type
+	 * @return booleam|\Fewlines\Form\Validation\Option
+	 */
+	public function getOption($type)
+	{
+		for($i = 0, $len = count($this->options); $i < $len; $i++)
+		{
+			if($this->options[$i]->getType() == $type)
+			{
+				return $this->options[$i];
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param  string $value
 	 * @param  \Fewlines\Form\Element $element
 	 * @return \Fewlines\Form\Validation
 	 */
 	public function validate($value, $element = null)
 	{
-		pr($value);
-
 		if(true == is_array($value))
-		{	
-			pr($element);
+		{
+			$isSingle = $this->getOption('single');
+			$result = array();
+
+			if(true == ($isSingle instanceof \Fewlines\Form\Validation\Option) &&
+				true == $isSingle->getValue())
+			{
+				for($i = 0, $len = count($value); $i < $len; $i++)
+				{
+					foreach($this->validators as $type => $validator)
+					{
+						if($type == 'mincount' ||
+							$type == 'maxcount')
+						{
+							continue;
+						}
+
+						$result[$i][$type] = $validator->validate($value[$i]);
+					}
+				}
+
+				// @todo: add result
+				echo "<pre>";
+				var_dump($result);
+				echo "</pre>";
+			}
 
 			return $this;
 		}
 
 		foreach($this->validators as $type => $validator)
         {
-        	pr($validator);
-        	var_dump($value);
 			$this->result->addResult($type, $validator->validate($value));
 		}
 

@@ -34,12 +34,12 @@
 				</errors>
 			</validation>
 		</input>
-		
-		<!-- <input type="checkbox" value="test1" name="chktest[]"></input>
-		<input type="checkbox" value="test2" name="chktest[]"></input> -->
+
+		<!-- <input type="checkbox" value="test1" name="chktest[]"></input> -->
+		<input type="checkbox" value="test2" name="chktest[]"></input>
 		<input type="checkbox" value="test3" name="chktest[]">
 			<validation>
-				<options ></options>
+				<options blank="true" regex="/test1/" minlength="1" maxlength="2" single="true" mincount="2" maxcount="3"></options>
 			</validation>
 		</input>
 

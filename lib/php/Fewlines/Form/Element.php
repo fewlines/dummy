@@ -215,7 +215,7 @@ abstract class Element extends \Fewlines\Dom\Element
 
 	/**
 	 * Checks if validation is given
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function hasValidation()
@@ -224,8 +224,8 @@ abstract class Element extends \Fewlines\Dom\Element
 	}
 
 	/**
-	 * @param  string|array|number $value 
-	 * @return 
+	 * @param  string|array|number $value
+	 * @return
 	 */
 	public function validate($value)
 	{
