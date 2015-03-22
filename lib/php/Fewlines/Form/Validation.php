@@ -32,7 +32,7 @@ class Validation
 	/**
 	 * @param array|\Fewlines\Xml\Tree\Element $errors
 	 * @param array|\Fewlines\Xml\Tree\Element $options
-	 * @param array|\Fewlines\Xml\Tree\Element $defaultErrors 
+	 * @param array|\Fewlines\Xml\Tree\Element $defaultErrors
 	 */
 	public function __construct($errors = array(), $options = array(), $defaultErrors = array())
 	{
@@ -40,7 +40,7 @@ class Validation
 		 * Use xml object to set the errors
 		 * Otherwise use an array (Manually)
 		 */
-		
+
 		if(true == ($errors instanceof \Fewlines\Xml\Tree\Element))
 		{
 			foreach($errors->getChildren() as $child)
@@ -61,7 +61,7 @@ class Validation
 		 * of the validation
 		 * Otherwise use an array (Manually)
 		 */
-		
+
 		if(true == ($options instanceof \Fewlines\Xml\Tree\Element))
 		{
 			foreach($options->getAttributes() as $type => $value)
@@ -103,10 +103,10 @@ class Validation
 		}
 
 		/**
-		 * Prepeare the result and 
+		 * Prepeare the result and
 		 * parse the errors
 		 */
-		
+
 		$this->result = new Validation\Result($this->errors, $this->defaultErrors);
 	}
 
@@ -139,7 +139,7 @@ class Validation
 	 * @param  \Fewlines\Form\Validation\Option $option
 	 * @return \Fewlines\Form\Validation\Validator|boolean
 	 */
-	private function createValidatorByOption(\Fewlines\Form\Validation\Option $option) 
+	private function createValidatorByOption(\Fewlines\Form\Validation\Option $option)
 	{
 		$class = "\\" . __NAMESPACE__ . "\\Validation\\Validator\\" . ucfirst(trim($option->getType()));
 
@@ -149,7 +149,7 @@ class Validation
 		}
 
 		return false;
-	}	
+	}
 
 	/**
 	 * @param string $type
@@ -170,8 +170,8 @@ class Validation
 		if(true == $default)
 		{
 			$this->defaultErrors[] = $error;
-		}	
-		else 
+		}
+		else
 		{
 			$this->errors[] = $error;
 		}
@@ -183,16 +183,18 @@ class Validation
 	public function getErrors()
 	{
 		return $this->errors;
-	}	
+	}
 
 	/**
-	 * @param  string $value 
+	 * @param  string $value
 	 * @return \Fewlines\Form\Validation
 	 */
 	public function validate($value)
 	{
 		foreach($this->validators as $type => $validator)
         {
+        	pr($validator);
+        	var_dump($value);
 			$this->result->addResult($type, $validator->validate($value));
 		}
 

@@ -6,15 +6,11 @@
 				<options regex="/^[0-9]{1,}$/"
 						 minlength="2"
 						 maxlength="5"
-						 blank="true"
-						 email="true"
-						 zipcode="de"
-						 date="true"></options>
+						 blank="true"></options>
 				<errors>
 					<regex>Regular expression not matched</regex>
 					<minlength>Minlength error</minlength>
 					<maxlength>Maxlength error</maxlength>
-					<email>No correct mail given</email>
 				</errors>
 			</validation>
 		</input>
@@ -23,7 +19,7 @@
 			<validation>
 				<options blank="true" email="true"></options>
 				<errors>
-					
+					<email>No correct mail given</email>
 				</errors>
 			</validation>
 		</input>
@@ -41,7 +37,11 @@
 
 		<input type="checkbox" value="test1" name="chktest[]"></input>
 		<input type="checkbox" value="test2" name="chktest[]"></input>
-		<input type="checkbox" value="test3" name="chktest[]"></input>
+		<input type="checkbox" value="test3" name="chktest[]">
+			<validation>
+				<options blank="true"></options>
+			</validation>
+		</input>
 
 		<select name="type" hue="hue">
 			<option value="opt1">Option1</option>
@@ -63,7 +63,7 @@
 			<!-- <options regex="" minlength="" maxlength="" required="true"></options> -->
 			<errors>
 				<minlength>Global minlength error</minlength>
-				<blank>Global default error</blank>
+				<blank>Global blank error</blank>
 			</errors>
 		</validation>
 	</install>

@@ -162,19 +162,33 @@ class Form extends \Fewlines\Dom\Element
 	{
 		$result = array();
 
+		$result['success'] = true;
+		$result['errors'] = array();
+
+		// Collect errors
 		foreach($this->elements as $element)
 		{
 			if($element->hasValidation())
 			{
-				$result[$element->getName()] = $element->validate($this->getElementValue($element))->getResult();
+				$result['errors'][$element->getName()] = $element->validate($this->getElementValue($element))->getResult();
 			}
 		}
 
-		pr($result);
+		// Check for success
+		foreach($result['errors'] as $error)
+		{
+			if(false == empty($error))
+			{
+				$result['success'] = false;
+				break;
+			}
+		}
+
+		return $result;
 	}
 
 	/**
-	 * @param  string $name 
+	 * @param  string $name
 	 * @return array|null|\Fewlines\Form\Element\Element
 	 */
 	public function getElementsByName($name, $collect = true)
@@ -183,12 +197,12 @@ class Form extends \Fewlines\Dom\Element
 
 		foreach($this->elements as $element)
 		{
-			if($element->getName() == $name) 
+			if($element->getName() == $name)
 			{
 				if(false == $collect)
 				{
 					return $element;
-				}	
+				}
 
 				$result[] = $element;
 			}
@@ -217,7 +231,7 @@ class Form extends \Fewlines\Dom\Element
 	 * @param  \Fewlines\Form\Element\Element $name
 	 * @return *
 	 */
-	private function getElementValue($element) 
+	private function getElementValue($element)
 	{
 		if($this->method == 'post')
 		{
@@ -230,13 +244,22 @@ class Form extends \Fewlines\Dom\Element
 
 		$name = $element->getName();
 
-		// Sort of arrays of checkboxes
-		if(true == ($element instanceof \Fewlines\Form\Element\Input\Checkbox))
+		return array_key_exists($name, $content) ? $content[$name] : '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getData()
+	{
+		$data = array();
+
+		foreach($this->elements as $element)
 		{
-			$name = $element->getName();
+			$data[$element->getName()] = $this->getElementValue($element);
 		}
 
-		return array_key_exists($name, $content) ? $content[$name] : '';
+		return $data;
 	}
 
 	/**
@@ -555,7 +578,7 @@ class Form extends \Fewlines\Dom\Element
 	{
 		$element = null;
 
-		// Force name tag to be set as attribute 
+		// Force name tag to be set as attribute
 		// for the dom element
 		if(false == array_key_exists('name', $attributes))
 		{
@@ -696,8 +719,8 @@ class Form extends \Fewlines\Dom\Element
 	}
 
 	/**
-	 * Gets the validation errors 
-	 * 
+	 * Gets the validation errors
+	 *
 	 * @return array
 	 */
 	public function getValidationErrors()
