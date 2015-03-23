@@ -19,7 +19,7 @@ class Form extends \Fewlines\Dom\Element
 	const XML_ELEMENTS_TAG = 'elements';
 
 	/**
-	 * @var
+	 * @var string
 	 */
 	const SETTER_PREFIX = 'set';
 
@@ -127,9 +127,6 @@ class Form extends \Fewlines\Dom\Element
 		$this->setDomStr(self::FORM_STR);
 		$this->setDomTag(self::FORM_TAG);
 
-		// Create domhelper
-		$this->domHelper = DomHelper::getInstance();
-
 		// Add config by xml
 		if(true == ($config instanceof \Fewlines\Xml\Tree\Element))
 		{
@@ -170,6 +167,8 @@ class Form extends \Fewlines\Dom\Element
 		{
 			if($element->hasValidation())
 			{
+				var_dump($element->getName()); var_dump($this->getElementValue($element));
+				echo "<br >";
 				$result['errors'][$element->getName()] = $element->validate($this->getElementValue($element))->getResult();
 			}
 		}
@@ -229,7 +228,7 @@ class Form extends \Fewlines\Dom\Element
 
 	/**
 	 * @param  \Fewlines\Form\Element\Element $name
-	 * @return *
+	 * @return string|array
 	 */
 	private function getElementValue($element)
 	{

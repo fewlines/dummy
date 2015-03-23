@@ -35,6 +35,7 @@ class Result
 	 * a fallback if no error is given
 	 *
 	 * @param array $errors
+	 * @param array $defaultErrors
 	 */
 	public function __construct($errors, $defaultErrors = array())
 	{
@@ -62,6 +63,7 @@ class Result
 	 */
 	private function getErrorByType($type)
 	{
+		// Check for given errors
 		for($i = 0, $len = count($this->errors); $i < $len; $i++)
 		{
 			$error = $this->errors[$i];
@@ -84,7 +86,7 @@ class Result
 		}
 
 		// Create new error to notify the user no error was found
-		return new Error($type, $type . ': Error message not found');
+		return new Error($type, ucfirst($type) . ': Error message not found');
 	}
 
 	/**

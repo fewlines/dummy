@@ -33,9 +33,6 @@ class Index extends \Fewlines\Controller\Template
 		if(false == empty($_POST))
 		{
 			$result = $form->validate();
-			echo "<pre>";
-			var_dump($result);
-			echo "</pre>";
 		}
 	}
 

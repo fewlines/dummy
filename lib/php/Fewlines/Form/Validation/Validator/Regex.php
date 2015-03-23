@@ -1,20 +1,22 @@
-<?php 
+<?php
 
 namespace Fewlines\Form\Validation\Validator;
 
 class Regex extends \Fewlines\Form\Validation\Validator
 {
 	/**
-	 * @param  string $value 
+	 * @param  string $value
 	 * @return boolean
 	 */
-	public function validate($value) 
+	public function validate($value)
 	{
 		if(false == empty($this->content))
 		{
+			pr($value);
+			pr($this->content);
 			return (bool) @preg_match($this->content, $value);
 		}
-		
+
 		return true;
 	}
 }
