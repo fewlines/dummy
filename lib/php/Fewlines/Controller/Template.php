@@ -47,7 +47,7 @@ class Template implements ITemplate
 	public function init(\Fewlines\Template\Template $template)
 	{
 		$this->template    = $template;
-		$this->httpRequest = httpRequest::getInstance();
+		$this->httpRequest = HttpRequest::getInstance();
 	}
 
 	/**
@@ -79,5 +79,14 @@ class Template implements ITemplate
 	protected function getBaseUrl($parts = "")
 	{
 		return UrlHelper::getBaseUrl($parts);
+	}
+
+	/**
+	 * @param  string $view
+	 * @return string
+	 */
+	protected function render($view)
+	{
+		return $this->template->renderView($view);
 	}
 }

@@ -117,6 +117,11 @@ class Form extends \Fewlines\Dom\Element
 	private $validation;
 
 	/**
+	 * @var \Fewlines\Form\Result
+	 */
+	private $result;
+
+	/**
 	 * Init a form (with a given xml config)
 	 *
 	 * @param \Fewlines\Xml\Tree\Element|null $config
@@ -126,6 +131,9 @@ class Form extends \Fewlines\Dom\Element
 		// Set dom relevant flags
 		$this->setDomStr(self::FORM_STR);
 		$this->setDomTag(self::FORM_TAG);
+
+		// Create result to store all validations
+		$this->result = new Result;
 
 		// Add config by xml
 		if(true == ($config instanceof \Fewlines\Xml\Tree\Element))
@@ -155,35 +163,31 @@ class Form extends \Fewlines\Dom\Element
 		}
 	}
 
-	public function validate()
+	/**
+	 * @param  array   $ctx
+	 * @param  boolean $mergeCtx
+	 * @return \Fewlines\Form\Form
+	 */
+	public function validate($ctx = array(), $mergeCtx = false)
 	{
-		$result = array();
-
-		$result['success'] = true;
-		$result['errors'] = array();
-
-		// Collect errors
 		foreach($this->elements as $element)
 		{
 			if($element->hasValidation())
 			{
-				var_dump($element->getName()); var_dump($this->getElementValue($element));
-				echo "<br >";
-				$result['errors'][$element->getName()] = $element->validate($this->getElementValue($element))->getResult();
+				$this->result->addError($element->getName(),
+					$element->validate($this->getElementValue($element, $ctx, $mergeCtx))->getResult());
 			}
 		}
 
-		// Check for success
-		foreach($result['errors'] as $error)
-		{
-			if(false == empty($error))
-			{
-				$result['success'] = false;
-				break;
-			}
-		}
+		return $this;
+	}
 
-		return $result;
+	/**
+	 * @return \Fewlines\Form\Result
+	 */
+	public function getResult()
+	{
+		return $this->result;
 	}
 
 	/**
@@ -228,17 +232,31 @@ class Form extends \Fewlines\Dom\Element
 
 	/**
 	 * @param  \Fewlines\Form\Element\Element $name
+	 * @param  array   $ctx
+	 * @param  boolean $mergeCtx
 	 * @return string|array
 	 */
-	private function getElementValue($element)
+	private function getElementValue($element, $ctx = array(), $mergeCtx = false)
 	{
-		if($this->method == 'post')
+		if(false == empty($ctx) && true == is_array($ctx) && false == $mergeCtx)
 		{
-			$content = $_POST;
+			$content = $ctx;
 		}
 		else
 		{
-			$content = $_GET;
+			if($this->method == 'post')
+			{
+				$content = $_POST;
+			}
+			else
+			{
+				$content = $_GET;
+			}
+		}
+
+		if(true == $mergeCtx)
+		{
+			$content = array_merge($content, $ctx);
 		}
 
 		$name = $element->getName();

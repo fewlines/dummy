@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <form>
 	<install name="potatoe" action="{{baseurl('index/testform')}}" method="post" novalidate="true">
-		<!-- <input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
+		<input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
 			<validation>
 				<options regex="/^[0-9]{1,}$/"
 						 minlength="2"
@@ -13,18 +13,18 @@
 					<maxlength>Maxlength error</maxlength>
 				</errors>
 			</validation>
-		</input> -->
+		</input>
 
-		<!-- <input type="email" name="testmail" placeholder="MAIL">
+		<input type="email" name="testmail" placeholder="MAIL">
 			<validation>
 				<options blank="true" email="true"></options>
 				<errors>
 					<email>No correct mail given</email>
 				</errors>
 			</validation>
-		</input> -->
+		</input>
 
-		<!-- <input type="radio" value="hue1" name="hue"></input>
+		<input type="radio" value="hue1" name="hue"></input>
 		<input type="radio" value="hue2" name="hue">
 			<validation>
 				<options blank="true" regex="/hue2/"></options>
@@ -33,7 +33,7 @@
 					<blank>BLANK</blank>
 				</errors>
 			</validation>
-		</input> -->
+		</input>
 
 		<!-- <input type="checkbox" value="test1" name="chktest[]"></input>
 		<input type="checkbox" value="test12" name="chktest[]"></input>

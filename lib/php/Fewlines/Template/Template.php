@@ -168,6 +168,8 @@ class Template extends Caller
 
 	/**
 	 * Sets the layout
+	 *
+	 * @param string $layout
 	 */
 	public function setLayout($layout)
 	{

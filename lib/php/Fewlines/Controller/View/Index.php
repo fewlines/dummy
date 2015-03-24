@@ -30,10 +30,18 @@ class Index extends \Fewlines\Controller\Template
 
 		$this->assign('form', $form);
 
-		if(false == empty($_POST))
-		{
-			$result = $form->validate();
-		}
+		// if(false == empty($_POST))
+		// {
+		//     $result = $form->validate()->getResult()->toJSON();
+		// 	   pr($result);
+		// }
+
+		pr("controller");
+		pr($this->template->setLayout('install'));
+		pr($this->template->layout->getLayoutName());
+
+		// Render other view
+		// return $this->render('index/index');
 	}
 
 	public function indexAction()

@@ -12,8 +12,6 @@ class Regex extends \Fewlines\Form\Validation\Validator
 	{
 		if(false == empty($this->content))
 		{
-			pr($value);
-			pr($this->content);
 			return (bool) @preg_match($this->content, $value);
 		}
 

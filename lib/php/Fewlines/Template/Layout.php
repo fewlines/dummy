@@ -32,14 +32,15 @@ class Layout extends View
 	 * @param string $name
 	 * @param string $path
 	 * @param array  $routeUrlParts
-	 * @param \Fewlines\Template\Template $tpl
+	 * @param \Fewlines\Template\Template $template
 	 */
-	public function __construct($name, $path, $routeUrlParts, \Fewlines\Template\Template $tpl)
+	public function __construct($name, $path, $routeUrlParts, \Fewlines\Template\Template $template)
 	{
 		$this->layoutName = $name;
 		$this->layoutPath = $path;
-		$this->template   = $tpl;
+		$this->template   = $template;
 
+		// Set exception layout
 		if($this->getLayoutName() == EXCEPTION_LAYOUT)
 		{
 			$httpRequest = HttpRequest::getInstance();

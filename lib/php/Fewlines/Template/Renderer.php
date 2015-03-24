@@ -26,13 +26,24 @@ class Renderer
 	private $layout;
 
 	/**
+	 * The result of the controller to display
+	 * in the view
+	 *
+	 * @var string
+	 */
+	private $controller;
+
+	/**
 	 * Init function (called from child)
 	 */
 	public function initLayout()
 	{
 		// Set layout to handle with
 		$this->layout = $this->getLayout();
+	}
 
+	public function initHashmap()
+	{
 		// Calculate hashmaps (if they weren't just calculated)
 		if(false == ArrayHelper::isAssociative(self::$md5VarHashmap))
 		{
@@ -95,27 +106,59 @@ class Renderer
 
 	protected function renderLayout()
 	{
+		pr("render layout");
+
 		// Update layout
+		$this->initHashmap();
 		$this->initLayout();
 
-		$file = $this->layout->getLayoutPath();
-		echo $this->getRenderedHtml($file);
+		// Call controller from view (if exists)
+		$this->controller = $this->layout->initViewController();
+
+		pr("renderer");
+		pr($this->layout->getLayoutName());
+
+		// Render layout
+		echo $this->getRenderedHtml($this->layout->getLayoutPath());
 	}
 
-	protected function renderView()
+	/**
+	 * Renders a view and returns the content
+	 * A optional view if possible. If no view is
+	 * given. The view of the layout will be
+	 * taken.
+	 *
+	 * @param  string $view
+	 */
+	protected function renderView($view = '')
 	{
-		// Get view and action from request
-		$view   = $this->getRouteUrlPart('view');
-		$action = $this->getRouteUrlPart('action');
+		if(true == empty($view))
+		{
+			// Get view and action
+			$file   = $this->layout->getViewPath();
+			$action = $this->layout->getViewAction();
 
-		// Get view and action
-		$file   = $this->layout->getViewPath();
-		$action = $this->layout->getViewAction();
+			if(is_string($this->controller))
+			{
+				// Output rendered html from the return of the controller
+				echo $this->controller;
+			}
+			else
+			{
+				// Output rendered html (view)
+				echo $this->getRenderedHtml($file);
+			}
+		}
+		else
+		{
+			$file = PathHelper::getRealViewPath($view, '', $this->layout->getLayoutName());
 
-		// Call controller from view (if exists)
-		$this->layout->initViewController();
+			if(true == file_exists($file))
+			{
+				$file = $this->getRenderedHtml($file);
+			}
 
-		// Output rendered html
-		echo $this->getRenderedHtml($file);
+			return $file;
+		}
 	}
 }

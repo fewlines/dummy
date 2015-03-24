@@ -225,7 +225,7 @@ abstract class Element extends \Fewlines\Dom\Element
 
 	/**
 	 * @param  string|array|number $value
-	 * @return
+	 * @return array
 	 */
 	public function validate($value)
 	{
@@ -233,5 +233,7 @@ abstract class Element extends \Fewlines\Dom\Element
 		{
 			return $this->validation->validate($value, $this);
 		}
+
+		return array();
 	}
 }

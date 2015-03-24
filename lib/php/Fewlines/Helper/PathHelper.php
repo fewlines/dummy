@@ -22,8 +22,8 @@ class PathHelper
 
 	/**
 	 * Creates a valid path from an array
-	 * 
-	 * @param  array $parts 
+	 *
+	 * @param  array $parts
 	 * @return string
 	 */
 	public static function createPath($parts)
@@ -71,11 +71,12 @@ class PathHelper
 	 * Returns the defined view path
 	 * as real path
 	 *
-	 * @param  string $view Optional view
+	 * @param  string $view
+	 * @param  string $action
 	 * @param  string $layout
 	 * @return string
 	 */
-	public static function getRealViewPath($view = '', $layout = '')
+	public static function getRealViewPath($view = '', $action = '', $layout = '')
 	{
 		$path = self::getRealPath(VIEW_PATH);
 
@@ -84,7 +85,12 @@ class PathHelper
 			$path .= self::getRealPath($layout);
 		}
 
-		if(false == empty($view))
+		if(false == empty($action) && false == empty($view))
+		{
+			$path .= $view . '/';
+			$path .= self::getRealViewFile($action);
+		}
+		else if(false == empty($view))
 		{
 			$path .= self::getRealViewFile($view);
 		}

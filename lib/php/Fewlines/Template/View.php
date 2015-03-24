@@ -80,16 +80,6 @@ class View
 	}
 
 	/**
-	 * Returns the path to the current view
-	 *
-	 * @return string
-	 */
-	public function getViewPath()
-	{
-		return $this->viewPath;
-	}
-
-	/**
 	 * Returns the view action
 	 *
 	 * @return string
@@ -100,6 +90,27 @@ class View
 	}
 
 	/**
+	 * Sets the view action
+	 * IMPORTANT: Must be set before the view path!
+	 *
+	 * @param string $action
+	 */
+	public function setViewAction($action)
+	{
+		$this->action = $action;
+	}
+
+	/**
+	 * Returns the path to the current view
+	 *
+	 * @return string
+	 */
+	public function getViewPath()
+	{
+		return $this->viewPath;
+	}
+
+	/**
 	 * Sets the view path
 	 *
 	 * @param string $view
@@ -107,24 +118,15 @@ class View
 	public function setViewPath($view)
 	{
 		$layout   = $this->layout->getLayoutName();
-		$viewFile = PathHelper::getRealViewPath($view, $layout);
+		$viewFile = PathHelper::getRealViewPath($view, $this->getViewAction(), $layout);
 
 		if(false == file_exists($viewFile))
 		{
+			pr($viewFile);
 			$viewFile = $this->set404Eror();
 		}
 
 		$this->viewPath = $viewFile;
-	}
-
-	/**
-	 * Sets the view action
-	 *
-	 * @param string $action
-	 */
-	public function setViewAction($action)
-	{
-		$this->action = $action;
 	}
 
 	/**
@@ -207,7 +209,7 @@ class View
 	 * Init the controller of the current view
 	 * (if exists)
 	 *
-	 * @return boolean
+	 * @return null|*
 	 */
 	public function initViewController()
 	{
@@ -216,22 +218,22 @@ class View
 			$this->controller = new $this->controllerClass;
 			$this->controller->init($this->template);
 
-			$this->callViewAction($this->action . "Action");
-
-			return true;
+			return $this->callViewAction($this->action . "Action");
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
-	 * Calls the action of the current controller
+	 * Calls the action of the
+	 * current controller
 	 *
 	 * @param string $method
+	 * @return *
 	 */
 	private function callViewAction($method)
 	{
-		if(!method_exists($this->controller, $method))
+		if(false == method_exists($this->controller, $method))
 		{
 			throw new Exception\ActionNotFoundException(
 				"Could not found the action (method)
@@ -240,6 +242,6 @@ class View
 			);
 		}
 
-		$this->controller->{$method}();
+		return $this->controller->{$method}();
 	}
 }
