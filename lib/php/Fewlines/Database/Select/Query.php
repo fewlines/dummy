@@ -216,8 +216,6 @@ class Query extends \Fewlines\Database\Query
 		$this->queryString .= self::VALUES;
 		$this->queryString .= self::bracketString($values);
 
-		pr($this->queryString);
-
 		return $this;
 	}
 

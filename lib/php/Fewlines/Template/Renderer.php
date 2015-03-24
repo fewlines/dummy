@@ -5,6 +5,7 @@ namespace Fewlines\Template;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Helper\ArrayHelper;
+use Fewlines\Template\Template;
 
 class Renderer
 {
@@ -14,16 +15,9 @@ class Renderer
 	 *
 	 * @var array
 	 */
-	public static $md5VarHashmap = array(
+	private static $md5VarHashmap = array(
 		'file', 'config', 'varname', 'content', 'html'
 	);
-
-	/**
-	 * Holds the current layout instance
-	 *
-	 * @var \Fewlines\Template\Layout
-	 */
-	private $layout;
 
 	/**
 	 * The result of the controller to display
@@ -34,15 +28,18 @@ class Renderer
 	private $controller;
 
 	/**
-	 * Init function (called from child)
+     * Init the renderer
 	 */
-	public function initLayout()
+	public function __construct()
 	{
-		// Set layout to handle with
-		$this->layout = $this->getLayout();
+		$this->initHashmap();
 	}
 
-	public function initHashmap()
+	/**
+	 * Init hashmap for a clean
+	 * html render
+	 */
+	private function initHashmap()
 	{
 		// Calculate hashmaps (if they weren't just calculated)
 		if(false == ArrayHelper::isAssociative(self::$md5VarHashmap))
@@ -70,7 +67,7 @@ class Renderer
 	 * @param  array  $config
 	 * @return string
 	 */
-	protected function getRenderedHtml($file, $config = array())
+	public function getRenderedHtml($file, $config = array())
 	{
 		ob_start();
 
@@ -104,22 +101,33 @@ class Renderer
 		return ${self::$md5VarHashmap['html']};
 	}
 
-	protected function renderLayout()
+	public function renderLayout()
 	{
-		pr("render layout");
-
-		// Update layout
-		$this->initHashmap();
-		$this->initLayout();
+		$template = Template::getInstance();
+		$view     = $template->getView();
 
 		// Call controller from view (if exists)
-		$this->controller = $this->layout->initViewController();
+		$this->controller = $view->initViewController();
 
-		pr("renderer");
-		pr($this->layout->getLayoutName());
+		// Set layout
+		$layout = $template->getLayout();
 
-		// Render layout
-		echo $this->getRenderedHtml($this->layout->getLayoutPath());
+		if(true == $this->layout->isDisabled())
+		{
+			if(is_string($this->controller))
+			{
+				echo $this->controller;
+			}
+			else
+			{
+				$this->renderView();
+			}
+		}
+		else
+		{
+			// Render layout
+			echo $this->getRenderedHtml($layout->getPath());
+		}
 	}
 
 	/**
@@ -128,15 +136,20 @@ class Renderer
 	 * given. The view of the layout will be
 	 * taken.
 	 *
-	 * @param  string $view
+	 * @param  string $viewPath
 	 */
-	protected function renderView($view = '')
+	public function renderView($viewPath = '')
 	{
-		if(true == empty($view))
+		// Get current layout
+		$template = Template::getInstance();
+		$view     = $template->getView();
+		$layout   = $template->getLayout();
+
+		if(true == empty($viewPath))
 		{
 			// Get view and action
-			$file   = $this->layout->getViewPath();
-			$action = $this->layout->getViewAction();
+			$file   = $view->getPath();
+			$action = $view->getAction();
 
 			if(is_string($this->controller))
 			{
@@ -151,7 +164,7 @@ class Renderer
 		}
 		else
 		{
-			$file = PathHelper::getRealViewPath($view, '', $this->layout->getLayoutName());
+			$file = PathHelper::getRealViewPath($viewPath, '', $layout->getName());
 
 			if(true == file_exists($file))
 			{

@@ -5,70 +5,74 @@ namespace Fewlines\Template;
 use Fewlines\Template\View;
 use Fewlines\Http\Request as HttpRequest;
 
-class Layout extends View
+class Layout
 {
 	/**
-	 * The name of the layout
-	 *
 	 * @var string
 	 */
-	private $layoutName;
+	private $name;
 
 	/**
-	 * Holds the path to the layout
-	 *
 	 * @var string
 	 */
-	private $layoutPath;
+	private $path;
 
 	/**
-	 * Holds the current template instance
+	 * Tells if the layout should be
+	 * rendered or not
 	 *
-	 * @var \Fewlines\Template\Template
+	 * @var boolean
 	 */
-	protected $template;
+	private $disabled = false;
 
 	/**
 	 * @param string $name
 	 * @param string $path
 	 * @param array  $routeUrlParts
-	 * @param \Fewlines\Template\Template $template
 	 */
-	public function __construct($name, $path, $routeUrlParts, \Fewlines\Template\Template $template)
+	public function __construct($name, $path, $routeUrlParts)
 	{
-		$this->layoutName = $name;
-		$this->layoutPath = $path;
-		$this->template   = $template;
-
-		// Set exception layout
-		if($this->getLayoutName() == EXCEPTION_LAYOUT)
-		{
-			$httpRequest = HttpRequest::getInstance();
-
-			$routeUrlParts['view']   = $httpRequest->getDefaultDestination('view');
-			$routeUrlParts['action'] = $httpRequest->getDefaultDestination('action');
-		}
-
-		$this->setView($routeUrlParts['view'], $routeUrlParts['action'], $this);
+		$this->name = $name;
+		$this->path = $path;
 	}
 
 	/**
-	 * Returns the path to the layout
-	 *
-	 * @return string
+	 * @param boolean $isDisabled
 	 */
-	public function getLayoutPath()
+	public function disable($isDisabled)
 	{
-		return $this->layoutPath;
+		$this->disabled = $isDisabled;
 	}
 
 	/**
-	 * Gets the name of the layout
-	 *
+	 * @return boolean
+	 */
+	public function isDisabled()
+	{
+		return $this->disabled;
+	}
+
+	/**
 	 * @return string
 	 */
-	public function getLayoutName()
+	public function getPath()
 	{
-		return $this->layoutName;
+		return $this->path;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @return \Fewlines\Template\View
+	 */
+	public function getView()
+	{
+		return $this->view;
 	}
 }

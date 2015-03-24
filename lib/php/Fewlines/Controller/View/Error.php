@@ -14,7 +14,7 @@ class Error extends \Fewlines\Controller\Template
 	public function indexAction()
 	{
 		$this->responseCode = $this->httpRequest->getStatusCode();
-		$viewName = $this->template->getLayout()->getRealViewName();
+		$viewName = $this->template->getView()->getRealName();
 
 		$this->assign('responseCode', $this->responseCode);
 		$this->assign('errorMessage', $this->getMessage($viewName));

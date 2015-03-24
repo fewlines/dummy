@@ -119,7 +119,7 @@ class Application
 		// Check if application is installed already
 		if(false == $this->isInstalled())
 		{
-			$viewName = $this->template->getLayout()->getRealViewName();
+			$viewName = $this->template->getView()->getRealName();
 
 			if($viewName != self::INSTALL_VIEW)
 			{

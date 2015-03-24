@@ -8,6 +8,7 @@ use Fewlines\Helper\PathHelper;
 use Fewlines\Database\Database;
 use Fewlines\Form\Form;
 use Fewlines\Locale\Locale;
+use Fewlines\Template\Template;
 
 class Index extends \Fewlines\Controller\Template
 {
@@ -36,12 +37,11 @@ class Index extends \Fewlines\Controller\Template
 		// 	   pr($result);
 		// }
 
-		pr("controller");
-		pr($this->template->setLayout('install'));
-		pr($this->template->layout->getLayoutName());
+		// pr("controller");
+		// pr($this->template->setLayout('install'));
+		// pr(Template::getInstance()->layout->getName());
 
-		// Render other view
-		// return $this->render('index/index');
+		// $this->template->getLayout()->disable(true);
 	}
 
 	public function indexAction()

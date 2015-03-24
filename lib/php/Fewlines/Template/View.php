@@ -5,30 +5,24 @@ namespace Fewlines\Template;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Template\Template;
 
 class View
 {
-	/**
-	 * The layout which the view uses
-	 *
-	 * @var \Fewlines\Template\Layout
-	 */
-	private $layout;
-
 	/**
 	 * The name of the view (could be overwritten
 	 * by anything e.g. a 404 error)
 	 *
 	 * @var string
 	 */
-	private $viewName;
+	private $name;
 
 	/**
 	 * The real viewname as in the url
 	 *
 	 * @var string
 	 */
-	private $realViewName;
+	private $realName;
 
 	/**
 	 * Current action
@@ -42,7 +36,7 @@ class View
 	 *
 	 * @var string
 	 */
-	private $viewPath;
+	private $path;
 
 	/**
 	 * Controller class of the current view
@@ -52,7 +46,7 @@ class View
 	private $controllerClass;
 
 	/**
-	 * Controller of the current view
+	 * Controller instance of the current view
 	 *
 	 * @var \Fewlines\Controller\Template
 	 */
@@ -63,9 +57,9 @@ class View
 	 *
 	 * @return string
 	 */
-	public function getViewName()
+	public function getName()
 	{
-		return $this->viewName;
+		return $this->name;
 	}
 
 	/**
@@ -74,9 +68,9 @@ class View
 	 *
 	 * @return string
 	 */
-	public function getRealViewName()
+	public function getRealName()
 	{
-		return $this->realViewName;
+		return $this->realName;
 	}
 
 	/**
@@ -84,18 +78,17 @@ class View
 	 *
 	 * @return string
 	 */
-	public function getViewAction()
+	public function getAction()
 	{
 		return $this->action;
 	}
 
 	/**
 	 * Sets the view action
-	 * IMPORTANT: Must be set before the view path!
 	 *
 	 * @param string $action
 	 */
-	public function setViewAction($action)
+	public function setAction($action)
 	{
 		$this->action = $action;
 	}
@@ -105,9 +98,9 @@ class View
 	 *
 	 * @return string
 	 */
-	public function getViewPath()
+	public function getPath()
 	{
-		return $this->viewPath;
+		return $this->path;
 	}
 
 	/**
@@ -115,37 +108,33 @@ class View
 	 *
 	 * @param string $view
 	 */
-	public function setViewPath($view)
+	public function setPath($view)
 	{
-		$layout   = $this->layout->getLayoutName();
-		$viewFile = PathHelper::getRealViewPath($view, $this->getViewAction(), $layout);
+		$layout   = Template::getInstance()->getLayout()->getName();
+		$viewFile = PathHelper::getRealViewPath($view, $this->getAction(), $layout);
 
 		if(false == file_exists($viewFile))
 		{
-			pr($viewFile);
 			$viewFile = $this->set404Eror();
 		}
 
-		$this->viewPath = $viewFile;
+		$this->path = $viewFile;
 	}
 
 	/**
 	 * Init the view with some options
 	 * called from the layout
 	 *
-	 * @param string                    $viewName
+	 * @param string                    $name
 	 * @param string                    $action
-	 * @param \Fewlines\Template\Layout $layout
 	 */
-	public function setView($viewName, $action, \Fewlines\Template\Layout $layout)
+	public function __construct($name, $action)
 	{
-		$this->layout = $layout;
-
 		// Set view components
-		$this->setViewAction($action);
-		$this->setViewName($viewName);
-		$this->setViewPath($viewName);
-		$this->setController("Fewlines\Controller\View\\");
+		$this->setAction($action);
+		$this->setName($name);
+		$this->setPath($name);
+		$this->setControllerClass("Fewlines\\Controller\\View\\");
 	}
 
 	/**
@@ -157,16 +146,16 @@ class View
 	public function set404Eror()
 	{
 		HttpHeader::setHeader404();
-		$viewName = defined('DEFAULT_ERROR_VIEW')
+		$name = defined('DEFAULT_ERROR_VIEW')
 					? DEFAULT_ERROR_VIEW
 					: 'error';
 
 		// Set the action to index (prevent unexpected actions)
 		$defaultAction = HttpRequest::getInstance()->getDefaultDestination('action');
-		$this->setViewAction($defaultAction);
-		$this->setViewName($viewName);
+		$this->setAction($defaultAction);
+		$this->setName($name);
 
-		return PathHelper::getRealViewPath($viewName);
+		return PathHelper::getRealViewPath($name);
 	}
 
 	/**
@@ -174,14 +163,14 @@ class View
 	 *
 	 * @param string $name
 	 */
-	private function setViewName($name)
+	private function setName($name)
 	{
-		if(is_null($this->realViewName))
+		if(is_null($this->realName))
 		{
-			$this->realViewName = $name;
+			$this->realName = $name;
 		}
 
-		$this->viewName = $name;
+		$this->name = $name;
 	}
 
 	/**
@@ -189,9 +178,9 @@ class View
 	 *
 	 * @param string $path
 	 */
-	private function setController($path)
+	private function setControllerClass($path)
 	{
-		$this->controllerClass = $path . $this->viewName;
+		$this->controllerClass = $path . $this->name;
 	}
 
 	/**
@@ -216,9 +205,9 @@ class View
 		if(class_exists($this->controllerClass))
 		{
 			$this->controller = new $this->controllerClass;
-			$this->controller->init($this->template);
+			$this->controller->init(Template::getInstance());
 
-			return $this->callViewAction($this->action . "Action");
+			return $this->callViewAction($this->getAction() . "Action");
 		}
 
 		return null;
