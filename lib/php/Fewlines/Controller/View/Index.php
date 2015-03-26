@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Controller\View;
 
 use Fewlines\Session\Session;
@@ -12,96 +11,95 @@ use Fewlines\Template\Template;
 
 class Index extends \Fewlines\Controller\Template
 {
-	public function testformAction()
-	{
-		$config = $this->getConfig()->getElementByPath("form/install");
-		$form   = new Form($config);
+    public function testformAction() {
+        $config = $this->getConfig()->getElementByPath("form/install");
+        $form = new Form($config);
 
-		/*$form->addElement('input', 'test', array(
-			'type' => 'text',
-			'placeholder' => 'Test me',
-		), array(
-			'options' => array(
-				'regex' => '/testreg/'
-			),
-			'errors' => array(
-				'regex' => 'Fucked up regex'
-			)
-		));*/
+        /*$form->addElement('input', 'test', array(
+	        	'type' => 'text',
+	        	'placeholder' => 'Test me',
+	        ), array(
+	        	'options' => array(
+	        	'regex' => '/testreg/'
+	        ),
+	        	'errors' => array(
+	        	'regex' => 'Fucked up regex'
+	        )
+        ));*/
 
-		$this->assign('form', $form);
+        $this->assign('form', $form);
 
-		// if(false == empty($_POST))
-		// {
-		//     $result = $form->validate()->getResult()->toJSON();
-		// 	   pr($result);
-		// }
+        // if(false == empty($_POST))
+        // {
+        //     $result = $form->validate()->getResult()->toJSON();
+        // 	   pr($result);
+        // }
 
-		// pr("controller");
-		// pr($this->template->setLayout('install'));
-		// pr(Template::getInstance()->layout->getName());
+        // pr("controller");
+        // pr($this->template->setLayout('install'));
+        // pr(Template::getInstance()->layout->getName());
 
-		$this->template->getLayout()->disable(true);
+        // $this->template->getLayout()->disable(true);
 
-		return $this->template->renderView('index/index');
-	}
+        return $this->template->renderView('index/index');
+    }
 
-	public function indexAction()
-	{
-		/**
-		 * Session handling
-		 */
+    public function indexAction() {
 
-		//$session = new Session("testCookie", "test");
-		$cook = Session::get('testCookie');
+        /**
+         * Session handling
+         */
 
-		if($cook->isSession())
-		{
-			echo "SESS: " . $cook->getSession() . "<br />";
-		}
+        //$session = new Session("testCookie", "test");
+        $cook = Session::get('testCookie');
 
-		if($cook->isCookie())
-		{
-			echo "COOK: " . $cook->getCookie()->getContent() . "<br />";
-		}
+        if ($cook->isSession()) {
+            echo "SESS: " . $cook->getSession() . "<br />";
+        }
 
-		/**
-		 * Config handling
-		 */
+        if ($cook->isCookie()) {
+            echo "COOK: " . $cook->getCookie()->getContent() . "<br />";
+        }
 
-		$config  = $this->getConfig(); // Config::GetInstance()
-		$host    = $config->getElementByPath("database/host");
-		$version = $config->getElementsByPath("application/version");
+        /**
+         * Config handling
+         */
 
-		/**
-		 * Database handling
-		 */
+        $config = $this->getConfig();
+         // Config::GetInstance()
+        $host = $config->getElementByPath("database/host");
+        $version = $config->getElementsByPath("application/version");
 
-		$db              = new Database;
-		// $resultInsert    = $db->select("tabletest")->insert(array("content" => "cont", "password" => md5("pass" . rand(0,100))))/*->execute()*/;
-		// $resultUpdate    = $db->select("tabletest")->update(array("content" => "updatedcontent", "password" => "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
-		// $resultDelete    = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
-		// $resultFetch     = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
-		// $resultTruncate  = $db->select("tabletest")->truncate()/*->execute()*/;
-		// $resultLikeFetch = $db->select("tabletest", "*")->where(array("content", "LIKE", "%co%"))->fetchAll();
-		// $resultDropTable = $db->select("tabletest")->drop()/*->execute()*/;
+        /**
+         * Database handling
+         */
 
-		/*$resultTableCreate = $db->createTable("tabletest2",
-				array(
-					"id" => array(
-						"type"          => "int",
-						"autoIncrement" => true,
-						"notNull"       => true,
-						"index"         => "primary"
-					),
-					"name" => array(
-						"type"          => "varchar",
-						"length"        => 255,
-					),
-					"content" => array(
-						"type"          => "longtext"
-					),
-				)
-			);*/
-	}
+        $db = new Database;
+
+        // $resultInsert    = $db->select("tabletest")->insert(array("content" => "cont", "password" => md5("pass" . rand(0,100))))/*->execute()*/;
+        // $resultUpdate    = $db->select("tabletest")->update(array("content" => "updatedcontent", "password" => "updatedpassword"))->where(array("id", "=", 2), "OR")->where(array("id", "=", 3))/*->execute()*/;
+        // $resultDelete    = $db->select("tabletest")->where(array("id", ">", 0))->delete()/*->execute()*/;
+        // $resultFetch     = $db->select("tabletest", "*")->where(array("id", ">", 1))->where(array("id", "<", 4))->limit(0,5)->fetchAll();
+        // $resultTruncate  = $db->select("tabletest")->truncate()/*->execute()*/;
+        // $resultLikeFetch = $db->select("tabletest", "*")->where(array("content", "LIKE", "%co%"))->fetchAll();
+        // $resultDropTable = $db->select("tabletest")->drop()/*->execute()*/;
+
+        /*$resultTableCreate = $db->createTable("tabletest2",
+        array(
+        "id" => array(
+        "type"          => "int",
+        "autoIncrement" => true,
+        "notNull"       => true,
+        "index"         => "primary"
+        ),
+        "name" => array(
+        "type"          => "varchar",
+        "length"        => 255,
+        ),
+        "content" => array(
+        "type"          => "longtext"
+        ),
+        )
+        );*/
+    }
 }

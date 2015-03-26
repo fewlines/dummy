@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Application;
 
 use Fewlines\Helper\DirHelper;
@@ -9,142 +8,128 @@ use Fewlines\Xml\Xml;
 
 class Config
 {
-	/**
-	 * Holds the instance
-	 *
-	 * @var \Fewlines\Application\Config
-	 */
-	private static $instance;
+    /**
+     * Holds the instance
+     *
+     * @var \Fewlines\Application\Config
+     */
+    private static $instance;
 
-	/**
-	 * Holds the paths to the config files
-	 *
-	 * @var array
-	 */
-	private $configFiles = array();
+    /**
+     * Holds the paths to the config files
+     *
+     * @var array
+     */
+    private $configFiles = array();
 
-	/**
-	 * Holds the path to the config files
-	 * which were loaded
-	 *
-	 * @var array
-	 */
-	private $loadedConfigFiles = array();
+    /**
+     * Holds the path to the config files
+     * which were loaded
+     *
+     * @var array
+     */
+    private $loadedConfigFiles = array();
 
-	/**
-	 * The input of all files as an array
-	 *
-	 * @var array
-	 */
-	private $xmls = array();
+    /**
+     * The input of all files as an array
+     *
+     * @var array
+     */
+    private $xmls = array();
 
-	/**
-	 * Load config files
-	 *
-	 * @param array $configs
-	 */
-	public function __construct($configs)
-	{
-		if(false == is_null(self::$instance))
-		{
-			throw new Exception\ConfigJustInstantiatedException("
+    /**
+     * Load config files
+     *
+     * @param array $configs
+     */
+    public function __construct($configs) {
+        if (false == is_null(self::$instance)) {
+            throw new Exception\ConfigJustInstantiatedException("
 					The config object has already been instantiated.
 					Use the static function \"getInstance\" instead.
 				");
-		}
-		
-		self::$instance = $this;
+        }
 
-		$files = array();
+        self::$instance = $this;
 
- 		for($i = 0; $i < count($configs); $i++)
-		{
-			$dir = PathHelper::normalizePath($configs[$i]['dir']);
-			$files[$dir] = DirHelper::getFilesByType($dir,
-				$configs[$i]['type'], true);
-		}
+        $files = array();
 
-		$this->configFiles = DirHelper::flattenTree($files);
+        for ($i = 0; $i < count($configs); $i++) {
+            $dir = PathHelper::normalizePath($configs[$i]['dir']);
+            $files[$dir] = DirHelper::getFilesByType($dir, $configs[$i]['type'], true);
+        }
 
-		// Create the config objects and push them
-		$this->initConfigs();
-	}
+        $this->configFiles = DirHelper::flattenTree($files);
 
-	/**
-	 * Returns the instane created
-	 *
-	 * @return \Fewlines\Application\Config
-	 */
-	public static function getInstance()
-	{
-		return self::$instance;
-	}
+        // Create the config objects and push them
+        $this->initConfigs();
+    }
 
-	/**
-	 * Create config objects with xml
-	 */
-	private function initConfigs()
-	{
-		for($i = 0; $i < count($this->configFiles); $i++)
-		{
-			$filePath = $this->configFiles[$i];
-			$filename = basename($filePath);
-			$ignore   = preg_match("/^_(.*)$/", $filename);
+    /**
+     * Returns the instane created
+     *
+     * @return \Fewlines\Application\Config
+     */
+    public static function getInstance() {
+        return self::$instance;
+    }
 
-			if(false == $ignore)
-			{
-				$this->xmls[] = new Xml($filePath);
-				$this->loadedConfigFiles[] = $filePath;
-			}
-		}
-	}
+    /**
+     * Create config objects with xml
+     */
+    private function initConfigs() {
+        for ($i = 0; $i < count($this->configFiles); $i++) {
+            $filePath = $this->configFiles[$i];
+            $filename = basename($filePath);
+            $ignore = preg_match("/^_(.*)$/", $filename);
 
-	/**
-	 * Gets elements by path
-	 * sequence (in all xml files)
-	 *
-	 * @param  string $path
-	 * @return array
-	 */
-	public function getElementsByPath($path)
-	{
-		$elements = array();
+            if (false == $ignore) {
+                $this->xmls[] = new Xml($filePath);
+                $this->loadedConfigFiles[] = $filePath;
+            }
+        }
+    }
 
-		foreach($this->xmls as $xml)
-		{
-			$result = $xml->getElementsByPath($path);
+    /**
+     * Gets elements by path
+     * sequence (in all xml files)
+     *
+     * @param  string $path
+     * @return array
+     */
+    public function getElementsByPath($path) {
+        $elements = array();
 
-			if(false != $result)
-			{
-				$elements[] = $result;
-			}
-		}
+        foreach ($this->xmls as $xml) {
+            $result = $xml->getElementsByPath($path);
 
-		return ArrayHelper::flatten($elements);
-	}
+            if (false != $result) {
+                $elements[] = $result;
+            }
+        }
 
-	/**
-	 * Gets a element by path
-	 * sequence (searched in all xml files)
-	 * Try to only use this if you know what
-	 * you will get (e.g. a single element)
-	 * Will Return the first result which is found.
-	 *
-	 * @param  string $path
-	 * @return \Fewlines\Xml\Tree\Element|boolean
-	 */
-	public function getElementByPath($path)
-	{
-		foreach($this->xmls as $xml)
-		{
-			$result = $xml->getElementByPath($path);
+        return ArrayHelper::flatten($elements);
+    }
 
-			if(false != $result)
-			{
-				return $result;
-			}
-		}
+    /**
+     * Gets a element by path
+     * sequence (searched in all xml files)
+     * Try to only use this if you know what
+     * you will get (e.g. a single element)
+     * Will Return the first result which is found.
+     *
+     * @param  string $path
+     * @return \Fewlines\Xml\Tree\Element|boolean
+     */
+    public function getElementByPath($path) {
+        foreach ($this->xmls as $xml) {
+            $result = $xml->getElementByPath($path);
 
-		return false;
-	}
+            if (false != $result) {
+                return $result;
+            }
+        }
+
+        return false;
+    }
 }

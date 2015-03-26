@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Application;
 
 use Fewlines\Handler\Error as ErrorHandler;
@@ -13,227 +12,205 @@ use Fewlines\Locale\Locale;
 
 class Application
 {
-	/**
-	 * @var string
-	 */
-	const INSTALL_VIEW = "install";
+    /**
+     * @var string
+     */
+    const INSTALL_VIEW = "install";
 
-	/**
-	 * Tells wether the application was already
-	 * runned or not
-	 *
-	 * @var boolean
-	 */
-	private $isRunning = false;
+    /**
+     * Tells wether the application was already
+     * runned or not
+     *
+     * @var boolean
+     */
+    private $isRunning = false;
 
-	/**
-	 * Instance of the request object
-	 *
-	 * @var \Fewlines\Http\Request
-	 */
-	private $httpRequest;
+    /**
+     * Instance of the request object
+     *
+     * @var \Fewlines\Http\Request
+     */
+    private $httpRequest;
 
-	/**
-	 * Holds the current template which was
-	 * build together
-	 *
-	 * @var \Fewlines\Template\Template
-	 */
-	private $template;
+    /**
+     * Holds the current template which was
+     * build together
+     *
+     * @var \Fewlines\Template\Template
+     */
+    private $template;
 
-	/**
-	 * Holds the config object (config files
-	 * defined by the user)
-	 *
-	 * @var \Fewlines\Application\Config
-	 */
-	private $config;
+    /**
+     * Holds the config object (config files
+     * defined by the user)
+     *
+     * @var \Fewlines\Application\Config
+     */
+    private $config;
 
-	/**
-	 * Inits the application components
-	 */
-	public function __construct()
-	{
-		// Set locale
-		Locale::set('de');
+    /**
+     * Inits the application components
+     */
+    public function __construct() {
 
-		// Register sessions
-		Session::startSession();
-		Session::initCookies();
+        // Set locale
+        Locale::set('de');
 
-		// Register required components
-		$this->registerHttpRequest();
-		$this->registerTemplate();
-	}
+        // Register sessions
+        Session::startSession();
+        Session::initCookies();
 
-	/**
-	 * Set the dirs which contains the config
-	 * files
-	 *
-	 * @param  array $configDirs
-	 * @return \Fewlines\Application\Application
-	 */
-	public function setConfig($configDirs)
-	{
-		$this->config = new Config($configDirs);
-		return $this;
-	}
+        // Register required components
+        $this->registerHttpRequest();
+        $this->registerTemplate();
+    }
 
-	/**
-	 * Gets all http request informations
-	 */
-	public function registerHttpRequest()
-	{
-		$this->httpRequest = HttpRequest::getInstance();
-	}
+    /**
+     * Set the dirs which contains the config
+     * files
+     *
+     * @param  array $configDirs
+     * @return \Fewlines\Application\Application
+     */
+    public function setConfig($configDirs) {
+        $this->config = new Config($configDirs);
+        return $this;
+    }
 
-	/**
-	 * Get the template with the
-	 * http request
-	 */
-	private function registerTemplate()
-	{
-		$this->template = new Template(
-				$this->httpRequest->getUrlMethodContents()
-			);
-	}
+    /**
+     * Gets all http request informations
+     */
+    public function registerHttpRequest() {
+        $this->httpRequest = HttpRequest::getInstance();
+    }
 
-	/**
-	 * Renders the applications frontend
-	 */
-	private function renderApplication($args = array())
-	{
-		$this->registerErrorHandler();
-		$this->template->renderAll($args);
-	}
+    /**
+     * Get the template with the
+     * http request
+     */
+    private function registerTemplate() {
+        $this->template = new Template($this->httpRequest->getUrlMethodContents());
+    }
 
-	/**
-	 * Runs the application
-	 *
-	 * @return boolean
-	 */
-	public function run()
-	{
-		$this->isRunning = true;
+    /**
+     * Renders the applications frontend
+     */
+    private function renderApplication($args = array()) {
+        $this->registerErrorHandler();
+        $this->template->renderAll($args);
+    }
 
-		// Check if application is installed already
-		if(false == $this->isInstalled())
-		{
-			$viewName = $this->template->getView()->getRealName();
+    /**
+     * Runs the application
+     *
+     * @return boolean
+     */
+    public function run() {
+        $this->isRunning = true;
 
-			if($viewName != self::INSTALL_VIEW)
-			{
-				$this->installApplication();
-			}
-			else if($viewName == self::INSTALL_VIEW)
-			{
-				$this->template->setLayout(self::INSTALL_VIEW);
-			}
-		}
+        // Check if application is installed already
+        if (false == $this->isInstalled()) {
+            $viewName = $this->template->getView()->getRealName();
 
-		try
-		{
-			// Start buffer for application
-			self::startBuffer();
+            if ($viewName != self::INSTALL_VIEW) {
+                $this->installApplication();
+            }
+            else if ($viewName == self::INSTALL_VIEW) {
+                $this->template->setLayout(self::INSTALL_VIEW);
+            }
+        }
 
-			// Render the frontend
-			$this->renderApplication();
-		}
-		catch(\Exception $err)
-		{
-			// Clear just rendered content
-			self::clearBuffer();
+        try {
 
-			// Change layout to exception
-			$this->template->setLayout(EXCEPTION_LAYOUT);
-			$this->renderApplication(array($err));
-		}
-	}
+            // Start buffer for application
+            self::startBuffer();
 
-	/**
-	 * Renders a error manual with a new template
-	 *
-	 * @param  \ErrorException $err
-	 */
-	public static function renderShutdownError($err)
-	{
-		self::clearBuffer();
+            // Render the frontend
+            $this->renderApplication();
+        }
+        catch(\Exception $err) {
 
-		// Create new Template
-		$urlMethods = HttpRequest::getInstance()->getUrlMethodContents();
-		$template   = new Template($urlMethods);
+            // Clear just rendered content
+            self::clearBuffer();
 
-		/**
-		 * Set Exception layout and render it with
-		 * the exception as argument
-		 */
-		$template->setLayout(EXCEPTION_LAYOUT);
-		$template->render(array($err));
-	}
+            // Change layout to exception
+            $this->template->setLayout(EXCEPTION_LAYOUT);
+            $this->renderApplication(array($err));
+        }
+    }
 
-	/**
-	 * Check if the application was already
-	 * installed
-	 *
-	 * @return boolean
-	 */
-	private function isInstalled()
-	{
-		return (bool) Config::getInstance()->getElementByPath('installed');
-	}
+    /**
+     * Renders a error manual with a new template
+     *
+     * @param  \ErrorException $err
+     */
+    public static function renderShutdownError($err) {
+        self::clearBuffer();
 
-	/**
-	 * Leads the user to the installation
-	 */
-	private function installApplication()
-	{
-		// Redirect to the install view
-		$url = array(self::INSTALL_VIEW, "step1");
-		HttpHeader::redirect(UrlHelper::getBaseUrl($url));
-	}
+        // Create new Template
+        $urlMethods = HttpRequest::getInstance()->getUrlMethodContents();
+        $template = new Template($urlMethods);
 
-	/**
-	 * Starts a new buffer
-	 */
-	public static function startBuffer()
-	{
-		ob_start();
-	}
+        /**
+         * Set Exception layout and render it with
+         * the exception as argument
+         */
+        $template->setLayout(EXCEPTION_LAYOUT);
+        $template->renderAll(array($err));
+    }
 
-	/**
-	 * Ends a buffer and deletes all output
-	 * of it
-	 */
-	public static function clearBuffer()
-	{
-		ob_end_flush();
-		ob_clean();
-	}
+    /**
+     * Check if the application was already
+     * installed
+     *
+     * @return boolean
+     */
+    private function isInstalled() {
+        return (bool)Config::getInstance()->getElementByPath('installed');
+    }
 
-	/**
-	 * Returns the state of the application
-	 *
-	 * @return boolean
-	 */
-	public function isRunning()
-	{
-		return $this->isRunning;
-	}
+    /**
+     * Leads the user to the installation
+     */
+    private function installApplication() {
 
-	/**
-	 * Set the error handling function
-	 * to transform erros to execptions
-	 */
-	private function registerErrorHandler()
-	{
-		$handler = new ErrorHandler();
+        // Redirect to the install view
+        $url = array(self::INSTALL_VIEW, "step1");
+        HttpHeader::redirect(UrlHelper::getBaseUrl($url));
+    }
 
-		set_error_handler(
-			array($handler, 'handleError')
-		);
+    /**
+     * Starts a new buffer
+     */
+    public static function startBuffer() {
+        ob_start();
+    }
 
-		register_shutdown_function(
-			array($handler, 'handleShutdown')
-		);
-	}
+    /**
+     * Ends a buffer and deletes all output
+     * of it
+     */
+    public static function clearBuffer() {
+        ob_end_flush();
+        ob_clean();
+    }
+
+    /**
+     * Returns the state of the application
+     *
+     * @return boolean
+     */
+    public function isRunning() {
+        return $this->isRunning;
+    }
+
+    /**
+     * Set the error handling function
+     * to transform erros to execptions
+     */
+    private function registerErrorHandler() {
+        $handler = new ErrorHandler();
+        set_error_handler(array($handler, 'handleError'));
+        register_shutdown_function(array($handler, 'handleShutdown'));
+    }
 }

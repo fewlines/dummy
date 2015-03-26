@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Http;
 
 class Header
@@ -9,18 +8,16 @@ class Header
 	 *
 	 * @return array
 	 */
-	public static function getHeaders()
-	{
+	public static function getHeaders() {
 		return getallheaders();
 	}
 
 	/**
 	 * Sets the 404 header
 	 */
-	public static function setHeader404()
-	{
+	public static function setHeader404() {
 		header("HTTP/1.0 404 Not Found");
-		header("Status: 404 Not Found"); // FastCGI
+		header("Status: 404 Not Found");
 	}
 
 	/**
@@ -28,8 +25,7 @@ class Header
 	 *
 	 * @return integer
 	 */
-	public static function getStatusCode()
-	{
+	public static function getStatusCode() {
 		return http_response_code();
 	}
 
@@ -38,8 +34,7 @@ class Header
 	 *
 	 * @param  string $location
 	 */
-	public static function redirect($location)
-	{
+	public static function redirect($location) {
 		header("Location: " . $location);
 		exit;
 	}

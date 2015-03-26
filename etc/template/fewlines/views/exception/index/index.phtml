@@ -28,7 +28,7 @@
 							<?php
 								if(true == array_key_exists('line', $trace) && true == array_key_exists('file', $trace))
 								{
-									echo $this->insert('components/file-preview', array(
+									echo $this->render('components/file-preview', array(
 										"file" => $trace['file'],
 										"line" => $trace['line']
 									));
@@ -49,7 +49,7 @@
 		<?php endif; ?>
 		<div class="preview">
 			<?=
-				$this->insert('components/file-preview', array(
+				$this->render('components/file-preview', array(
 					"file"  => $exception->getFile(),
 					"line"  => $exception->getLine(),
 					"depth" => 8

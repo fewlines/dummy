@@ -53,6 +53,7 @@ define("AUTLOADER_LC",       "\Fewlines\Autoloader\Autoloader::loadClass");
 define("URL_LAYOUT_ROUTE",   "/view:index/action:index");
 define("FNC_REGEX_PARSER",   "/\{\{([^\}]*)\}\}/");
 define("DEVELOPER_DEBUG",    true);
+define("DR_SP",              '/');
 
 /**
  * Set include paths for the autoloader

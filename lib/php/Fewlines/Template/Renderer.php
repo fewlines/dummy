@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Template;
 
 use Fewlines\Http\Header as HttpHeader;
@@ -9,50 +8,45 @@ use Fewlines\Template\Template;
 
 class Renderer
 {
-	/**
-	 * A array of all md5 hashes to save
-	 * performmance
-	 *
-	 * @var array
-	 */
-	private static $md5VarHashmap = array(
-		'file', 'config', 'varname', 'content', 'html'
-	);
 
-	/**
-	 * The result of the controller to display
-	 * in the view
-	 *
-	 * @var string
-	 */
-	private $controller;
+    /**
+     * A array of all md5 hashes to save
+     * performmance
+     *
+     * @var array
+     */
+    private static $md5VarHashmap = array('file', 'config', 'varname', 'content', 'html');
 
-	/**
+    /**
+     * The result of the controller to display
+     * in the view
+     *
+     * @var string
+     */
+    private $controller;
+
+    /**
      * Init the renderer
-	 */
-	public function __construct()
-	{
-		$this->initHashmap();
-	}
+     */
+    public function __construct() {
+        $this->initHashmap();
+    }
 
-	/**
-	 * Init hashmap for a clean
-	 * html render
-	 */
-	private function initHashmap()
-	{
-		// Calculate hashmaps (if they weren't just calculated)
-		if(false == ArrayHelper::isAssociative(self::$md5VarHashmap))
-		{
-			for($i = 0; $i < count(self::$md5VarHashmap); $i++)
-			{
-				$name = self::$md5VarHashmap[$i];
-				self::$md5VarHashmap[$name] = md5($name);
+    /**
+     * Init hashmap for a clean
+     * html render
+     */
+    private function initHashmap() {
+        // Calculate hashmaps (if they weren't just calculated)
+        if (false == ArrayHelper::isAssociative(self::$md5VarHashmap)) {
+            for ($i = 0; $i < count(self::$md5VarHashmap); $i++) {
+                $name = self::$md5VarHashmap[$i];
+                self::$md5VarHashmap[$name] = md5($name);
 
-				unset(self::$md5VarHashmap[$i]);
-			}
-		}
-	}
+                unset(self::$md5VarHashmap[$i]);
+            }
+        }
+    }
 
 	/**
 	 * Includes a php file and returns the content
@@ -67,8 +61,7 @@ class Renderer
 	 * @param  array  $config
 	 * @return string
 	 */
-	public function getRenderedHtml($file, $config = array())
-	{
+	public function getRenderedHtml($file, $config = array()) {
 		ob_start();
 
 		// Cache old vars
@@ -79,11 +72,7 @@ class Renderer
 		unset($file, $config);
 
 		// Define config variables
-		foreach(
-			${self::$md5VarHashmap['config']}  as
-			${self::$md5VarHashmap['varname']} =>
-			${self::$md5VarHashmap['content']}
-		){
+		foreach(${self::$md5VarHashmap['config']}  as ${self::$md5VarHashmap['varname']} => ${self::$md5VarHashmap['content']}) {
 			${self::$md5VarHashmap['varname']} = (string) ${self::$md5VarHashmap['varname']};
 			${${self::$md5VarHashmap['varname']}} = ${self::$md5VarHashmap['content']};
 		}
@@ -101,77 +90,70 @@ class Renderer
 		return ${self::$md5VarHashmap['html']};
 	}
 
-	public function renderLayout()
-	{
-		$template = Template::getInstance();
-		$view     = $template->getView();
+    public function renderLayout() {
+        $template = Template::getInstance();
+        $view = $template->getView();
 
-		// Call controller from view (if exists)
-		$this->controller = $view->initViewController();
+        // Call controller from view (if exists)
+        $this->controller = $view->initViewController();
 
-		// Set layout
-		$layout = $template->getLayout();
+        // Set layout
+        $layout = $template->getLayout();
 
-		if(true == $this->layout->isDisabled())
-		{
-			if(is_string($this->controller))
-			{
-				echo $this->controller;
-			}
-			else
-			{
-				$this->renderView();
-			}
-		}
-		else
-		{
-			// Render layout
-			echo $this->getRenderedHtml($layout->getPath());
-		}
-	}
+        if (true == $this->layout->isDisabled()) {
+            if (is_string($this->controller)) {
+                echo $this->controller;
+            }
+            else {
+                $this->renderView();
+            }
+        }
+        else {
 
-	/**
-	 * Renders a view and returns the content
-	 * A optional view if possible. If no view is
-	 * given. The view of the layout will be
-	 * taken.
-	 *
-	 * @param  string $viewPath
-	 */
-	public function renderView($viewPath = '')
-	{
-		// Get current layout
-		$template = Template::getInstance();
-		$view     = $template->getView();
-		$layout   = $template->getLayout();
+            // Render layout
+            echo $this->getRenderedHtml($layout->getPath());
+        }
+    }
 
-		if(true == empty($viewPath))
-		{
-			// Get view and action
-			$file   = $view->getPath();
-			$action = $view->getAction();
+    /**
+     * Renders a view and returns the content
+     * A optional view if possible. If no view is
+     * given. The view of the layout will be
+     * taken.
+     *
+     * @param  string $viewPath
+     */
+    public function renderView($viewPath = '') {
+        // Get current layout
+        $template = Template::getInstance();
+        $view = $template->getView();
+        $layout = $template->getLayout();
 
-			if(is_string($this->controller))
-			{
-				// Output rendered html from the return of the controller
-				echo $this->controller;
-			}
-			else
-			{
-				// Output rendered html (view)
-				echo $this->getRenderedHtml($file);
-			}
-		}
-		else
-		{
-			$file = PathHelper::getRealViewPath($viewPath, '', $layout->getName());
+        if (true == empty($viewPath)) {
 
-			if(true == file_exists($file))
-			{
-				$file = $this->getRenderedHtml($file);
-			}
+            // Get view and action
+            $file = $view->getPath();
+            $action = $view->getAction();
 
-			return $file;
-		}
-	}
+            if (is_string($this->controller)) {
+
+                // Output rendered html from the return of the controller
+                echo $this->controller;
+            }
+            else {
+
+                // Output rendered html (view)
+                echo $this->getRenderedHtml($file);
+            }
+        }
+        else {
+            $file = PathHelper::getRealViewPath($viewPath, '', $layout->getName());
+
+            if (true == file_exists($file)) {
+                $file = $this->getRenderedHtml($file);
+            }
+
+            return $file;
+        }
+    }
 }
