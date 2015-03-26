@@ -140,7 +140,7 @@ class Template extends Renderer
 	 *
 	 * @param array|* $args
 	 */
-	public function render($args = array())
+	public function renderAll($args = array())
 	{
 		if(true == is_array($args))
 		{
@@ -267,14 +267,15 @@ class Template extends Renderer
 	}
 
 	/**
-	 * Includes a component/view inside a view.
+	 * Returns the content of
+	 * the rendered element
 	 *
 	 * @param  string $viewPath
 	 * @param  array  $config
 	 * @param  string $wrapper
 	 * @return string
 	 */
-	public function insert($viewPath, $config = array(), $wrapper = '')
+	public function render($viewPath, $config = array(), $wrapper = '')
 	{
 		$bckt = debug_backtrace();
 		$view = PathHelper::getRealViewPath(ltrim($viewPath, '/'));
@@ -311,6 +312,19 @@ class Template extends Renderer
 		return $content;
 	}
 
+	/**
+	 * Render a component and output
+	 * the content of it
+	 *
+	 * @param  string $viewPath
+	 * @param  array  $config
+	 * @param  string $wrapper
+	 * @return string
+	 */
+	public function insert($viewPath, $config = array(), $wrapper = '')
+	{
+		echo $this->render($viewPath, $config, $wrapper);
+	}
 
 	/**
 	 * ###########################

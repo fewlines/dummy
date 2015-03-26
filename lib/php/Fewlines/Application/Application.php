@@ -104,7 +104,7 @@ class Application
 	private function renderApplication($args = array())
 	{
 		$this->registerErrorHandler();
-		$this->template->render($args);
+		$this->template->renderAll($args);
 	}
 
 	/**
