@@ -41,7 +41,7 @@ class Index extends \Fewlines\Controller\Template
 
         // $this->template->getLayout()->disable(true);
 
-        return $this->template->renderView('index/index');
+        // return $this->template->renderView('index/index');
     }
 
     public function indexAction() {

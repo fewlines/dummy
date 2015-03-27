@@ -32,7 +32,7 @@ class Csv
 	{
 		$data = array();
 
-		if(array_key_exists($file, self::$cache) &&
+		if(true == array_key_exists($file, self::$cache) &&
 			false == $reload)
 		{
 			// Get data from cache
@@ -69,7 +69,7 @@ class Csv
 	{
 		$data = self::transform(self::getFile($file), 2);
 
-		if(array_key_exists($key, $data))
+		if(true == array_key_exists($key, $data))
 		{
 			return $data[$key];
 		}
