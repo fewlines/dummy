@@ -7,12 +7,12 @@ use Fewlines\Helper\ArrayHelper;
 
 class Translator
 {
-	/**
+    /**
      * @var string
      */
     const SUBPATH_SEPERATOR = '.';
 
-	/**
+    /**
      * The type which are supported
      *
      * IMPORTANT: Do not change the order of these
@@ -44,17 +44,17 @@ class Translator
         $entryPointIndex = 0;
 
         // Get entry point file
-        for($i = 0, $len = count($pathParts); $i < $len; $i++) {
+        for ($i = 0, $len = count($pathParts); $i < $len; $i++) {
             $isFile = false;
             $localeDir = PathHelper::getRealPath($localeDir);
 
-            for($x = 0, $lenX = count(self::$translationTypes); $x < $lenX; $x++) {
+            for ($x = 0, $lenX = count(self::$translationTypes); $x < $lenX; $x++) {
                 $fileExt = self::$translationTypes[$x];
                 $pathPart = $pathParts[$i];
                 $isFile = is_file($localeDir . $pathPart . '.' . $fileExt);
 
                 // Escape loop if file was found
-                if(true == $isFile) {
+                if (true == $isFile) {
                     break;
                 }
             }
@@ -63,23 +63,19 @@ class Translator
             $localeDir.= $pathPart;
 
             // Return if entry point was found
-            if(true == $isFile) {
+            if (true == $isFile) {
                 $entryPointIndex = $i;
                 $entryPoint = $localeDir . '.' . $fileExt;
                 break;
             }
         }
 
-        if(true == empty($entryPoint)) {
-            // Throw error (no entry point file was found)
+        if (true == empty($entryPoint)) {
+            throw new Translator\Exception\EntryPointNotFoundException("No entry point (file) found for: " . (string) $path);
         }
 
-        $pathParts = array_slice($pathParts, $entryPointIndex+1);
+        $pathParts = array_slice($pathParts, $entryPointIndex + 1);
         $pathParts = ArrayHelper::clean($pathParts);
-
-        if(count($pathParts) === 0) {
-            // Throw error (if no key is set)
-        }
 
         // The translation value
         $value = '';
@@ -89,7 +85,7 @@ class Translator
          * At this point we are operating with valid values
          */
 
-        switch($fileExt) {
+        switch ($fileExt) {
             case self::$translationTypes[0]:
                 $value = self::getValueByKeyPHP($entryPoint, $pathParts);
                 break;
@@ -99,7 +95,9 @@ class Translator
                 break;
         }
 
-        // @todo: write log if value is empty
+        if(true == empty($value)) {
+            // @todo: write log if value is empty
+        }
 
         return $value;
     }
@@ -113,27 +111,32 @@ class Translator
         $translation = self::getPhpFileArray($file);
         $content = '';
 
-        // Get content by path
-        for($i = 0, $len = count($parts); $i < $len; $i++) {
-            $part = $parts[$i];
+        if(false == empty($parts)) {
+            // Get content by path
+            for ($i = 0, $len = count($parts); $i < $len; $i++) {
+                $part = $parts[$i];
 
-            foreach($translation as $key => $value) {
-                if($key == $part) {
-                    if(true == is_array($value)) {
-                        $translation = $value;
+                foreach ($translation as $key => $value) {
+                    if ($key == $part) {
+                        if (true == is_array($value)) {
+                            $translation = $value;
 
-                        // Add array if last key
-                        if($i == $len-1) {
+                            // Add array if last key
+                            if ($i == $len - 1) {
+                                $content = $value;
+                            }
+                        }
+                        else {
                             $content = $value;
                         }
-                    }
-                    else {
-                        $content = $value;
-                    }
 
-                    break;
+                        break;
+                    }
                 }
             }
+        }
+        else {
+            $content = $translation;
         }
 
         return $content;
@@ -147,25 +150,25 @@ class Translator
      * @return array
      */
     private static function getPhpFileArray($file) {
-    	if(true == array_key_exists($file, self::$phpFileCache)) {
-    		return self::$phpFileCache[$file];
-    	}
-
-    	$translation = include $file;
-
-		if(false == is_array($translation)) {
-            // Throw error (Translation file does not contain an array)
+        if (true == array_key_exists($file, self::$phpFileCache)) {
+            return self::$phpFileCache[$file];
         }
 
-    	self::$phpFileCache[$file] = $translation;
+        $translation = include $file;
 
-    	return $translation;
+        if (false == is_array($translation)) {
+            throw new Translator\Exception\NoTranslationArrayFoundException('The file "' . (string) $file . '" does not contain a return as array');
+        }
+
+        self::$phpFileCache[$file] = $translation;
+
+        return $translation;
     }
 
     /**
      * @param  string $file
      * @param  array  $parts
-     * @return string
+     * @return string|array
      */
     private static function getValueByKeyCSV($file, $parts) {
         $key = implode(self::SUBPATH_SEPERATOR, $parts);

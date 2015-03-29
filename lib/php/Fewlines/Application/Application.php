@@ -52,7 +52,6 @@ class Application
      * Inits the application components
      */
     public function __construct() {
-
         // Set locale
         Locale::set('de');
 

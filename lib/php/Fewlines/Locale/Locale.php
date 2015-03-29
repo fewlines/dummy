@@ -35,10 +35,11 @@ class Locale extends Translator
             case 'en':
             case 'enEN':
             case 'en_EN':
-            default:
-                // @todo: add warning to log (locale not found)
                 self::$locale = self::en_EN;
                 break;
+
+            default:
+                throw new Exception\LocaleKeyNotFoundException('The key "' . (string) $locale . '" was not found');
         }
     }
 

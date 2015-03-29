@@ -37,7 +37,7 @@ class Error
                     $type = 'Warning';
 
                     // Output warning
-                    echo "<b>Warning: </b>" . $errstr;
+                    echo "<br /><b>Warning: </b>" . $errstr;
                     break;
 
                 case E_USER_NOTICE:
