@@ -5,9 +5,15 @@ use Fewlines\Helper\PathHelper;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Template\Template;
+use Fewlines\Helper\NamespaceConfigHelper;
 
 class View
 {
+    /**
+     * @var string
+     */
+    const ACTION_SUFFIX = 'Action';
+
     /**
      * The name of the view (could be overwritten
      * by anything e.g. a 404 error)
@@ -117,15 +123,15 @@ class View
      * Init the view with some options
      * called from the layout
      *
-     * @param string                    $name
-     * @param string                    $action
+     * @param string $name
+     * @param string $action
      */
     public function __construct($name, $action) {
         // Set view components
         $this->setAction($action);
         $this->setName($name);
         $this->setPath($name);
-        $this->setControllerClass("Fewlines\\Controller\\View\\");
+        $this->setControllerClass(NamespaceConfigHelper::getNamespaces('php'));
     }
 
     /**
@@ -162,10 +168,21 @@ class View
     /**
      * Sets the controller namespace
      *
-     * @param string $path
+     * @param array $path
      */
-    private function setControllerClass($path) {
-        $this->controllerClass = $path . $this->name;
+    private function setControllerClass($paths) {
+        $controllerPath = "\\Controller\\View\\";
+        $namespace = "\\Fewlines" . $controllerPath;
+
+        foreach($paths as $path) {
+            $path = "\\" . $path . $controllerPath;
+
+            if(true == class_exists($path . $this->name)) {
+                $namespace = $path;
+            }
+        }
+
+        $this->controllerClass = $namespace . $this->name;
     }
 
     /**
@@ -189,7 +206,7 @@ class View
             $this->controller = new $this->controllerClass;
             $this->controller->init(Template::getInstance());
 
-            return $this->callViewAction($this->getAction() . "Action");
+            return $this->callViewAction($this->getAction() . self::ACTION_SUFFIX);
         }
 
         return null;
