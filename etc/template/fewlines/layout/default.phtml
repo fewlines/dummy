@@ -1,19 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?= $this->getConfig('head/default/title') ?></title>
+		<title><?= $this->translate('layout.meta.title') ?></title>
 	</head>
 	<body>
-		<h1>fewlines</h1>
-		<h2>View</h2>
-
-		<?php $this->translate('install.test') ?>
-
-		<div id="page">
-			<?= $this->renderView() . "\r\n" ?>
-		</div>
-
-		<!-- Include fewlines js library -->
-		<?php $this->insert('/components/javascript') ?>
+		<?= $this->renderView() . "\r\n" ?>
 	</body>
 </html>
