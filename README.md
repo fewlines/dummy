@@ -1,4 +1,4 @@
-fewlines - framwork
+fewlines - framework
 ============
 
 Still in production :)
