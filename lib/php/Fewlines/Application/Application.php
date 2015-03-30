@@ -58,10 +58,6 @@ class Application
         // Register sessions
         Session::startSession();
         Session::initCookies();
-
-        // Register required components
-        $this->registerHttpRequest();
-        $this->registerTemplate();
     }
 
     /**
@@ -106,6 +102,10 @@ class Application
      */
     public function run() {
         $this->isRunning = true;
+
+        // Register required components
+        $this->registerHttpRequest();
+        $this->registerTemplate();
 
         // Check if application is installed already
         if (false == $this->isInstalled()) {

@@ -12,6 +12,6 @@ use Fewlines\Template\Template;
 class Index extends \Fewlines\Controller\Template
 {
     public function indexAction() {
-        echo "Action call: working!";
+
     }
 }
