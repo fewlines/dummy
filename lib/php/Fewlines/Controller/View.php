@@ -7,7 +7,7 @@ use Fewlines\Application\Config;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
 
-class Template implements ITemplate
+class View implements IView
 {
 	/**
 	 * Holds the whole template instance

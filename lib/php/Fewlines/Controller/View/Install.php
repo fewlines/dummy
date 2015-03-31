@@ -5,7 +5,7 @@ namespace Fewlines\Controller\View;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Locale\Locale;
 
-class Install extends \Fewlines\Controller\Template
+class Install extends \Fewlines\Controller\View
 {
 	public function indexAction()
 	{

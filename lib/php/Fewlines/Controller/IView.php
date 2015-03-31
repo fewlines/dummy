@@ -2,7 +2,7 @@
 
 namespace Fewlines\Controller;
 
-interface ITemplate
+interface IView
 {
 	/**
 	 * @param \Fewlines\Template\Template $template

@@ -2,7 +2,7 @@
 
 namespace Fewlines\Controller\View;
 
-class Error extends \Fewlines\Controller\Template
+class Error extends \Fewlines\Controller\View
 {
 	/**
 	 * Holds the current response code

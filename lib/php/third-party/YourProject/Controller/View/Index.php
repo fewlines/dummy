@@ -1,7 +1,7 @@
 <?php
 namespace YourProject\Controller\View;
 
-class Index extends \Fewlines\Controller\Template
+class Index extends \Fewlines\Controller\View
 {
 	public function indexAction() {
 		echo "Action called from: " . __CLASS__;

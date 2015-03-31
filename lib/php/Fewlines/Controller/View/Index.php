@@ -9,7 +9,7 @@ use Fewlines\Form\Form;
 use Fewlines\Locale\Locale;
 use Fewlines\Template\Template;
 
-class Index extends \Fewlines\Controller\Template
+class Index extends \Fewlines\Controller\View
 {
     public function indexAction() {
 
