@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?= $this->getConfig('head/default/title') ?></title>
+		<title><?= $this->translate('layout.meta.title') ?></title>
 	</head>
 	<body>
-		<h1>Layout</h1>
-		<div id="page">
-			<?= $this->renderView() . "\r\n" ?>
-		</div>
-
-		<!-- Include fewlines js library -->
-		<?php $this->insert('/components/javascript') ?>
+		<?= $this->renderView() . "\r\n" ?>
 	</body>
 </html>
