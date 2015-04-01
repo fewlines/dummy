@@ -36,6 +36,11 @@ class Template extends Renderer
     private $routeUrlParts;
 
     /**
+     * @var \Fewlines\Http\Router\Routes\Route
+     */
+    private $activeRoute;
+
+    /**
      * Holds the instances of the used
      * helpers
      *
@@ -64,15 +69,21 @@ class Template extends Renderer
      * Sets the view and layout by the
      * given url parts
      *
-     * @param array $routeUrlParts
+     * @param array|\Fewlines\Http\Router\Routes\Route $routeUrlParts
      */
-    public function __construct($routeUrlParts) {
-
+    public function __construct($route) {
         // Set instance so it can be use as singlteon
         self::$instance = $this;
 
-        // Init layout
-        $this->routeUrlParts = $routeUrlParts;
+        // Check for route
+        if(true == ($route instanceof \Fewlines\Http\Router\Routes\Route)) {
+            $this->activeRoute = $route;
+        }
+        else {
+            // Init layout
+            $this->routeUrlParts = $route;
+        }
+
         $this->setLayout(DEFAULT_LAYOUT);
 
         // Create renderer
@@ -174,26 +185,32 @@ class Template extends Renderer
         $path = PathHelper::getRealPath(LAYOUT_PATH);
         $path = $path . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
 
-        $this->layout = new Layout($layout, $path, $this->routeUrlParts);
+        $this->layout = new Layout($layout, $path);
 
         // Set the new view
         $this->setView();
     }
 
     public function setView() {
-        $view = $this->getRouteUrlPart('view');
-        $action = $this->getRouteUrlPart('action');
-
-        // Set exception layout
-        if ($this->layout->getName() == EXCEPTION_LAYOUT) {
-            $httpRequest = HttpRequest::getInstance();
-
-            $view = $httpRequest->getDefaultDestination('view');
-            $action = $httpRequest->getDefaultDestination('action');
+        if(false == is_null($this->activeRoute)) {
+            $this->view = new View($this->activeRoute);
         }
+        else {
+            $view = $this->getRouteUrlPart('view');
+            $action = $this->getRouteUrlPart('action');
 
-        // Create view
-        $this->view = new View($view, $action);
+            // Set exception layout
+            if ($this->layout->getName() == EXCEPTION_LAYOUT) {
+                $view = $httpRequest->getDefaultDestination('view');
+                $action = $httpRequest->getDefaultDestination('action');
+            }
+
+            // Create view
+            $this->view = new View(array(
+                    'view' => $view,
+                    'action' => $action
+                ));
+        }
     }
 
     /**
@@ -323,7 +340,7 @@ class Template extends Renderer
      * @return *
      */
     public function __get($name) {
-        $controller = $this->view->getController();
+        $controller = $this->view->getViewController();
 
         if (false == is_null($controller) && true == property_exists($controller, $name)) {
             return $controller->{$name};
@@ -379,7 +396,7 @@ class Template extends Renderer
             return call_user_func_array(array($helper, $helperName), $args);
         }
         else {
-            $controller = $this->view->getController();
+            $controller = $this->view->getViewController();
 
             if (false == is_null($controller) && true == method_exists($controller, $name)) {
                 return call_user_func_array(array($controller, $name), $args);

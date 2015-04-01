@@ -10,11 +10,22 @@ use Fewlines\Http\Header as HttpHeader;
 class View implements IView
 {
 	/**
-	 * Holds the whole template instance
+	 * Holds the whole
+	 * template instance
 	 *
 	 * @var \Fewlines\Template\Template
 	 */
 	protected $template;
+
+	/**
+	 * @var \Fewlines\Http\Request
+	 */
+	protected $httpRequest;
+
+	/**
+	 * @var \Fewlines\Http\Response
+	 */
+	protected $httpResponse;
 
 	/**
 	 * Assigns a var to template
@@ -48,6 +59,7 @@ class View implements IView
 	{
 		$this->template    = $template;
 		$this->httpRequest = HttpRequest::getInstance();
+		$this->httpResponse = $this->httpRequest->getResponse();
 	}
 
 	/**

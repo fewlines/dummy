@@ -6,7 +6,6 @@ use Fewlines\Http\Request as HttpRequest;
 
 class Layout
 {
-
     /**
      * @var string
      */
@@ -30,7 +29,7 @@ class Layout
      * @param string $path
      * @param array  $routeUrlParts
      */
-    public function __construct($name, $path, $routeUrlParts) {
+    public function __construct($name, $path) {
         $this->name = $name;
         $this->path = $path;
     }

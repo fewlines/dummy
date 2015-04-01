@@ -21,15 +21,6 @@ class Header
 	}
 
 	/**
-	 * Returns the status code
-	 *
-	 * @return integer
-	 */
-	public static function getStatusCode() {
-		return http_response_code();
-	}
-
-	/**
 	 * Redirects the user
 	 *
 	 * @param  string $location

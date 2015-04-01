@@ -12,6 +12,5 @@ use Fewlines\Template\Template;
 class Index extends \Fewlines\Controller\View
 {
     public function indexAction() {
-
     }
 }

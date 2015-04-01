@@ -13,7 +13,7 @@ class Error extends \Fewlines\Controller\View
 
 	public function indexAction()
 	{
-		$this->responseCode = $this->httpRequest->getStatusCode();
+		$this->responseCode = $this->httpResponse->getStatusCode();
 		$viewName = $this->template->getView()->getRealName();
 
 		$this->assign('responseCode', $this->responseCode);

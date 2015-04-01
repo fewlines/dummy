@@ -1,25 +1,10 @@
 <?php
-
 namespace Fewlines\Http;
 
-use Fewlines\Http\Header;
+use Fewlines\Application\Config;
 
-class Router extends Header
+class Router extends Router\Routes
 {
-	/**
-	 * Default layout of the route url
-	 *
-	 * @var string
-	 */
-	const DEFAULT_URL_LAYOUT_ROUTE = '/view:index/action:index';
-
-	/**
-	 * Current url (raw)
-	 *
-	 * @var string
-	 */
-	private $url;
-
 	/**
 	 * Holds the base url
 	 *
@@ -28,23 +13,51 @@ class Router extends Header
 	private $baseUrl;
 
 	/**
-	 * Init the router with a given url
+	 * @var string
+	 */
+	private $url;
+
+	/**
+	 * The active route will be set
+	 * if the url matches a given route
+	 *
+	 * @var \Fewlines\Http\Router\Routes\Route
+	 */
+	private $activeRoute;
+
+	/**
+	 * Init the router with a
+	 * given url
 	 *
 	 * @param string $url
 	 */
-	public function initRouter($url)
-	{
-		$this->url = $url;
+	public function initRouter() {
+		// Add routes
+		$routes = Config::getInstance()->getElementByPath('route');
+		if ($routes != false) {
+			foreach ($routes->getChildren() as $route) {
+				$this->addRoute($route->getName(), $route->getAttribute('from'), $route->getAttribute('to'));
+			}
+		}
+
+		// Set url components
 		$this->setBaseUrl();
+		$this->url = $_SERVER['REQUEST_URI'];
+
+		// Check if route is active
+		$currentUrl = implode('/', $this->getUrlParts());
+		foreach ($this->routes as $route) {
+			if (ltrim($route->getFrom(), '/') == $currentUrl) {
+				$this->activeRoute = $route;
+			}
+		}
 	}
 
 	/**
 	 * Sets the baseurl
 	 */
-	private function setBaseUrl()
-	{
-		$index = $_SERVER['PHP_SELF'];
-		$this->baseUrl = preg_replace('/index\.php/', '', $index);
+	private function setBaseUrl() {
+		$this->baseUrl = preg_replace('/index\.php/', '', $_SERVER['PHP_SELF']);
 	}
 
 	/**
@@ -52,21 +65,18 @@ class Router extends Header
 	 *
 	 * @return string
 	 */
-	public function getBaseUrl()
-	{
+	public function getBaseUrl() {
 		return $this->baseUrl;
 	}
 
 	/**
-	 * Returns the action route url layout
+	 * Returns the action route
+	 * url layout
 	 *
 	 * @return string
 	 */
-	protected function getUrlLayout()
-	{
-		return defined('URL_LAYOUT_ROUTE')
-				? URL_LAYOUT_ROUTE
-				: self::DEFAULT_URL_LAYOUT_ROUTE;
+	protected function getUrlLayout() {
+		return URL_LAYOUT_ROUTE;
 	}
 
 	/**
@@ -75,8 +85,7 @@ class Router extends Header
 	 *
 	 * @return array
 	 */
-	protected function getUrlPartsGET()
-	{
+	protected function getUrlPartsGET() {
 		return $_GET;
 	}
 
@@ -86,19 +95,8 @@ class Router extends Header
 	 *
 	 * @return array
 	 */
-	protected function getUrlPartsPOST()
-	{
+	protected function getUrlPartsPOST() {
 		return $_POST;
-	}
-
-	/**
-	 * Returns the current route url (raw)
-	 *
-	 * @return string
-	 */
-	public function getRouteUrl()
-	{
-		return $this->url;
 	}
 
 	/**
@@ -107,14 +105,12 @@ class Router extends Header
 	 *
 	 * @return array
 	 */
-	private function getUrlLayoutMethods()
-	{
+	private function getUrlLayoutMethods() {
 		$urlLayoutParts = explode("/", $this->getUrlLayout());
 		$urlLayoutParts = array_filter($urlLayoutParts);
 		$urlLayoutParts = array_values($urlLayoutParts);
 
-		for($i = 0; $i < count($urlLayoutParts); $i++)
-		{
+		for ($i = 0; $i < count($urlLayoutParts); $i++) {
 			$urlLayoutParts[$i] = reset(explode(":", $urlLayoutParts[$i]));
 		}
 
@@ -127,29 +123,31 @@ class Router extends Header
 	 *
 	 * @return string
 	 */
-	private function getUrlLayoutPattern()
-	{
+	private function getUrlLayoutPattern() {
 		$urlLayoutParts = $this->getUrlLayoutMethods();
 		return '/' . implode('|', $urlLayoutParts) . '/';
 	}
 
 	/**
 	 * Returns the url parts relative to
-	 * the layout of the route
+	 * the layout or route
 	 *
-	 * @param  string $layoutRoute
-	 * @return array
+	 * @return array|\Fewlines\Http\Router\Routes\Route
 	 */
-	protected function getRouteUrlParts($layoutRoute)
-	{
+	protected function getRouteUrlParts() {
+
+		if (true ==($this->activeRoute instanceof \Fewlines\Http\Router\Routes\Route)) {
+			return $this->activeRoute;
+		}
+
+		$layoutRoute = $this->getUrlLayout();
 		$urlParts = $this->getUrlParts();
 		$routeUrlContent = array();
 
 		// Set default content with destination
 		$urlLayoutParts = $this->getUrlLayoutMethods();
 
-		for($i = 0; $i < count($urlLayoutParts); $i++)
-		{
+		for ($i = 0; $i < count($urlLayoutParts); $i++) {
 			$method = $urlLayoutParts[$i];
 			$routeUrlContent[$method] = $this->getDefaultDestination($method);
 		}
@@ -159,28 +157,22 @@ class Router extends Header
 		$routeOrder = $matches[0];
 
 		// Parse the url witht the route order
-		if(!empty($urlParts))
-		{
+		if (false == empty($urlParts)) {
+
 			// Get parameters for the application
-			for($i = 0; $i < count($routeOrder); $i++)
-			{
-				if(array_key_exists($i, $urlParts))
-				{
+			for ($i = 0; $i < count($routeOrder); $i++) {
+				if (array_key_exists($i, $urlParts)) {
 					$routeUrlContent[$routeOrder[$i]] = $urlParts[$i];
 				}
 			}
 
 			// Get the other parameters
-			if(count($urlParts) > count($routeOrder))
-			{
+			if (count($urlParts) > count($routeOrder)) {
 				$routeUrlContent['parameters'] = array();
 
-				for($i = count($routeOrder); $i < count($urlParts); $i+=2)
-				{
+				for ($i = count($routeOrder); $i < count($urlParts); $i+= 2) {
 					$key = $urlParts[$i];
-					$content = array_key_exists($i+1, $urlParts)
-								? $urlParts[$i+1]
-								: '';
+					$content = array_key_exists($i + 1, $urlParts) ? $urlParts[$i + 1] : '';
 
 					$routeUrlContent['parameters'][$key] = $content;
 				}
@@ -192,16 +184,13 @@ class Router extends Header
 				$userParams = $routeUrlContent['parameters'];
 
 				// Set user parameters as default get paramters
-				foreach($userParams as $name => $value)
-				{
+				foreach ($userParams as $name => $value) {
 					$_GET[$name] = $value;
 				}
 
 				// Append normal get parts (if set)
-				if(!empty($getParams))
-				{
-					foreach($getParams as $name => $value)
-					{
+				if (false == empty($getParams)) {
+					foreach ($getParams as $name => $value) {
 						$routeUrlContent['parameters'][$name] = $value;
 					}
 				}
@@ -218,17 +207,14 @@ class Router extends Header
 	 * @param  string $method
 	 * @return string
 	 */
-	public function getDefaultDestination($method)
-	{
+	public function getDefaultDestination($method) {
 		$urlLayout = explode('/', $this->getUrlLayout());
 		$urlLayout = array_filter($urlLayout);
 		$urlLayout = array_values($urlLayout);
 		$defaultMethod = 'index';
 
-		for($i = 0; $i < count($urlLayout); $i++)
-		{
-			if(preg_match('/' . $method . ':/', $urlLayout[$i]))
-			{
+		for ($i = 0; $i < count($urlLayout); $i++) {
+			if (true == preg_match('/' . $method . ':/', $urlLayout[$i])) {
 				$defaultMethod = end(explode(':', $urlLayout[$i]));
 			}
 		}
@@ -241,8 +227,7 @@ class Router extends Header
 	 *
 	 * @return array
 	 */
-	protected function getUrlParts()
-	{
+	protected function getUrlParts() {
 		$baseUrlPattern = ltrim($this->getBaseUrl(), "/");
 		$baseUrlPattern = '/' . preg_replace('/\//', '\/', $baseUrlPattern) . '/';
 
@@ -254,14 +239,12 @@ class Router extends Header
 
 		$realParts = array();
 
-		for($i = 0; $i < count($parts); $i++)
-		{
-			if(!empty($parts[$i]))
-			{
+		for ($i = 0; $i < count($parts); $i++) {
+			if (false == empty($parts[$i])) {
+
 				// Check if get parameters are
 				// given in this part
-				if(preg_match('/\?(.*)/', $parts[$i]))
-				{
+				if (true == preg_match('/\?(.*)/', $parts[$i])) {
 					$parts[$i] = reset(explode('?', $parts[$i]));
 				}
 

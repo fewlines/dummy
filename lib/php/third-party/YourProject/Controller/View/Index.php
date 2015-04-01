@@ -9,4 +9,12 @@ class Index extends \Fewlines\Controller\View
 		// Assign version
 		$this->assign('version', $this->getConfig()->getElementByPath('application/version'));
 	}
+
+	public function hueAction(){
+		return 'huteast';
+	}
+
+	public function testrouteAction() {
+		return 'hue he hue h7e hue hu e';
+	}
 }

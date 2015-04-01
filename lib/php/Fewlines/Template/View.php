@@ -1,14 +1,15 @@
 <?php
 namespace Fewlines\Template;
 
+use Fewlines\Template\Template;
 use Fewlines\Helper\PathHelper;
+use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Request as HttpRequest;
-use Fewlines\Template\Template;
-use Fewlines\Helper\NamespaceConfigHelper;
 
 class View
 {
+
     /**
      * @var string
      */
@@ -51,11 +52,26 @@ class View
     private $controllerClass;
 
     /**
+     * Enables when a route is given instead
+     * of the default method
+     *
+     * @var \Fewlines\Http\Router\Routes\Route
+     */
+    private $activeRoute;
+
+    /**
      * Controller instance of the current view
      *
-     * @var \Fewlines\Controller\Template
+     * @var \Fewlines\Controller\View
      */
-    public $controller;
+    public $viewController;
+
+    /**
+     * Controller of the route
+     *
+     * @var \Fewlines\Controller\View
+     */
+    private $routeController;
 
     /**
      * Returns the name of the rendered view
@@ -123,15 +139,23 @@ class View
      * Init the view with some options
      * called from the layout
      *
-     * @param string $name
-     * @param string $action
+     * @param array $urlParts
      */
-    public function __construct($name, $action) {
-        // Set view components
-        $this->setAction($action);
-        $this->setName($name);
-        $this->setPath($name);
-        $this->setControllerClass(NamespaceConfigHelper::getNamespaces('php'));
+    public function __construct($urlParts) {
+        // Set components by default layout
+        if(true == array_key_exists('view', $urlParts) &&
+            true == array_key_exists('action', $urlParts)) {
+            $this->setAction($urlParts['action']);
+            $this->setName($urlParts['view']);
+            $this->setPath($urlParts['view']);
+            $this->setViewControllerClass(NamespaceConfigHelper::getNamespaces('php'));
+        }
+
+        // Set by route
+        if(true == ($urlParts instanceof \Fewlines\Http\Router\Routes\Route)) {
+            $this->activeRoute = $urlParts;
+            $this->setRouteControllerClass($this->activeRoute->getToClass());
+        }
     }
 
     /**
@@ -158,7 +182,7 @@ class View
      * @param string $name
      */
     private function setName($name) {
-        if (is_null($this->realName)) {
+        if (true == is_null($this->realName)) {
             $this->realName = $name;
         }
 
@@ -166,33 +190,93 @@ class View
     }
 
     /**
+     * @return boolean
+     */
+    public function isRouteActive() {
+        return false == is_null($this->activeRoute);
+    }
+
+    /**
      * Sets the controller namespace
      *
      * @param array $path
      */
-    private function setControllerClass($paths) {
+    private function setViewControllerClass($paths) {
         $controllerPath = "\\Controller\\View\\";
         $namespace = "\\Fewlines" . $controllerPath;
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             $path = "\\" . $path . $controllerPath;
 
-            if(true == class_exists($path . $this->name)) {
+            if (true == class_exists($path . $this->name)) {
                 $namespace = $path;
             }
         }
 
         $this->controllerClass = $namespace . $this->name;
+
+        if(false == class_exists($this->controllerClass)) {
+            // Throw exception (controller class not found)
+        }
     }
 
     /**
-     * Returns the instantiated controller
-     * if exists
+     * Set the controller
+     * for the route
      *
-     * @return *
+     * @param string $class
      */
-    public function getController() {
-        return $this->controller;
+    public function setRouteControllerClass($class) {
+        $method = strtolower(HttpRequest::getInstance()->getHttpMethod());
+        $routeMethod = strtolower($this->activeRoute->getType());
+
+        if ($routeMethod == 'any' || $method == $routeMethod) {
+            if (true == class_exists($class)) {
+                $this->controllerClass = $class;
+            }
+            else {
+                // Throw exeception (controller class not found)
+            }
+        }
+        else {
+            throw new View\Exception\InvalidHttpMethodException(
+                    'Invalid HTTP method found'
+                );
+        }
+    }
+
+    /**
+     * Returns the instantiated view
+     * controller if exists
+     *
+     * @return \Fewlines\Controller\View
+     */
+    public function getViewController() {
+        return $this->viewController;
+    }
+
+    /**
+     * Returns the instantiated route
+     * controller if exists
+     *
+     * @return \Fewlines\Controller\View
+     */
+    public function getRouteController() {
+        return $this->routeController;
+    }
+
+    /**
+     * Inits the active controller
+     * (view or route)
+     *
+     * @return null|*
+     */
+    public function initController() {
+        if(false == is_null($this->activeRoute)) {
+            return $this->initRouteController();
+        }
+
+        return $this->initViewController();
     }
 
     /**
@@ -202,11 +286,33 @@ class View
      * @return null|*
      */
     public function initViewController() {
-        if (class_exists($this->controllerClass)) {
-            $this->controller = new $this->controllerClass;
-            $this->controller->init(Template::getInstance());
+        $this->viewController = new $this->controllerClass;
 
+        if(true == ($this->viewController instanceof \Fewlines\Controller\View)) {
+            $this->viewController->init(Template::getInstance());
             return $this->callViewAction($this->getAction() . self::ACTION_SUFFIX);
+        }
+        else {
+            // Throw error (view controller could not be inaialized)
+        }
+
+        return null;
+    }
+
+    /**
+     * Init the controller of a route
+     *
+     * @return null|*
+     */
+    public function initRouteController() {
+        $this->routeController = new $this->controllerClass;
+
+        if(true == ($this->routeController instanceof \Fewlines\Controller\View)) {
+            $this->routeController->init(Template::getInstance());
+            return $this->callRouteMethod($this->activeRoute->getToMethod());
+        }
+        else {
+            // Throw error (route controller can not be inatialized)
         }
 
         return null;
@@ -220,12 +326,28 @@ class View
      * @return *
      */
     private function callViewAction($method) {
-        if (false == method_exists($this->controller, $method)) {
-            throw new Exception\ActionNotFoundException("Could not found the action (method)
-				\"" . $method . "\". Check the controller
-				for it!");
+        if (false == method_exists($this->viewController, $method)) {
+            throw new Exception\ActionNotFoundException('Could not found the action (method) "' . $method . '" - Check the controller
+                "' . $this->controllerClass . '" for it');
         }
 
-        return $this->controller->{$method}();
+        return $this->viewController->{$method}();
+    }
+
+    /**
+     * Calls the method
+     * of the current route
+     * controller
+     *
+     * @param string $method
+     * @return *
+     */
+    private function callRouteMethod($method) {
+        if (false == method_exists($this->routeController, $method)) {
+            throw new Exception\MethodNotFoundException('Could not found the method "' . $method . '" - Check the controller
+                "' . $this->controllerClass . '" for it');
+        }
+
+        return $this->routeController->{$method}();
     }
 }

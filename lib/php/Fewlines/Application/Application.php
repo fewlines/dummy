@@ -92,6 +92,8 @@ class Application
      */
     private function renderApplication($args = array()) {
         $this->registerErrorHandler();
+
+        // Render template
         $this->template->renderAll($args);
     }
 
@@ -120,7 +122,6 @@ class Application
         }
 
         try {
-
             // Start buffer for application
             self::startBuffer();
 
@@ -128,7 +129,6 @@ class Application
             $this->renderApplication();
         }
         catch(\Exception $err) {
-
             // Clear just rendered content
             self::clearBuffer();
 
@@ -147,8 +147,7 @@ class Application
         self::clearBuffer();
 
         // Create new Template
-        $urlMethods = HttpRequest::getInstance()->getUrlMethodContents();
-        $template = new Template($urlMethods);
+        $template = new Template(HttpRequest::getInstance()->getUrlMethodContents());
 
         /**
          * Set Exception layout and render it with

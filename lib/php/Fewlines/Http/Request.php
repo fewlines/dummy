@@ -12,8 +12,15 @@ class Request extends Router
      */
     private static $instance;
 
+    /**
+     * @var \Fewlines\Http\Request\Response
+     */
+    private $response;
+
     public function __construct() {
-        $this->initRouter($_SERVER['REQUEST_URI']);
+        $this->initRouter();
+        $this->response = new Request\Response;
+
         self::$instance = $this;
     }
 
@@ -31,12 +38,12 @@ class Request extends Router
     }
 
     /**
-     * Returns the action route url layout
+     * Returns the response of this request
      *
-     * @return string
+     * @return \Fewlines\Http\Request\Response
      */
-    public function getUrlLayoutRouter() {
-        return $this->getUrlLayout();
+    public function getResponse() {
+        return $this->response;
     }
 
     /**
@@ -83,9 +90,16 @@ class Request extends Router
      * Returns all methods of the route
      * with content
      *
-     * @return array
+     * @return array|\Fewlines\Http\Router\Routes\Route
      */
     public function getUrlMethodContents() {
-        return $this->getRouteUrlParts($this->getUrlLayoutRouter());
+        return $this->getRouteUrlParts();
+    }
+
+    /**
+     * @return string
+     */
+    public function getHttpMethod() {
+        return $_SERVER['REQUEST_METHOD'];
     }
 }
