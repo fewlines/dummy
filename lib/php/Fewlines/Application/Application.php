@@ -5,6 +5,7 @@ use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Handler\Exception as ExceptionHandler;
+use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Template\Template;
 use Fewlines\Session\Session;
@@ -98,6 +99,15 @@ class Application
     }
 
     /**
+     * Sets the environment
+     *
+     * @param string $env
+     */
+    public function setEnv($env) {
+        Environment::set($env);
+    }
+
+    /**
      * Runs the application
      *
      * @return boolean
@@ -108,6 +118,15 @@ class Application
         // Register required components
         $this->registerHttpRequest();
         $this->registerTemplate();
+
+        // Call bootstrap
+        foreach(NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
+            $class = $path . '\\Application\\Bootstrap';
+
+            if(true == class_exists($class)) {
+                $bootstrap = new $class($this);
+            }
+        }
 
         // Check if application is installed already
         if (false == $this->isInstalled()) {

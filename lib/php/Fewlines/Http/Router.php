@@ -36,7 +36,11 @@ class Router extends Router\Routes
 		$routes = Config::getInstance()->getElementByPath('route');
 		if ($routes != false) {
 			foreach ($routes->getChildren() as $route) {
-				$this->addRoute($route->getName(), $route->getAttribute('from'), $route->getAttribute('to'));
+				$name = strtolower($route->getName());
+
+				if (true == preg_match(HTTP_METHODS_PATTERN, $name)) {
+					$this->addRoute($name, $route->getAttribute('from'), $route->getAttribute('to'));
+				}
 			}
 		}
 

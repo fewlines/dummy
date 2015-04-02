@@ -9,7 +9,6 @@ use Fewlines\Http\Request as HttpRequest;
 
 class View
 {
-
     /**
      * @var string
      */
@@ -143,8 +142,7 @@ class View
      */
     public function __construct($urlParts) {
         // Set components by default layout
-        if(true == array_key_exists('view', $urlParts) &&
-            true == array_key_exists('action', $urlParts)) {
+        if (true == array_key_exists('view', $urlParts) && true == array_key_exists('action', $urlParts)) {
             $this->setAction($urlParts['action']);
             $this->setName($urlParts['view']);
             $this->setPath($urlParts['view']);
@@ -152,7 +150,7 @@ class View
         }
 
         // Set by route
-        if(true == ($urlParts instanceof \Fewlines\Http\Router\Routes\Route)) {
+        if (true == ($urlParts instanceof \Fewlines\Http\Router\Routes\Route)) {
             $this->activeRoute = $urlParts;
             $this->setRouteControllerClass($this->activeRoute->getToClass());
         }
@@ -165,7 +163,7 @@ class View
      * @return string
      */
     public function set404Eror() {
-        HttpHeader::setHeader404();
+        HttpHeader::set(404);
         $name = defined('DEFAULT_ERROR_VIEW') ? DEFAULT_ERROR_VIEW : 'error';
 
         // Set the action to index (prevent unexpected actions)
@@ -215,11 +213,9 @@ class View
 
         $this->controllerClass = $namespace . $this->name;
 
-        if(false == class_exists($this->controllerClass)) {
-            throw new View\Exception\ControllerClassNotFoundException(
-                'The class "' . $this->controllerClass . '" for the
-                controller was not found.'
-            );
+        if (false == class_exists($this->controllerClass)) {
+            throw new View\Exception\ControllerClassNotFoundException('The class "' . $this->controllerClass . '" for the
+                controller was not found.');
         }
     }
 
@@ -238,16 +234,12 @@ class View
                 $this->controllerClass = $class;
             }
             else {
-                throw new View\Exception\ControllerClassNotFoundException(
-                    'The class "' . $this->controllerClass . '" for the
-                    controller was not found.'
-                );
+                throw new View\Exception\ControllerClassNotFoundException('The class "' . $this->controllerClass . '" for the
+                    controller was not found.');
             }
         }
         else {
-            throw new View\Exception\InvalidHttpMethodException(
-                    'Invalid HTTP method found'
-                );
+            throw new View\Exception\InvalidHttpMethodException('Invalid HTTP method found');
         }
     }
 
@@ -278,7 +270,7 @@ class View
      * @return null|*
      */
     public function initController() {
-        if(false == is_null($this->activeRoute)) {
+        if (false == is_null($this->activeRoute)) {
             return $this->initRouteController();
         }
 
@@ -294,13 +286,13 @@ class View
     public function initViewController() {
         $this->viewController = new $this->controllerClass;
 
-        if(true == ($this->viewController instanceof \Fewlines\Controller\View)) {
+        if (true == ($this->viewController instanceof \Fewlines\Controller\View)) {
             $this->viewController->init(Template::getInstance());
             return $this->callViewAction($this->getAction() . self::ACTION_SUFFIX);
         }
         else {
             throw new View\Exception\ControllerInitialisationGoneWrongException(
-                'The view controller could not be initialised.
+                'The view controller could not be initialized.
                 Must be instance of \Fewlines\Controller\View'
             );
         }
@@ -316,13 +308,13 @@ class View
     public function initRouteController() {
         $this->routeController = new $this->controllerClass;
 
-        if(true == ($this->routeController instanceof \Fewlines\Controller\View)) {
+        if (true == ($this->routeController instanceof \Fewlines\Controller\View)) {
             $this->routeController->init(Template::getInstance());
             return $this->callRouteMethod($this->activeRoute->getToMethod());
         }
         else {
             throw new View\Exception\ControllerInitialisationGoneWrongException(
-                'The route controller could not be initialised.
+                'The route controller could not be initialized.
                 Must be instance of \Fewlines\Controller\View'
             );
         }
@@ -339,8 +331,7 @@ class View
      */
     private function callViewAction($method) {
         if (false == method_exists($this->viewController, $method)) {
-            throw new View\Exception\ActionNotFoundException(
-                'Could not found the action (method) "' . $method . '"
+            throw new View\Exception\ActionNotFoundException('Could not found the action (method) "' . $method . '"
                 - Check the controller "' . $this->controllerClass . '"
                 for it');
         }
@@ -358,8 +349,7 @@ class View
      */
     private function callRouteMethod($method) {
         if (false == method_exists($this->routeController, $method)) {
-            throw new View\Exception\MethodNotFoundException(
-                'Could not found the method "' . $method . '"
+            throw new View\Exception\MethodNotFoundException('Could not found the method "' . $method . '"
                 - Check the controller "' . $this->controllerClass . '"
                 for it');
         }

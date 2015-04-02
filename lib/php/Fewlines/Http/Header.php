@@ -13,11 +13,22 @@ class Header
 	}
 
 	/**
-	 * Sets the 404 header
+	 * Sets the defined code
+	 *
+	 * @param number $code
 	 */
-	public static function setHeader404() {
-		header("HTTP/1.0 404 Not Found");
-		header("Status: 404 Not Found");
+	public static function set($code) {
+		switch ($code) {
+			case 404:
+				header('HTTP/1.0 404 Not Found');
+				header('Status: 404 Not Found');
+
+				throw new Header\Exception\HttpNotFoundException(
+					'The page couldn\'t be found'
+				);
+
+				break;
+		}
 	}
 
 	/**
