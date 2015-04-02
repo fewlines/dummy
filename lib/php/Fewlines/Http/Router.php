@@ -135,10 +135,17 @@ class Router extends Router\Routes
 	 * @return array|\Fewlines\Http\Router\Routes\Route
 	 */
 	protected function getRouteUrlParts() {
+		/**
+		 * User defined route
+		 */
 
 		if (true ==($this->activeRoute instanceof \Fewlines\Http\Router\Routes\Route)) {
 			return $this->activeRoute;
 		}
+
+		/**
+		 * Standard view, action route handling
+		 */
 
 		$layoutRoute = $this->getUrlLayout();
 		$urlParts = $this->getUrlParts();

@@ -216,7 +216,10 @@ class View
         $this->controllerClass = $namespace . $this->name;
 
         if(false == class_exists($this->controllerClass)) {
-            // Throw exception (controller class not found)
+            throw new View\Exception\ControllerClassNotFoundException(
+                'The class "' . $this->controllerClass . '" for the
+                controller was not found.'
+            );
         }
     }
 
@@ -235,7 +238,10 @@ class View
                 $this->controllerClass = $class;
             }
             else {
-                // Throw exeception (controller class not found)
+                throw new View\Exception\ControllerClassNotFoundException(
+                    'The class "' . $this->controllerClass . '" for the
+                    controller was not found.'
+                );
             }
         }
         else {
@@ -293,7 +299,10 @@ class View
             return $this->callViewAction($this->getAction() . self::ACTION_SUFFIX);
         }
         else {
-            // Throw error (view controller could not be inaialized)
+            throw new View\Exception\ControllerInitialisationGoneWrongException(
+                'The view controller could not be initialised.
+                Must be instance of \Fewlines\Controller\View'
+            );
         }
 
         return null;
@@ -312,7 +321,10 @@ class View
             return $this->callRouteMethod($this->activeRoute->getToMethod());
         }
         else {
-            // Throw error (route controller can not be inatialized)
+            throw new View\Exception\ControllerInitialisationGoneWrongException(
+                'The route controller could not be initialised.
+                Must be instance of \Fewlines\Controller\View'
+            );
         }
 
         return null;
