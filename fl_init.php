@@ -77,7 +77,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
  *
  * array(
  *     "dir"  => PATH_TO_FOLDER
- *     "type" => "xml/php/json/..."
+ *     "type" => "xml"
  * )
  */
 

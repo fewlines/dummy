@@ -1,5 +1,5 @@
 <?php
-namespace Fewlines\Template\Exception;
+namespace Fewlines\Template\View\Exception;
 
 class MethodNotFoundException extends \Exception
 {

@@ -6,7 +6,7 @@ class Route
 	/**
 	 * @var string
 	 */
-	const TO_SEPERATOR = '@';
+	const TO_SEPERATOR = ':';
 
 	/**
 	 * @var string

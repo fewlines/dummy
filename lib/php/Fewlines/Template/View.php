@@ -339,8 +339,10 @@ class View
      */
     private function callViewAction($method) {
         if (false == method_exists($this->viewController, $method)) {
-            throw new Exception\ActionNotFoundException('Could not found the action (method) "' . $method . '" - Check the controller
-                "' . $this->controllerClass . '" for it');
+            throw new View\Exception\ActionNotFoundException(
+                'Could not found the action (method) "' . $method . '"
+                - Check the controller "' . $this->controllerClass . '"
+                for it');
         }
 
         return $this->viewController->{$method}();
@@ -356,8 +358,10 @@ class View
      */
     private function callRouteMethod($method) {
         if (false == method_exists($this->routeController, $method)) {
-            throw new Exception\MethodNotFoundException('Could not found the method "' . $method . '" - Check the controller
-                "' . $this->controllerClass . '" for it');
+            throw new View\Exception\MethodNotFoundException(
+                'Could not found the method "' . $method . '"
+                - Check the controller "' . $this->controllerClass . '"
+                for it');
         }
 
         return $this->routeController->{$method}();
