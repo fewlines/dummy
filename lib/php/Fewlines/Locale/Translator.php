@@ -109,7 +109,7 @@ class Translator
      */
     private static function getValueByKeyPHP($file, $parts) {
         $translation = self::getPhpFileArray($file);
-        $content = '';
+        $content = $translation;
 
         if(false == empty($parts)) {
             // Get content by path
@@ -134,9 +134,6 @@ class Translator
                     }
                 }
             }
-        }
-        else {
-            $content = $translation;
         }
 
         return $content;

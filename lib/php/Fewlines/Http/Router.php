@@ -26,6 +26,14 @@ class Router extends Router\Routes
 	private $activeRoute;
 
 	/**
+	 * The layout the user defined with
+	 * the config
+	 *
+	 * @var string
+	 */
+	private $routeLayout;
+
+	/**
 	 * Init the router with a
 	 * given url
 	 *
@@ -42,6 +50,12 @@ class Router extends Router\Routes
 					$this->addRoute($name, $route->getAttribute('from'), $route->getAttribute('to'));
 				}
 			}
+		}
+
+		// Add layout if exists
+		$layout = $routes->getChildByName('layout');
+		if ($layout != false) {
+			$this->routeLayout = $layout->getContent();
 		}
 
 		// Set url components
@@ -80,7 +94,7 @@ class Router extends Router\Routes
 	 * @return string
 	 */
 	protected function getUrlLayout() {
-		return URL_LAYOUT_ROUTE;
+		return false == is_null($this->routeLayout) ? $this->routeLayout : URL_LAYOUT_ROUTE;
 	}
 
 	/**
@@ -169,7 +183,6 @@ class Router extends Router\Routes
 
 		// Parse the url witht the route order
 		if (false == empty($urlParts)) {
-
 			// Get parameters for the application
 			for ($i = 0; $i < count($routeOrder); $i++) {
 				if (array_key_exists($i, $urlParts)) {
@@ -207,6 +220,8 @@ class Router extends Router\Routes
 				}
 			}
 		}
+
+		// pr($routeUrlContent);
 
 		return $routeUrlContent;
 	}
@@ -250,7 +265,9 @@ class Router extends Router\Routes
 
 		$realParts = array();
 
+		// pr($parts);
 		for ($i = 0; $i < count($parts); $i++) {
+
 			if (false == empty($parts[$i])) {
 
 				// Check if get parameters are
@@ -262,7 +279,7 @@ class Router extends Router\Routes
 				$realParts[] = $parts[$i];
 			}
 		}
-
+		// pr($realParts);
 		return $realParts;
 	}
 }
