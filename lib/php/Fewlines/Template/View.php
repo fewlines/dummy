@@ -5,7 +5,7 @@ use Fewlines\Template\Template;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Http\Header as HttpHeader;
-use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Http\Router;
 
 class View
 {
@@ -167,7 +167,7 @@ class View
         $name = defined('DEFAULT_ERROR_VIEW') ? DEFAULT_ERROR_VIEW : 'error';
 
         // Set the action to index (prevent unexpected actions)
-        $defaultAction = HttpRequest::getInstance()->getDefaultDestination('action');
+        $defaultAction = Router::getInstance()->getDefaultDestination('action');
         $this->setAction($defaultAction);
         $this->setName($name);
 
@@ -226,7 +226,7 @@ class View
      * @param string $class
      */
     public function setRouteControllerClass($class) {
-        $method = strtolower(HttpRequest::getInstance()->getHttpMethod());
+        $method = strtolower(Router::getInstance()->getRequest()->getHttpMethod());
         $routeMethod = strtolower($this->activeRoute->getType());
 
         if ($routeMethod == 'any' || $method == $routeMethod) {

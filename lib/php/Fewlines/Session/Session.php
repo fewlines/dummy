@@ -3,7 +3,7 @@ namespace Fewlines\Session;
 
 use Fewlines\Session\Cookie\Cookie as NativeCookie;
 use Fewlines\Session\Cookie\Session as NativeSession;
-use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Http\Router;
 use Fewlines\Session\Result;
 
 class Session
@@ -68,7 +68,7 @@ class Session
      * @param string  $path
      */
     public function __construct($name, $content, $lifetime = 0, $encrypt = false, $path = '') {
-        $cookiePath = HttpRequest::getInstance()->getBaseUrl();
+        $cookiePath = Router::getInstance()->getBaseUrl();
 
         if ($path != '') {
             $cookiePath.= $path;

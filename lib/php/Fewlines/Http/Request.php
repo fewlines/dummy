@@ -1,9 +1,7 @@
 <?php
 namespace Fewlines\Http;
 
-use Fewlines\Http\Router as Router;
-
-class Request extends Router
+class Request
 {
     /**
      * Holds the instace for singleton getter
@@ -17,28 +15,17 @@ class Request extends Router
      */
     private $response;
 
-    public function __construct() {
-        $this->initRouter();
-        $this->response = new Request\Response;
-
-        self::$instance = $this;
-    }
-
     /**
-     * Get the instance
-     *
-     * @return \Fewlines\Http\Request
+     * Init the request and set is
+     * as singlteon
      */
-    public static function getInstance() {
-        if (is_null(self::$instance)) {
-            new self();
-        }
-
-        return self::$instance;
+    public function __construct() {
+        $this->response = new Request\Response;
     }
 
     /**
-     * Returns the response of this request
+     * Returns the response
+     * of this request
      *
      * @return \Fewlines\Http\Request\Response
      */
@@ -87,19 +74,16 @@ class Request extends Router
     }
 
     /**
-     * Returns all methods of the route
-     * with content
-     *
-     * @return array|\Fewlines\Http\Router\Routes\Route
+     * @return string
      */
-    public function getUrlMethodContents() {
-        return $this->getRouteUrlParts();
+    public function getHttpMethod() {
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     /**
      * @return string
      */
-    public function getHttpMethod() {
-        return $_SERVER['REQUEST_METHOD'];
+    public function getUrl() {
+        return $_SERVER['REQUEST_URI'];
     }
 }

@@ -34,12 +34,24 @@ class Router extends Router\Routes
 	private $routeLayout;
 
 	/**
-	 * Init the router with a
-	 * given url
+	 * Holds the given request
 	 *
-	 * @param string $url
+	 * @var \Fewlines\Http\Request
 	 */
-	public function initRouter() {
+	private $request;
+
+	/**
+	 * @var \Fewlines\Http\Router
+	 */
+	private static $instance;
+
+	/**
+	 * Init the router with a
+	 * given Request
+	 *
+	 * @param \Fewlines\Http\Request $request
+	 */
+	public function __construct(Request $request) {
 		// Add routes
 		$routes = Config::getInstance()->getElementByPath('route');
 		if ($routes != false) {
@@ -60,7 +72,7 @@ class Router extends Router\Routes
 
 		// Set url components
 		$this->setBaseUrl();
-		$this->url = $_SERVER['REQUEST_URI'];
+		$this->url = $request->getUrl();
 
 		// Check if route is active
 		$currentUrl = implode('/', $this->getUrlParts());
@@ -69,6 +81,26 @@ class Router extends Router\Routes
 				$this->activeRoute = $route;
 			}
 		}
+
+		// Save request
+		$this->request = $request;
+
+		// Save instance for further usage
+		self::$instance = $this;
+	}
+
+	/**
+	 * @return \Fewlines\Http\Router
+	 */
+	public static function getInstance() {
+		return self::$instance;
+	}
+
+	/**
+	 * @return \Fewlines\Http\Request
+	 */
+	public function getRequest() {
+		return $this->request;
 	}
 
 	/**
@@ -152,7 +184,7 @@ class Router extends Router\Routes
 	 *
 	 * @return array|\Fewlines\Http\Router\Routes\Route
 	 */
-	protected function getRouteUrlParts() {
+	public function getRouteUrlParts() {
 		/**
 		 * User defined route
 		 */

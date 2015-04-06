@@ -1,7 +1,7 @@
 <?php
 namespace Fewlines\Helper;
 
-use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Http\Router;
 
 class UrlHelper extends \Fewlines\Helper\View\BaseUrl
 {
@@ -16,6 +16,6 @@ class UrlHelper extends \Fewlines\Helper\View\BaseUrl
             $parts = implode("/", $parts);
         }
 
-        return HttpRequest::getInstance()->getBaseUrl() . ltrim($parts, "/");
+        return Router::getInstance()->getBaseUrl() . ltrim($parts, "/");
     }
 }

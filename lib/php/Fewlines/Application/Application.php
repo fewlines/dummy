@@ -5,6 +5,7 @@ use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Handler\Exception as ExceptionHandler;
+use Fewlines\Http\Router;
 use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Template\Template;
@@ -50,11 +51,18 @@ class Application
     private $config;
 
     /**
+     * Simple router
+     *
+     * @var \Fewlines\Http\Router
+     */
+    private $router;
+
+    /**
      * Inits the application components
      */
     public function __construct() {
         // Set locale
-        Locale::set('de');
+        Locale::set(DEFAULT_LOCALE);
 
         // Register sessions
         Session::startSession();
@@ -77,15 +85,26 @@ class Application
      * Gets all http request informations
      */
     public function registerHttpRequest() {
-        $this->httpRequest = HttpRequest::getInstance();
+        $this->httpRequest = new HttpRequest;
+    }
+
+    /**
+     * Init the router
+     *
+     * @param  \Fewlines\Http\Request $request
+     */
+    public function registerRouter(\Fewlines\Http\Request $request) {
+        $this->router = new Router($request);
     }
 
     /**
      * Get the template with the
      * http request
+     *
+     * @param \Fewlines\Http\Router $router
      */
-    private function registerTemplate() {
-        $this->template = new Template($this->httpRequest->getUrlMethodContents());
+    private function registerTemplate(\Fewlines\Http\Router $router) {
+        $this->template = new Template($router->getRouteUrlParts());
     }
 
     /**
@@ -117,7 +136,8 @@ class Application
 
         // Register required components
         $this->registerHttpRequest();
-        $this->registerTemplate();
+        $this->registerRouter($this->httpRequest);
+        $this->registerTemplate($this->router);
 
         // Call bootstrap
         foreach(NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
@@ -166,7 +186,7 @@ class Application
         self::clearBuffer();
 
         // Create new Template
-        $template = new Template(HttpRequest::getInstance()->getUrlMethodContents());
+        $template = new Template(Router::getInstance()->getRouteUrlParts());
 
         /**
          * Set Exception layout and render it with
@@ -183,7 +203,7 @@ class Application
      * @return boolean
      */
     private function isInstalled() {
-        return (bool)Config::getInstance()->getElementByPath('installed');
+        return (bool) Config::getInstance()->getElementByPath('installed');
     }
 
     /**

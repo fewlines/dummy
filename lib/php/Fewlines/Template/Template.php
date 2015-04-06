@@ -6,7 +6,7 @@ use Fewlines\Helper\PathHelper;
 use Fewlines\Locale\Locale;
 use Fewlines\Application\Config;
 use Fewlines\Template\Template;
-use Fewlines\Http\Request as HttpRequest;
+use Fewlines\Http\Router;
 
 class Template extends Renderer
 {
@@ -66,6 +66,11 @@ class Template extends Renderer
     public $arguments = array();
 
     /**
+     * @var \Fewlines\Http\Router
+     */
+    private $router;
+
+    /**
      * Sets the view and layout by the
      * given url parts
      *
@@ -85,6 +90,9 @@ class Template extends Renderer
         }
 
         $this->setLayout(DEFAULT_LAYOUT);
+
+        // Get default router
+        $this->router = Router::getInstance();
 
         // Create renderer
         $this->renderer = new Renderer();
@@ -201,8 +209,8 @@ class Template extends Renderer
 
             // Set exception layout
             if ($this->layout->getName() == EXCEPTION_LAYOUT) {
-                $view = $httpRequest->getDefaultDestination('view');
-                $action = $httpRequest->getDefaultDestination('action');
+                $view = $this->router->getDefaultDestination('view');
+                $action = $this->router->getDefaultDestination('action');
             }
 
             // Create view

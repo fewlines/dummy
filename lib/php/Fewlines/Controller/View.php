@@ -5,7 +5,7 @@ namespace Fewlines\Controller;
 use Fewlines\Helper\UrlHelper;
 use Fewlines\Application\Config;
 use Fewlines\Http\Request as HttpRequest;
-use Fewlines\Http\Header as HttpHeader;
+use Fewlines\Http\Router;
 
 class View implements IView
 {
@@ -28,7 +28,8 @@ class View implements IView
 	protected $httpResponse;
 
 	/**
-	 * Assigns a var to template
+	 * Assigns a var to
+	 * the active template
 	 *
 	 * @param  string $name
 	 * @param  *	  $content
@@ -58,7 +59,7 @@ class View implements IView
 	public function init(\Fewlines\Template\Template &$template)
 	{
 		$this->template    = $template;
-		$this->httpRequest = HttpRequest::getInstance();
+		$this->httpRequest = Router::getInstance()->getRequest();
 		$this->httpResponse = $this->httpRequest->getResponse();
 	}
 
