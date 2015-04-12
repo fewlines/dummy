@@ -15,9 +15,12 @@ use Fewlines\Locale\Locale;
 class Application
 {
     /**
-     * @var string
+     * Determinates if the application
+     * was shutdown
+     *
+     * @var boolean
      */
-    const INSTALL_VIEW = "install";
+    private static $shutdown = false;
 
     /**
      * Tells wether the application was already
@@ -134,37 +137,26 @@ class Application
     public function run() {
         $this->isRunning = true;
 
+        // Start buffer for application
+        self::startBuffer();
+
         // Register required components
         $this->registerHttpRequest();
         $this->registerRouter($this->httpRequest);
         $this->registerTemplate($this->router);
 
-        // Call bootstrap
-        foreach(NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
+        // Get bootstrap class
+        foreach (NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
             $class = $path . '\\Application\\Bootstrap';
-
-            if(true == class_exists($class)) {
-                $bootstrap = new $class($this);
-            }
-        }
-
-        // Check if application is installed already
-        if (false == $this->isInstalled()) {
-            $viewName = $this->template->getView()->getRealName();
-
-            if ($viewName != self::INSTALL_VIEW) {
-                $this->installApplication();
-            }
-            else if ($viewName == self::INSTALL_VIEW) {
-                $this->template->setLayout(self::INSTALL_VIEW);
-            }
         }
 
         try {
-            // Start buffer for application
-            self::startBuffer();
+            // Start bootstrap
+            if (true == class_exists($class)) {
+                $bootstrap = new $class($this);
+            }
 
-            // Render the frontend
+            // Render the components
             $this->renderApplication();
         }
         catch(\Exception $err) {
@@ -183,6 +175,11 @@ class Application
      * @param  \ErrorException $err
      */
     public static function renderShutdownError($err) {
+        if (self::$shutdown == true) {
+            exit;
+        }
+
+        // Clear previous outputs
         self::clearBuffer();
 
         // Create new Template
@@ -194,6 +191,9 @@ class Application
          */
         $template->setLayout(EXCEPTION_LAYOUT);
         $template->renderAll(array($err));
+
+        // Set shutdown flag
+        self::$shutdown = true;
     }
 
     /**
@@ -203,14 +203,13 @@ class Application
      * @return boolean
      */
     private function isInstalled() {
-        return (bool) Config::getInstance()->getElementByPath('installed');
+        return (bool)Config::getInstance()->getElementByPath('installed');
     }
 
     /**
      * Leads the user to the installation
      */
     private function installApplication() {
-
         // Redirect to the install view
         $url = array(self::INSTALL_VIEW, "step1");
         HttpHeader::redirect(UrlHelper::getBaseUrl($url));
@@ -228,8 +227,7 @@ class Application
      * of it
      */
     public static function clearBuffer() {
-        ob_end_flush();
-        ob_clean();
+        ob_end_clean();
     }
 
     /**

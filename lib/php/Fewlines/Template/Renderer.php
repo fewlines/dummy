@@ -37,7 +37,6 @@ class Renderer
      * html render
      */
     private function initHashmap() {
-
         // Calculate hashmaps (if they weren't just calculated)
         if (false == ArrayHelper::isAssociative(self::$md5VarHashmap)) {
             for ($i = 0; $i < count(self::$md5VarHashmap); $i++) {
@@ -82,10 +81,7 @@ class Renderer
         include ${self::$md5VarHashmap['file']};
 
         // Get the output of the buffer form the included file
-        ${self::$md5VarHashmap['html']} = ob_get_contents();
-
-        ob_clean();
-        ob_end_flush();
+        ${self::$md5VarHashmap['html']} = ob_get_clean();
 
         // Return the saved buffer
         return ${self::$md5VarHashmap['html']};
@@ -110,7 +106,6 @@ class Renderer
             }
         }
         else {
-
             // Render layout
             echo $this->getRenderedHtml($layout->getPath());
         }

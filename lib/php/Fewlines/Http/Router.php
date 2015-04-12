@@ -2,6 +2,7 @@
 namespace Fewlines\Http;
 
 use Fewlines\Application\Config;
+use Fewlines\Helper\ArrayHelper;
 
 class Router extends Router\Routes
 {
@@ -58,6 +59,7 @@ class Router extends Router\Routes
 			foreach ($routes->getChildren() as $route) {
 				$name = strtolower($route->getName());
 
+				// Add route to parent
 				if (true == preg_match(HTTP_METHODS_PATTERN, $name)) {
 					$this->addRoute($name, $route->getAttribute('from'), $route->getAttribute('to'));
 				}
@@ -157,8 +159,7 @@ class Router extends Router\Routes
 	 */
 	private function getUrlLayoutMethods() {
 		$urlLayoutParts = explode("/", $this->getUrlLayout());
-		$urlLayoutParts = array_filter($urlLayoutParts);
-		$urlLayoutParts = array_values($urlLayoutParts);
+		$urlLayoutParts = ArrayHelper::clean($urlLayoutParts);
 
 		for ($i = 0; $i < count($urlLayoutParts); $i++) {
 			$urlLayoutParts[$i] = reset(explode(":", $urlLayoutParts[$i]));
@@ -174,8 +175,30 @@ class Router extends Router\Routes
 	 * @return string
 	 */
 	private function getUrlLayoutPattern() {
-		$urlLayoutParts = $this->getUrlLayoutMethods();
-		return '/' . implode('|', $urlLayoutParts) . '/';
+		return '/' . implode('|', $this->getUrlLayoutMethods()) . '/';
+	}
+
+	/**
+	 * Returns a part from the url
+	 * defined by the key
+	 *
+	 * @param  string $key
+	 * @return string
+	 */
+	public function getRouteUrlPart($key) {
+		$parts = $this->getRouteUrlParts();
+		$value = '';
+
+		if (true == ($parts instanceof \Fewlines\Http\Router\Routes\Route)) {
+			$value = '';
+		}
+		else {
+			if (true == array_key_exists($key, $parts)) {
+				$value = $parts[$key];
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -218,7 +241,9 @@ class Router extends Router\Routes
 			// Get parameters for the application
 			for ($i = 0; $i < count($routeOrder); $i++) {
 				if (array_key_exists($i, $urlParts)) {
-					$routeUrlContent[$routeOrder[$i]] = $urlParts[$i];
+					if($urlParts[$i] != '') {
+						$routeUrlContent[$routeOrder[$i]] = $urlParts[$i];
+					}
 				}
 			}
 
@@ -253,8 +278,6 @@ class Router extends Router\Routes
 			}
 		}
 
-		// pr($routeUrlContent);
-
 		return $routeUrlContent;
 	}
 
@@ -267,8 +290,7 @@ class Router extends Router\Routes
 	 */
 	public function getDefaultDestination($method) {
 		$urlLayout = explode('/', $this->getUrlLayout());
-		$urlLayout = array_filter($urlLayout);
-		$urlLayout = array_values($urlLayout);
+		$urlLayout = ArrayHelper::clean($urlLayout);
 		$defaultMethod = 'index';
 
 		for ($i = 0; $i < count($urlLayout); $i++) {
@@ -281,37 +303,40 @@ class Router extends Router\Routes
 	}
 
 	/**
-	 * Returns all parameters from the url
+	 * Returns all parameters
+	 * from the url
 	 *
 	 * @return array
 	 */
-	protected function getUrlParts() {
+	private function getUrlParts() {
 		$baseUrlPattern = ltrim($this->getBaseUrl(), "/");
 		$baseUrlPattern = '/' . preg_replace('/\//', '\/', $baseUrlPattern) . '/';
 
 		$url = preg_replace($baseUrlPattern, '', $this->url);
-
 		$parts = explode('/', $url);
-		$parts = array_filter($parts);
-		$parts = array_values($parts);
+		array_shift($parts);
 
 		$realParts = array();
 
-		// pr($parts);
 		for ($i = 0; $i < count($parts); $i++) {
 
 			if (false == empty($parts[$i])) {
 
-				// Check if get parameters are
-				// given in this part
+				/**
+				 * Check if get parameters are
+				 * given in this part
+				 */
 				if (true == preg_match('/\?(.*)/', $parts[$i])) {
 					$parts[$i] = reset(explode('?', $parts[$i]));
 				}
 
 				$realParts[] = $parts[$i];
 			}
+			else {
+				$realParts[] = '';
+			}
 		}
-		// pr($realParts);
+
 		return $realParts;
 	}
 }

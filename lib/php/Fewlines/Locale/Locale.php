@@ -39,7 +39,7 @@ class Locale extends Translator
                 break;
 
             default:
-                throw new Exception\LocaleKeyNotFoundException('The key "' . (string) $locale . '" was not found');
+                throw new Exception\LocaleKeyNotFoundException('The key "' . (string)$locale . '" was not found');
         }
     }
 

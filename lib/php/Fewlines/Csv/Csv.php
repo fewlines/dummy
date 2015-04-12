@@ -3,7 +3,6 @@ namespace Fewlines\Csv;
 
 class Csv
 {
-
     /**
      * Caches csv file to prevent reloading
      *
@@ -22,7 +21,7 @@ class Csv
         $data = array();
 
         if (false == file_exists($file)) {
-            throw new Exception\CsvFileNotFoundException('The file "' . (string) $file . '" was not found.');
+           return $data;
         }
 
         if (true == array_key_exists($file, self::$cache) && false == $reload) {

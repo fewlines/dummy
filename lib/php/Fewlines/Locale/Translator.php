@@ -13,11 +13,11 @@ class Translator
     const SUBPATH_SEPERATOR = '.';
 
     /**
-     * The type which are supported
+     * The types which are supported
      *
      * IMPORTANT: Do not change the order of these
-     * files. It's use to specify the function to
-     * get the translation string
+     * files. It's used to specify the function which
+     * gets the translation string
      *
      * @var array
      */
@@ -25,7 +25,7 @@ class Translator
 
     /**
      * All cached php translation files
-     * to preven multiple includes
+     * to prevent multiple includes
      *
      * @var array
      */
@@ -62,7 +62,7 @@ class Translator
             // Attach current "dir" to the localdir (next level)
             $localeDir.= $pathPart;
 
-            // Return if entry point was found
+            // Excape loop if entry point was found
             if (true == $isFile) {
                 $entryPointIndex = $i;
                 $entryPoint = $localeDir . '.' . $fileExt;
@@ -70,19 +70,19 @@ class Translator
             }
         }
 
-        if (true == empty($entryPoint)) {
-            throw new Translator\Exception\EntryPointNotFoundException("No entry point (file) found for: " . (string) $path);
-        }
+        // if (true == empty($entryPoint)) {
+        //     throw new Translator\Exception\EntryPointNotFoundException("No entry point (file) found for: " . (string) $path);
+        // }
 
         $pathParts = array_slice($pathParts, $entryPointIndex + 1);
         $pathParts = ArrayHelper::clean($pathParts);
 
-        // The translation value
-        $value = '';
+        // The default translation value
+        $value = $path;
 
         /**
-         * Operate the key function for different file types
-         * At this point we are operating with valid values
+         * Operate with the key functions for different file types.
+         * At this point we are handling valid values
          */
 
         switch ($fileExt) {

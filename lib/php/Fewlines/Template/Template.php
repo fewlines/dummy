@@ -85,10 +85,10 @@ class Template extends Renderer
             $this->activeRoute = $route;
         }
         else {
-            // Init layout
             $this->routeUrlParts = $route;
         }
 
+        // Init layout
         $this->setLayout(DEFAULT_LAYOUT);
 
         // Get default router
@@ -207,10 +207,10 @@ class Template extends Renderer
             $view = $this->getRouteUrlPart('view');
             $action = $this->getRouteUrlPart('action');
 
-            // Set exception layout
+            // Set exception view
             if ($this->layout->getName() == EXCEPTION_LAYOUT) {
-                $view = $this->router->getDefaultDestination('view');
-                $action = $this->router->getDefaultDestination('action');
+                $view = 'exception';
+                $action = 'index';
             }
 
             // Create view

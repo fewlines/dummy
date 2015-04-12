@@ -246,7 +246,7 @@ class Form extends \Fewlines\Dom\Element
         $data = array();
 
         foreach ($this->elements as $element) {
-            $data[$element->getName() ] = $this->getElementValue($element);
+            $data[$element->getName()] = $this->getElementValue($element);
         }
 
         return $data;
@@ -590,66 +590,66 @@ class Form extends \Fewlines\Dom\Element
                 $class = __NAMESPACE__ . "\\Element\\Textarea";
                 $element = new $class;
                 break;
-            }
+        }
 
-            if ($element instanceof \Fewlines\Form\Element) {
-                // Set element name
-                $element->setName($name);
+        if ($element instanceof \Fewlines\Form\Element) {
+            // Set element name
+            $element->setName($name);
 
-                // Set other attributes
-                $this->addElementAttributes($element, $attributes);
+            // Set other attributes
+            $this->addElementAttributes($element, $attributes);
 
-                // Set validation
-                if ($validation != false) {
-                    if (true == ($validation instanceof \Fewlines\Xml\Tree\Element)) {
-                        $element->setValidation($validation->getChildByName('errors'), $validation->getChildByName('options'), $this->getValidationErrors());
+            // Set validation
+            if ($validation != false) {
+                if (true == ($validation instanceof \Fewlines\Xml\Tree\Element)) {
+                    $element->setValidation($validation->getChildByName('errors'), $validation->getChildByName('options'), $this->getValidationErrors());
+                }
+                else if (true == is_array($validation)) {
+                    if (true == array_key_exists('options', $validation) && true == array_key_exists('errors', $validation)) {
+                        $element->setValidation($validation['errors'], $validation['options'], $this->getValidationErrors());
                     }
-                    else if (true == is_array($validation)) {
-                        if (true == array_key_exists('options', $validation) && true == array_key_exists('errors', $validation)) {
-                            $element->setValidation($validation['errors'], $validation['options'], $this->getValidationErrors());
-                        }
-                        else {
-                            throw new Exception\ValidationParametersEmptyException("Please set the keys errors and options for a valid
-							validation of the given element. Use it in the
-							last argument section as array.");
-                        }
+                    else {
+                        throw new Exception\ValidationParametersEmptyException("Please set the keys errors and options for a valid
+						validation of the given element. Use it in the
+						last argument section as array.");
                     }
                 }
             }
-
-            if (false == is_null($element)) {
-                $this->elements[] = $element;
-            }
-
-            return $this;
         }
 
-        /**
-         * @param *     $element
-         * @param array $attributes
-         */
-        public function addElementAttributes($element, $attributes) {
-            foreach ($attributes as $name => $content) {
-                $method = self::SETTER_PREFIX . ucfirst($name);
-
-                if (true == method_exists($element, $method)) {
-                    $element->{$method}($content);
-                }
-
-                $element->addAttribute($name, $content);
-            }
+        if (false == is_null($element)) {
+            $this->elements[] = $element;
         }
 
-        /**
-         * Gets the validation errors
-         *
-         * @return array
-         */
-        public function getValidationErrors() {
-            if (true == ($this->validation instanceof \Fewlines\Form\Validation)) {
-                return $this->validation->getErrors();
+        return $this;
+    }
+
+    /**
+     * @param *     $element
+     * @param array $attributes
+     */
+    public function addElementAttributes($element, $attributes) {
+        foreach ($attributes as $name => $content) {
+            $method = self::SETTER_PREFIX . ucfirst($name);
+
+            if (true == method_exists($element, $method)) {
+                $element->{$method}($content);
             }
 
-            return array();
+            $element->addAttribute($name, $content);
         }
+    }
+
+    /**
+     * Gets the validation errors
+     *
+     * @return array
+     */
+    public function getValidationErrors() {
+        if (true == ($this->validation instanceof \Fewlines\Form\Validation)) {
+            return $this->validation->getErrors();
+        }
+
+        return array();
+    }
 }

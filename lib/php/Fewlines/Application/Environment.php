@@ -9,6 +9,13 @@ class Environment
 	private static $env;
 
 	/**
+	 * @var array
+	 */
+	private static $locals = array(
+			'development', 'testing', 'test', 'local', '127.0.0.1', 'localhost'
+		);
+
+	/**
 	 * Returns the current
 	 * environment
 	 *
@@ -26,9 +33,16 @@ class Environment
 	}
 
 	/**
+	 * @param string $name
+	 */
+	public static function addLocal($name) {
+		self::$locals[] = $name;
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public static function isLocal() {
-		return self::$env == 'development' || self::$env == 'local' || self::$env == '127.0.0.1';
+		return in_array(self::$env, self::$locals);
 	}
 }

@@ -1,4 +1,4 @@
-<?php
+EXCEPTION_LAYOUT<?php
 
 /**
  * fewlines CMS
@@ -47,15 +47,14 @@ define('LAYOUT_FILETYPE',      'phtml');
 define('VIEW_FILETYPE',        'phtml');
 define('DEFAULT_ERROR_VIEW',   'error');
 define('DEFAULT_LAYOUT',       'default');
-define('INSTALL_LAYOUT',       'install');
 define('EXCEPTION_LAYOUT',     'exception');
 define('AUTLOADER_LC',         '\Fewlines\Autoloader\Autoloader::loadClass');
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
 define('FNC_REGEX_PARSER',     '/\{\{([^\}]*)\}\}/');
 define('DEVELOPER_DEBUG',      true);
-define('DR_SP',                '/');
 define('DEFAULT_LOCALE',       'de');
+define('DR_SP',                '/');
 
 /**
  * Set include paths for the autoloader

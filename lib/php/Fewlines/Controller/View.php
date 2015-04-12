@@ -1,5 +1,4 @@
 <?php
-
 namespace Fewlines\Controller;
 
 use Fewlines\Helper\UrlHelper;
@@ -35,16 +34,13 @@ class View implements IView
 	 * @param  *	  $content
 	 * @return *
 	 */
-	protected function assign($name, $content)
-	{
-		if(property_exists($this->template, $name))
-		{
-			throw new Exception\PropertyExistException(
-				"Could not assign the variable
-				\"" . $name . "\". The property
-				already exists."
-			);
-		}
+	protected function assign($name, $content) {
+		// @todo: check template for the property name with reflection
+		// if (true == property_exists($this->template, $name)) {
+		// 	throw new Exception\PropertyExistException("Could not assign the variable
+		// 		\"" . $name . "\". The property
+		// 		already exists.");
+		// }
 
 		$this->template->$name = $content;
 
@@ -56,9 +52,8 @@ class View implements IView
 	 *
 	 * @param  \Fewlines\Template\Template $template
 	 */
-	public function init(\Fewlines\Template\Template &$template)
-	{
-		$this->template    = $template;
+	public function init(\Fewlines\Template\Template &$template) {
+		$this->template = $template;
 		$this->httpRequest = Router::getInstance()->getRequest();
 		$this->httpResponse = $this->httpRequest->getResponse();
 	}
@@ -68,8 +63,7 @@ class View implements IView
 	 *
 	 * @return \Fewlines\Application\Config
 	 */
-	protected function getConfig()
-	{
+	protected function getConfig() {
 		return Config::getInstance();
 	}
 
@@ -78,8 +72,7 @@ class View implements IView
 	 *
 	 * @param string $url
 	 */
-	protected function redirect($url)
-	{
+	protected function redirect($url) {
 		HttpHeader::redirect($url);
 	}
 
@@ -89,8 +82,7 @@ class View implements IView
 	 * @param  string|array $parts
 	 * @return string
 	 */
-	protected function getBaseUrl($parts = "")
-	{
+	protected function getBaseUrl($parts = "") {
 		return UrlHelper::getBaseUrl($parts);
 	}
 
@@ -98,8 +90,7 @@ class View implements IView
 	 * @param  string $view
 	 * @return string
 	 */
-	protected function render($view)
-	{
+	protected function render($view) {
 		return $this->template->renderView($view);
 	}
 }
