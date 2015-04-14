@@ -40,9 +40,7 @@ class Renderer
         // Calculate hashmaps (if they weren't just calculated)
         if (false == ArrayHelper::isAssociative(self::$md5VarHashmap)) {
             for ($i = 0; $i < count(self::$md5VarHashmap); $i++) {
-                $name = self::$md5VarHashmap[$i];
-                self::$md5VarHashmap[$name] = md5($name);
-
+                self::$md5VarHashmap[self::$md5VarHashmap[$i]] = md5(self::$md5VarHashmap[$i]);
                 unset(self::$md5VarHashmap[$i]);
             }
         }

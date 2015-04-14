@@ -6,13 +6,13 @@ class Environment
 	/**
 	 * @var string
 	 */
-	private static $env;
+	private $env;
 
 	/**
 	 * @var array
 	 */
-	private static $locals = array(
-			'development', 'testing', 'test', 'local', '127.0.0.1', 'localhost'
+	private $locals = array(
+			'development', 'testing', 'test', 'local'
 		);
 
 	/**
@@ -21,28 +21,28 @@ class Environment
 	 *
 	 * @return string
 	 */
-	public static function get() {
-		return self::$env;
+	public function get() {
+		return $this->env;
 	}
 
 	/**
 	 * @param string $env
 	 */
-	public static function set($env) {
-		self::$env = $env;
+	public function set($env) {
+		$this->env = $env;
 	}
 
 	/**
 	 * @param string $name
 	 */
-	public static function addLocal($name) {
-		self::$locals[] = $name;
+	public function addLocal($name) {
+		$this->locals[] = $name;
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public static function isLocal() {
-		return in_array(self::$env, self::$locals);
+	public function isLocal() {
+		return in_array($this->env, $this->locals);
 	}
 }

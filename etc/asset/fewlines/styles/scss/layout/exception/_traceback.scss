@@ -1,5 +1,4 @@
-.traceback
-{
+.traceback {
 	border-right: 10px solid $darkGray;
 	font-family: $openSansRegular;
 	counter-reset: trace-counter;
@@ -8,21 +7,18 @@
 	 * Trace box
 	 */
 
-	.trace
-	{
+	.trace {
 		position: relative;
 		background: $darkGray;
 		padding: 25px;
 		counter-increment: trace-counter;
 
-		&:not(:last-child)
-		{
+		&:not(:last-child) {
 			margin-bottom: 2px;
 		}
 	}
 
-	.trace:before
-	{
+	.trace:before {
 		position: absolute;
 		top: 0;
 		left: -20px;
@@ -37,27 +33,23 @@
 		content: counter(trace-counter);
 	}
 
-	.trace .class
-	{
+	.trace .class {
 		color: $white;
 		padding-bottom: 10px;
 		margin-bottom: 10px;
 		border-bottom: 1px solid $darkGray2;
 	}
 
-	.trace > .file
-	{
+	.trace > .file {
 		color: $lightGray;
 		font-size: 14px;
 		cursor: pointer;
 
-		.line-number
-		{
+		.line-number {
 			font-family: $openSansBold;
 		}
 
-		.file-preview
-		{
+		.file-preview {
 			font-size: 16px;
 			background: $darkGray;
 			top: 0;
@@ -77,8 +69,7 @@
 			);
 		}
 
-		&:after
-		{
+		&:after {
 			content: "\00BB";
 			position: absolute;
 			right: 10px;
@@ -87,13 +78,11 @@
 			font-size: 16px;
 		}
 
-		&:hover:after
-		{
+		&:hover:after {
 			visibility: visible;
 		}
 
-		&:hover .file-preview
-		{
+		&:hover .file-preview {
 			display: block;
 			opacity: 1;
 			visibility: visible;

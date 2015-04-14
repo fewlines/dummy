@@ -1,14 +1,11 @@
-.exception-page
-{
+.exception-page {
 	#page,
-	#page .content
-	{
+	#page .content {
 		height: 100%;
 	}
 
 	.left,
-	.right
-	{
+	.right {
 		position: relative;
 		float: left;
 		width: 50%;
@@ -17,17 +14,34 @@
 
 		@include box-sizing(border-box);
 
-		&.full
-		{
+		&.full {
 			float: none;
 			margin: 0 auto;
 		}
 	}
 
+	.non-local-error {
+		position: absolute;
+		width: 500px;
+		height: 50px;
+		line-height: 50px;
+		font-family: $openSansLight;
+		text-align: center;
+		font-size: 20px;
+		color: $white;
+		background: $violett;
+		top: 50%;
+		left: 50%;
+		margin-left: -250px;
+		margin-top: -25px;
+
+		@include animation(shake-opacity 0.4s linear 1s);
+	}
+
 	/**
 	 * Import exception component styles
 	 */
-	
+
 	@import "exception/traceback";
 	@import "exception/details";
 	@import "exception/file-preview";

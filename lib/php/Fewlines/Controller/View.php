@@ -27,6 +27,11 @@ class View implements IView
 	protected $httpResponse;
 
 	/**
+	 * @var array
+	 */
+	private $usedAssignNames = array();
+
+	/**
 	 * Assigns a var to
 	 * the active template
 	 *
@@ -35,14 +40,16 @@ class View implements IView
 	 * @return *
 	 */
 	protected function assign($name, $content) {
-		// @todo: check template for the property name with reflection
-		// if (true == property_exists($this->template, $name)) {
-		// 	throw new Exception\PropertyExistException("Could not assign the variable
-		// 		\"" . $name . "\". The property
-		// 		already exists.");
-		// }
+		if (true == property_exists($this->template, $name)) {
+			if(false == in_array($name, $this->usedAssignNames)) {
+				throw new Exception\PropertyExistException("Could not assign the variable
+					\"" . $name . "\". The property
+					already exists.");
+			}
+		}
 
 		$this->template->$name = $content;
+		$this->usedAssignNames[] = $name;
 
 		return $content;
 	}

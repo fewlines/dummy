@@ -154,7 +154,9 @@ class Translator
         $translation = include $file;
 
         if (false == is_array($translation)) {
-            throw new Translator\Exception\NoTranslationArrayFoundException('The file "' . (string) $file . '" does not contain a return as array');
+            throw new Translator\Exception\NoTranslationArrayFoundException(
+                'The file "' . (string) $file . '" does not contain a return as array'
+            );
         }
 
         self::$phpFileCache[$file] = $translation;

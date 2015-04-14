@@ -17,15 +17,30 @@ class Header
 	 *
 	 * @param number $code
 	 */
-	public static function set($code) {
+	public static function set($code, $throw = true) {
 		switch ($code) {
 			case 404:
 				header('HTTP/1.0 404 Not Found');
 				header('Status: 404 Not Found');
 
-				throw new Header\Exception\HttpNotFoundException(
-					'The page couldn\'t be found'
-				);
+				if(true == $throw) {
+					throw new Header\Exception\HttpNotFoundException(
+						'The page couldn\'t be found'
+					);
+				}
+
+				break;
+
+			default:
+			case 500:
+				header('HTTP/1.1 500 Internal Server Error');
+				header('Status: 500 Internal Server Error');
+
+				if(true == $throw) {
+					throw new Header\Exception\InternalServerErrorException(
+						'Something went wrong'
+					);
+				}
 
 				break;
 		}

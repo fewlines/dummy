@@ -61,7 +61,161 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
  * Include global constants
  */
 /* No files to import found in functions/** */
-/* No files to import found in mixins/** */
+@keyframes shake-opacity {
+  0% {
+    -webkit-transform: translate(0px, 0px) rotate(0deg);
+    opacity: 0.7; }
+  10% {
+    -webkit-transform: translate(-4px, 1px) rotate(-1.5deg);
+    opacity: 0.1; }
+  20% {
+    -webkit-transform: translate(-4px, -4px) rotate(-2.5deg);
+    opacity: 0.4; }
+  30% {
+    -webkit-transform: translate(-3px, -5px) rotate(-1.5deg);
+    opacity: 0; }
+  40% {
+    -webkit-transform: translate(0px, 0px) rotate(0.5deg);
+    opacity: 0.6; }
+  50% {
+    -webkit-transform: translate(0px, 0px) rotate(-2.5deg);
+    opacity: 0.8; }
+  60% {
+    -webkit-transform: translate(-5px, -2px) rotate(1.5deg);
+    opacity: 0.4; }
+  70% {
+    -webkit-transform: translate(-1px, 3px) rotate(-0.5deg);
+    opacity: 0.1; }
+  80% {
+    -webkit-transform: translate(-2px, -2px) rotate(1.5deg);
+    opacity: 0.2; }
+  90% {
+    -webkit-transform: translate(-3px, -3px) rotate(1.5deg);
+    opacity: 0.3; } }
+@-o-keyframes shake-opacity {
+  0% {
+    -webkit-transform: translate(0px, 0px) rotate(0deg);
+    opacity: 0.7; }
+  10% {
+    -webkit-transform: translate(-4px, 1px) rotate(-1.5deg);
+    opacity: 0.1; }
+  20% {
+    -webkit-transform: translate(-4px, -4px) rotate(-2.5deg);
+    opacity: 0.4; }
+  30% {
+    -webkit-transform: translate(-3px, -5px) rotate(-1.5deg);
+    opacity: 0; }
+  40% {
+    -webkit-transform: translate(0px, 0px) rotate(0.5deg);
+    opacity: 0.6; }
+  50% {
+    -webkit-transform: translate(0px, 0px) rotate(-2.5deg);
+    opacity: 0.8; }
+  60% {
+    -webkit-transform: translate(-5px, -2px) rotate(1.5deg);
+    opacity: 0.4; }
+  70% {
+    -webkit-transform: translate(-1px, 3px) rotate(-0.5deg);
+    opacity: 0.1; }
+  80% {
+    -webkit-transform: translate(-2px, -2px) rotate(1.5deg);
+    opacity: 0.2; }
+  90% {
+    -webkit-transform: translate(-3px, -3px) rotate(1.5deg);
+    opacity: 0.3; } }
+@-ms-keyframes shake-opacity {
+  0% {
+    -webkit-transform: translate(0px, 0px) rotate(0deg);
+    opacity: 0.7; }
+  10% {
+    -webkit-transform: translate(-4px, 1px) rotate(-1.5deg);
+    opacity: 0.1; }
+  20% {
+    -webkit-transform: translate(-4px, -4px) rotate(-2.5deg);
+    opacity: 0.4; }
+  30% {
+    -webkit-transform: translate(-3px, -5px) rotate(-1.5deg);
+    opacity: 0; }
+  40% {
+    -webkit-transform: translate(0px, 0px) rotate(0.5deg);
+    opacity: 0.6; }
+  50% {
+    -webkit-transform: translate(0px, 0px) rotate(-2.5deg);
+    opacity: 0.8; }
+  60% {
+    -webkit-transform: translate(-5px, -2px) rotate(1.5deg);
+    opacity: 0.4; }
+  70% {
+    -webkit-transform: translate(-1px, 3px) rotate(-0.5deg);
+    opacity: 0.1; }
+  80% {
+    -webkit-transform: translate(-2px, -2px) rotate(1.5deg);
+    opacity: 0.2; }
+  90% {
+    -webkit-transform: translate(-3px, -3px) rotate(1.5deg);
+    opacity: 0.3; } }
+@-moz-keyframes shake-opacity {
+  0% {
+    -webkit-transform: translate(0px, 0px) rotate(0deg);
+    opacity: 0.7; }
+  10% {
+    -webkit-transform: translate(-4px, 1px) rotate(-1.5deg);
+    opacity: 0.1; }
+  20% {
+    -webkit-transform: translate(-4px, -4px) rotate(-2.5deg);
+    opacity: 0.4; }
+  30% {
+    -webkit-transform: translate(-3px, -5px) rotate(-1.5deg);
+    opacity: 0; }
+  40% {
+    -webkit-transform: translate(0px, 0px) rotate(0.5deg);
+    opacity: 0.6; }
+  50% {
+    -webkit-transform: translate(0px, 0px) rotate(-2.5deg);
+    opacity: 0.8; }
+  60% {
+    -webkit-transform: translate(-5px, -2px) rotate(1.5deg);
+    opacity: 0.4; }
+  70% {
+    -webkit-transform: translate(-1px, 3px) rotate(-0.5deg);
+    opacity: 0.1; }
+  80% {
+    -webkit-transform: translate(-2px, -2px) rotate(1.5deg);
+    opacity: 0.2; }
+  90% {
+    -webkit-transform: translate(-3px, -3px) rotate(1.5deg);
+    opacity: 0.3; } }
+@-webkit-keyframes shake-opacity {
+  0% {
+    -webkit-transform: translate(0px, 0px) rotate(0deg);
+    opacity: 0.7; }
+  10% {
+    -webkit-transform: translate(-4px, 1px) rotate(-1.5deg);
+    opacity: 0.1; }
+  20% {
+    -webkit-transform: translate(-4px, -4px) rotate(-2.5deg);
+    opacity: 0.4; }
+  30% {
+    -webkit-transform: translate(-3px, -5px) rotate(-1.5deg);
+    opacity: 0; }
+  40% {
+    -webkit-transform: translate(0px, 0px) rotate(0.5deg);
+    opacity: 0.6; }
+  50% {
+    -webkit-transform: translate(0px, 0px) rotate(-2.5deg);
+    opacity: 0.8; }
+  60% {
+    -webkit-transform: translate(-5px, -2px) rotate(1.5deg);
+    opacity: 0.4; }
+  70% {
+    -webkit-transform: translate(-1px, 3px) rotate(-0.5deg);
+    opacity: 0.1; }
+  80% {
+    -webkit-transform: translate(-2px, -2px) rotate(1.5deg);
+    opacity: 0.2; }
+  90% {
+    -webkit-transform: translate(-3px, -3px) rotate(1.5deg);
+    opacity: 0.3; } }
 /**
  * Import fonts
  */
@@ -118,11 +272,11 @@ html {
   /**
    * Import exception component styles
    */ }
-  /* line 3, ../scss/layout/_exception.scss */
+  /* line 2, ../scss/layout/_exception.scss */
   .exception-page #page,
   .exception-page #page .content {
     height: 100%; }
-  /* line 9, ../scss/layout/_exception.scss */
+  /* line 7, ../scss/layout/_exception.scss */
   .exception-page .left,
   .exception-page .right {
     position: relative;
@@ -133,11 +287,29 @@ html {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box; }
-    /* line 20, ../scss/layout/_exception.scss */
+    /* line 17, ../scss/layout/_exception.scss */
     .exception-page .left.full,
     .exception-page .right.full {
       float: none;
       margin: 0 auto; }
+  /* line 23, ../scss/layout/_exception.scss */
+  .exception-page .non-local-error {
+    position: absolute;
+    width: 500px;
+    height: 50px;
+    line-height: 50px;
+    font-family: "OpenSans light", Arial, sans-serif;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    background: #7C0E9C;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -25px;
+    -moz-animation: shake-opacity 0.4s linear 1s;
+    -webkit-animation: shake-opacity 0.4s linear 1s;
+    animation: shake-opacity 0.4s linear 1s; }
   /* line 1, ../scss/layout/exception/_traceback.scss */
   .exception-page .traceback {
     border-right: 10px solid #2e2e2e;
@@ -146,16 +318,16 @@ html {
     /**
      * Trace box
      */ }
-    /* line 11, ../scss/layout/exception/_traceback.scss */
+    /* line 10, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace {
       position: relative;
       background: #2e2e2e;
       padding: 25px;
       counter-increment: trace-counter; }
-      /* line 18, ../scss/layout/exception/_traceback.scss */
+      /* line 16, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace:not(:last-child) {
         margin-bottom: 2px; }
-    /* line 24, ../scss/layout/exception/_traceback.scss */
+    /* line 21, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace:before {
       position: absolute;
       top: 0;
@@ -169,21 +341,21 @@ html {
       background: #7C0E9C;
       font-family: Arial;
       content: counter(trace-counter); }
-    /* line 40, ../scss/layout/exception/_traceback.scss */
+    /* line 36, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace .class {
       color: white;
       padding-bottom: 10px;
       margin-bottom: 10px;
       border-bottom: 1px solid #424242; }
-    /* line 48, ../scss/layout/exception/_traceback.scss */
+    /* line 43, ../scss/layout/exception/_traceback.scss */
     .exception-page .traceback .trace > .file {
       color: #BABABA;
       font-size: 14px;
       cursor: pointer; }
-      /* line 54, ../scss/layout/exception/_traceback.scss */
+      /* line 48, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file .line-number {
         font-family: "OpenSans bold", Arial, sans-serif; }
-      /* line 59, ../scss/layout/exception/_traceback.scss */
+      /* line 52, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file .file-preview {
         font-size: 16px;
         background: #2e2e2e;
@@ -201,7 +373,7 @@ html {
         -o-transition: opacity 0.3s, visibility 0.3s;
         -webkit-transition: opacity 0.3s, visibility 0.3s;
         transition: opacity 0.3s, visibility 0.3s; }
-      /* line 80, ../scss/layout/exception/_traceback.scss */
+      /* line 72, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file:after {
         content: "\00BB";
         position: absolute;
@@ -209,10 +381,10 @@ html {
         visibility: hidden;
         color: white;
         font-size: 16px; }
-      /* line 90, ../scss/layout/exception/_traceback.scss */
+      /* line 81, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file:hover:after {
         visibility: visible; }
-      /* line 95, ../scss/layout/exception/_traceback.scss */
+      /* line 85, ../scss/layout/exception/_traceback.scss */
       .exception-page .traceback .trace > .file:hover .file-preview {
         display: block;
         opacity: 1;
@@ -231,36 +403,36 @@ html {
       right: 0;
       padding: 40px 20px;
       border-bottom: 1px solid #424242; }
-      /* line 17, ../scss/layout/exception/_details.scss */
+      /* line 16, ../scss/layout/exception/_details.scss */
       .exception-page .details .message .class-name {
         display: block;
         margin-bottom: 10px;
         color: #BABABA; }
-      /* line 24, ../scss/layout/exception/_details.scss */
+      /* line 22, ../scss/layout/exception/_details.scss */
       .exception-page .details .message span.dark-red {
         font-family: "OpenSans bold", Arial, sans-serif; }
-    /* line 30, ../scss/layout/exception/_details.scss */
+    /* line 27, ../scss/layout/exception/_details.scss */
     .exception-page .details .preview {
       padding: 20px;
       font-family: "OpenSans regular", Arial, sans-serif;
       background: #2e2e2e; }
-  /* line 5, ../scss/layout/exception/_file-preview.scss */
+  /* line 3, ../scss/layout/exception/_file-preview.scss */
   .exception-page .file-preview .file .path {
     color: white; }
-  /* line 10, ../scss/layout/exception/_file-preview.scss */
+  /* line 7, ../scss/layout/exception/_file-preview.scss */
   .exception-page .file-preview .file .lines {
     display: block;
     margin-top: 10px;
     padding: 0 0 0 20px;
     border-left: 3px solid #424242; }
-  /* line 19, ../scss/layout/exception/_file-preview.scss */
+  /* line 15, ../scss/layout/exception/_file-preview.scss */
   .exception-page .file-preview .line {
     display: block;
     color: #BABABA; }
-    /* line 24, ../scss/layout/exception/_file-preview.scss */
+    /* line 19, ../scss/layout/exception/_file-preview.scss */
     .exception-page .file-preview .line td {
       padding: 3px; }
-  /* line 30, ../scss/layout/exception/_file-preview.scss */
+  /* line 24, ../scss/layout/exception/_file-preview.scss */
   .exception-page .file-preview .line.highlight {
     background: #7C0E9C;
     color: white; }

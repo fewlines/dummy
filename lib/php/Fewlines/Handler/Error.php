@@ -6,7 +6,8 @@ use Fewlines\Application\Application;
 class Error
 {
     /**
-     * The message which appears if the application shuts down
+     * The message which appears if
+     * the application shuts down
      *
      * @var string
      */
@@ -19,7 +20,7 @@ class Error
      * @param  string $errstr
      * @param  string $errfile
      * @param  int    $errline
-     * @throws ErrorException IF $exit == true
+     * @throws ErrorException IF $exit is true
      */
     public function handleError($errno, $errstr, $errfile, $errline) {
         $exit = false;

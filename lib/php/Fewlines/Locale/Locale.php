@@ -11,11 +11,6 @@ class Locale extends Translator
     /**
      * @var string
      */
-    const en_EN = 'en_EN';
-
-    /**
-     * @var string
-     */
     private static $locale = 'en_EN';
 
     /**
@@ -25,22 +20,7 @@ class Locale extends Translator
      * @param string $locale
      */
     public static function set($locale) {
-        switch ($locale) {
-            case 'de':
-            case 'deDE':
-            case 'de_DE':
-                self::$locale = self::de_DE;
-                break;
-
-            case 'en':
-            case 'enEN':
-            case 'en_EN':
-                self::$locale = self::en_EN;
-                break;
-
-            default:
-                throw new Exception\LocaleKeyNotFoundException('The key "' . (string)$locale . '" was not found');
-        }
+        self::$locale = $locale;
     }
 
     /**

@@ -95,6 +95,10 @@ class Router extends Router\Routes
 	 * @return \Fewlines\Http\Router
 	 */
 	public static function getInstance() {
+		if (true == is_null(self::$instance)) {
+			self::$instance = new self(new Request);
+		}
+
 		return self::$instance;
 	}
 

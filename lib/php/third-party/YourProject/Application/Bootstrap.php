@@ -1,24 +1,18 @@
 <?php
 namespace YourProject\Application;
 
+use Fewlines\Application\Application;
 use Fewlines\Http\Router;
 use Fewlines\Locale\Locale;
 use Fewlines\Csv\Csv;
+use Fewlines\Http\Header;
 
-class Bootstrap {
-	private $app;
-
+class Bootstrap
+{
 	/**
-	 * @param \Fewlines\Application\Application $app
+	 * @param \Fewlines\Application\Application $application Running application
 	 */
-	public function __construct($app) {
-		$this->app = $app;
-
-		$router = Router::getInstance();
-		$this->setLocale($router->getRouteUrlPart('locale'));
-	}
-
-	private function setLocale($locale) {
-		Locale::set($locale);
+	public function __construct($application) {
+		Locale::set(Router::getInstance()->getRouteUrlPart('locale'));
 	}
 }

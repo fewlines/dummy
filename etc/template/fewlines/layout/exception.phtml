@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>fewlines - Caught exception</title>
+		<title><?= $this->getConfig('application/basename') ?> - An error occured</title>
 
 		<!-- Css include -->
 		<link href="<?= $this->baseUrlHelper('etc/asset/fewlines/styles/css/application.css') ?>" rel="stylesheet" type="text/css" />
 	</head>
 	<body class="exception-page">
 		<div id="page">
-			<?= $this->renderView() . "\r\n" ?>
+			<?php if($this->getEnvironment()->isLocal()): ?>
+			<?= $this->renderView() ?>
+			<?php else: ?>
+			<div class="non-local-error">Something went wrong!</div>
+			<?php endif; ?>
 		</div>
 	</body>
 </html>

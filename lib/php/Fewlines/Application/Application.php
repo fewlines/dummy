@@ -4,7 +4,6 @@ namespace Fewlines\Application;
 use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Http\Request as HttpRequest;
 use Fewlines\Http\Header as HttpHeader;
-use Fewlines\Handler\Exception as ExceptionHandler;
 use Fewlines\Http\Router;
 use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Helper\UrlHelper;
@@ -21,6 +20,14 @@ class Application
      * @var boolean
      */
     private static $shutdown = false;
+
+    /**
+     * The environment for a application
+     * instance
+     *
+     * @var \Fewlines\Application\Environment
+     */
+    private static $environment;
 
     /**
      * Tells wether the application was already
@@ -64,6 +71,12 @@ class Application
      * Inits the application components
      */
     public function __construct() {
+        $this->registerErrorHandler();
+        $this->setConfig();
+
+        // Create environment
+        self::$environment = new Environment;
+
         // Set locale
         Locale::set(DEFAULT_LOCALE);
 
@@ -77,11 +90,9 @@ class Application
      * files
      *
      * @param  array $configDirs
-     * @return \Fewlines\Application\Application
      */
-    public function setConfig($configDirs) {
-        $this->config = new Config($configDirs);
-        return $this;
+    public function setConfig() {
+        $this->config = Config::getInstance();
     }
 
     /**
@@ -93,11 +104,9 @@ class Application
 
     /**
      * Init the router
-     *
-     * @param  \Fewlines\Http\Request $request
      */
-    public function registerRouter(\Fewlines\Http\Request $request) {
-        $this->router = new Router($request);
+    public function registerRouter() {
+        $this->router = Router::getInstance();
     }
 
     /**
@@ -114,19 +123,22 @@ class Application
      * Renders the applications frontend
      */
     private function renderApplication($args = array()) {
-        $this->registerErrorHandler();
-
-        // Render template
+        $this->template->setLayout(DEFAULT_LAYOUT);
         $this->template->renderAll($args);
     }
 
     /**
-     * Sets the environment
-     *
-     * @param string $env
+     * @return \Fewlines\Application\Environment
      */
-    public function setEnv($env) {
-        Environment::set($env);
+    public static function getEnvironment() {
+        return self::$environment;
+    }
+
+    /**
+     * @return \Fewlines\Application\Environment
+     */
+    public static function getEnv() {
+        return self::getEnvironment();
     }
 
     /**
@@ -137,20 +149,23 @@ class Application
     public function run() {
         $this->isRunning = true;
 
-        // Start buffer for application
+        // Start buffer for application output
         self::startBuffer();
 
-        // Register required components
-        $this->registerHttpRequest();
-        $this->registerRouter($this->httpRequest);
-        $this->registerTemplate($this->router);
-
-        // Get bootstrap class
-        foreach (NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
-            $class = $path . '\\Application\\Bootstrap';
-        }
-
         try {
+            // Get bootstrap class
+            foreach (NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
+                $class = $path . '\\Application\\Bootstrap';
+            }
+
+            // Set environment
+            self::$environment->set('local');
+
+            // Register required components
+            $this->registerHttpRequest();
+            $this->registerRouter();
+            $this->registerTemplate($this->router);
+
             // Start bootstrap
             if (true == class_exists($class)) {
                 $bootstrap = new $class($this);
@@ -163,9 +178,12 @@ class Application
             // Clear just rendered content
             self::clearBuffer();
 
+            // Create new template
+            $template = new Template(Router::getInstance()->getRouteUrlParts());
+
             // Change layout to exception
-            $this->template->setLayout(EXCEPTION_LAYOUT);
-            $this->renderApplication(array($err));
+            $template->setLayout(EXCEPTION_LAYOUT);
+            $template->renderAll(array($err));
         }
     }
 
@@ -182,6 +200,9 @@ class Application
         // Clear previous outputs
         self::clearBuffer();
 
+        // Set 500
+        HttpHeader::set(500, false);
+
         // Create new Template
         $template = new Template(Router::getInstance()->getRouteUrlParts());
 
@@ -189,30 +210,12 @@ class Application
          * Set Exception layout and render it with
          * the exception as argument
          */
+
         $template->setLayout(EXCEPTION_LAYOUT);
         $template->renderAll(array($err));
 
         // Set shutdown flag
         self::$shutdown = true;
-    }
-
-    /**
-     * Check if the application was already
-     * installed
-     *
-     * @return boolean
-     */
-    private function isInstalled() {
-        return (bool)Config::getInstance()->getElementByPath('installed');
-    }
-
-    /**
-     * Leads the user to the installation
-     */
-    private function installApplication() {
-        // Redirect to the install view
-        $url = array(self::INSTALL_VIEW, "step1");
-        HttpHeader::redirect(UrlHelper::getBaseUrl($url));
     }
 
     /**
@@ -227,7 +230,9 @@ class Application
      * of it
      */
     public static function clearBuffer() {
-        ob_end_clean();
+        while(false == empty(ob_get_contents())) {
+            ob_end_clean();
+        }
     }
 
     /**

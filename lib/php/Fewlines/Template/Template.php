@@ -7,6 +7,7 @@ use Fewlines\Locale\Locale;
 use Fewlines\Application\Config;
 use Fewlines\Template\Template;
 use Fewlines\Http\Router;
+use Fewlines\Application\Application;
 
 class Template extends Renderer
 {
@@ -77,7 +78,7 @@ class Template extends Renderer
      * @param array|\Fewlines\Http\Router\Routes\Route $routeUrlParts
      */
     public function __construct($route) {
-        // Set instance so it can be use as singlteon
+        // Set instance so it can be use as singleton
         self::$instance = $this;
 
         // Check for route
@@ -87,9 +88,6 @@ class Template extends Renderer
         else {
             $this->routeUrlParts = $route;
         }
-
-        // Init layout
-        $this->setLayout(DEFAULT_LAYOUT);
 
         // Get default router
         $this->router = Router::getInstance();
@@ -190,9 +188,7 @@ class Template extends Renderer
      * @param string $layout
      */
     public function setLayout($layout) {
-        $path = PathHelper::getRealPath(LAYOUT_PATH);
-        $path = $path . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
-
+        $path = PathHelper::getRealPath(LAYOUT_PATH) . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
         $this->layout = new Layout($layout, $path);
 
         // Set the new view
@@ -269,6 +265,13 @@ class Template extends Renderer
      */
     protected function getConfigs($path) {
         return Config::getInstance()->getElementsByPath($path);
+    }
+
+    /**
+     * @return \Fewlines\Application\Application
+     */
+    public function getEnvironment() {
+        return Application::getEnv();
     }
 
     /**

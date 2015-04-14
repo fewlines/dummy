@@ -128,7 +128,7 @@ class View
         $viewFile = PathHelper::getRealViewPath($view, $this->getAction(), $layout);
 
         if (false == file_exists($viewFile)) {
-            $viewFile = $this->set404Eror();
+            HttpHeader::set(404);
         }
 
         $this->path = $viewFile;
@@ -154,24 +154,6 @@ class View
             $this->activeRoute = $urlParts;
             $this->setRouteControllerClass($this->activeRoute->getToClass());
         }
-    }
-
-    /**
-     * Sets the default 404 error
-     * file
-     *
-     * @return string
-     */
-    public function set404Eror() {
-        HttpHeader::set(404);
-        $name = defined('DEFAULT_ERROR_VIEW') ? DEFAULT_ERROR_VIEW : 'error';
-
-        // Set the action to index (prevent unexpected actions)
-        $defaultAction = Router::getInstance()->getDefaultDestination('action');
-        $this->setAction($defaultAction);
-        $this->setName($name);
-
-        return PathHelper::getRealViewPath($name);
     }
 
     /**

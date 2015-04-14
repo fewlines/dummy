@@ -1,14 +1,10 @@
-.file-preview
-{
-	.file
-	{
-		.path
-		{
+.file-preview {
+	.file {
+		.path {
 			color: $white;
 		}
 
-		.lines
-		{
+		.lines {
 			display: block;
 			margin-top: 10px;
 			padding: 0 0 0 20px;
@@ -16,19 +12,16 @@
 		}
 	}
 
-	.line
-	{
+	.line {
 		display: block;
 		color: $lightGray;
 
-		td
-		{
+		td {
 			padding: 3px;
 		}
 	}
 
-	.line.highlight
-	{
+	.line.highlight {
 		background: $violett;
 		color: $white;
 	}

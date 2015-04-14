@@ -50,8 +50,6 @@ class Config
 				");
         }
 
-        self::$instance = $this;
-
         $files = array();
 
         for ($i = 0; $i < count($configs); $i++) {
@@ -63,6 +61,8 @@ class Config
 
         // Create the config objects and push them
         $this->initConfigs();
+
+        self::$instance = $this;
     }
 
     /**
@@ -71,6 +71,10 @@ class Config
      * @return \Fewlines\Application\Config
      */
     public static function getInstance() {
+        if (true == is_null(self::$instance)) {
+            self::$instance = new self(getConfig());
+        }
+
         return self::$instance;
     }
 

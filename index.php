@@ -27,7 +27,6 @@ require_once __DIR__ . '/fl_init.php';
 
 /**
  * Instantiate the application
- * It will be installed by itself
  *
  * -----------------------------------------
  *
@@ -42,9 +41,7 @@ require_once __DIR__ . '/fl_init.php';
 (new \Fewlines\Application\Application)
 
 /**
- * Do not add config dirs which can overwrite
- * the core config files.
+ * Run the application
  */
 
-->setConfig(getConfig())
 ->run();
