@@ -76,8 +76,15 @@ class Request
     /**
      * @return string
      */
-    public function getHttpMethod() {
-        return $_SERVER['REQUEST_METHOD'];
+    public function getProtocol() {
+        return stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true ? 'https://' : 'http://';
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost() {
+        return $_SERVER['HTTP_HOST'];
     }
 
     /**
@@ -85,5 +92,19 @@ class Request
      */
     public function getUrl() {
         return $_SERVER['REQUEST_URI'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullUrl() {
+        return $this->getProtocol() . $this->getHost() . $this->getUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getHttpMethod() {
+        return $_SERVER['REQUEST_METHOD'];
     }
 }

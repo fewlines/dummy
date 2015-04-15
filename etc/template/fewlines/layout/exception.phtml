@@ -9,9 +9,9 @@
 	<body class="exception-page">
 		<div id="page">
 			<?php if($this->getEnvironment()->isLocal()): ?>
-			<?= $this->renderView() ?>
+				<?= $this->renderView() ?>
 			<?php else: ?>
-			<div class="non-local-error">Something went wrong!</div>
+				<div class="non-local-error">Something went wrong!</div>
 			<?php endif; ?>
 		</div>
 	</body>

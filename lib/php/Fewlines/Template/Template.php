@@ -102,6 +102,10 @@ class Template extends Renderer
      * @return \Fewlines\Template\Template
      */
     public static function getInstance() {
+        if(true == is_null(self::$instance)) {
+            return new self(Router::getInstance()->getRouteUrlParts());
+        }
+
         return self::$instance;
     }
 
@@ -195,21 +199,35 @@ class Template extends Renderer
         $this->setView();
     }
 
+    /**
+     * Returns if the current layout is
+     * the layout of an exception
+     *
+     * @return boolean
+     */
+    private function isException() {
+        if($this->layout instanceof \Fewlines\Template\Layout) {
+            return $this->layout->getName() == EXCEPTION_LAYOUT;
+        }
+
+        return false;
+    }
+
     public function setView() {
-        if(false == is_null($this->activeRoute)) {
+        if(false == is_null($this->activeRoute) && !$this->isException()) {
             $this->view = new View($this->activeRoute);
         }
         else {
             $view = $this->getRouteUrlPart('view');
             $action = $this->getRouteUrlPart('action');
 
-            // Set exception view
-            if ($this->layout->getName() == EXCEPTION_LAYOUT) {
+            // Set explicit exception view
+            if ($this->isException()) {
                 $view = 'exception';
                 $action = 'index';
             }
 
-            // Create view
+            // Create new view
             $this->view = new View(array(
                     'view' => $view,
                     'action' => $action

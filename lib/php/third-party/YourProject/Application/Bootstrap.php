@@ -13,6 +13,7 @@ class Bootstrap
 	 * @param \Fewlines\Application\Application $application Running application
 	 */
 	public function __construct($application) {
+		// Application::getEnv()->set('production');
 		Locale::set(Router::getInstance()->getRouteUrlPart('locale'));
 	}
 }

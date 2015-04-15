@@ -2,5 +2,5 @@
 <route>
 	<layout>/locale:de/view:index/action:index</layout>
 	<any from="test/action/potatoe" to="\YourProject\Controller\View\Index:testrouteAction"></any>
-	<get from="test/hue" to="\YourProject\Controller\View\Index:hueAction"></get>
+	<post from="test/hue" to="\YourProject\Controller\View\Index:hueAction"></post>
 </route>

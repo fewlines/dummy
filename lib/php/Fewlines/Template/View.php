@@ -6,6 +6,7 @@ use Fewlines\Helper\PathHelper;
 use Fewlines\Helper\NamespaceConfigHelper;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Router;
+use Fewlines\Application\Application;
 
 class View
 {
@@ -216,12 +217,21 @@ class View
                 $this->controllerClass = $class;
             }
             else {
-                throw new View\Exception\ControllerClassNotFoundException('The class "' . $this->controllerClass . '" for the
-                    controller was not found.');
+                throw new View\Exception\ControllerClassNotFoundException(
+                    'The class "' . $this->controllerClass . '" for the
+                    controller was not found.'
+                );
             }
         }
         else {
-            throw new View\Exception\InvalidHttpMethodException('Invalid HTTP method found');
+            if(Application::getEnv()->isLocal()) {
+                throw new View\Exception\InvalidHttpMethodException(
+                    'Invalid HTTP method found'
+                );
+            }
+            else {
+                HttpHeader::set(404);
+            }
         }
     }
 

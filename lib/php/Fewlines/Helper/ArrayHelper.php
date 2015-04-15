@@ -39,7 +39,8 @@ class ArrayHelper
     }
 
     /**
-     * Checks if the array is an associative array or not
+     * Checks if the array is an
+     * associative array or not
      *
      * @param  array  $array
      * @return boolean

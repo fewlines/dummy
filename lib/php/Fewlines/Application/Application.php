@@ -112,11 +112,9 @@ class Application
     /**
      * Get the template with the
      * http request
-     *
-     * @param \Fewlines\Http\Router $router
      */
-    private function registerTemplate(\Fewlines\Http\Router $router) {
-        $this->template = new Template($router->getRouteUrlParts());
+    private function registerTemplate() {
+        $this->template = Template::getInstance();
     }
 
     /**
@@ -153,25 +151,36 @@ class Application
         self::startBuffer();
 
         try {
+            // Set inital environment
+            self::$environment->setTypes(array(
+                    'production',
+                    'staging',
+                    'development'
+                ));
+
+            self::$environment->addHostname('development', 'Davide-PC');
+            self::$environment->addUrlPattern('development', '/local/');
+
+            // var_dump(Router::getInstance()->getRequest()->getFullUrl());
+            var_dump(self::$environment->isLocal());
+            exit;
+
             // Get bootstrap class
             foreach (NamespaceConfigHelper::getNamespaces('php') as $key => $path) {
                 $class = $path . '\\Application\\Bootstrap';
             }
-
-            // Set environment
-            self::$environment->set('local');
-
-            // Register required components
-            $this->registerHttpRequest();
-            $this->registerRouter();
-            $this->registerTemplate($this->router);
 
             // Start bootstrap
             if (true == class_exists($class)) {
                 $bootstrap = new $class($this);
             }
 
-            // Render the components
+            // Register required components
+            $this->registerHttpRequest();
+            $this->registerRouter();
+            $this->registerTemplate();
+
+            // Render the template
             $this->renderApplication();
         }
         catch(\Exception $err) {
@@ -179,7 +188,7 @@ class Application
             self::clearBuffer();
 
             // Create new template
-            $template = new Template(Router::getInstance()->getRouteUrlParts());
+            $template = Template::getInstance();
 
             // Change layout to exception
             $template->setLayout(EXCEPTION_LAYOUT);
@@ -204,7 +213,7 @@ class Application
         HttpHeader::set(500, false);
 
         // Create new Template
-        $template = new Template(Router::getInstance()->getRouteUrlParts());
+        $template = Template::getInstance();
 
         /**
          * Set Exception layout and render it with
