@@ -106,11 +106,19 @@ class Environment
 	 * @return boolean
 	 */
 	public function isLocal() {
+		$urlPatternsType = $this->checkUrlPatterns();
+		$hostnamesType = $this->checkHostnames();
+
+		if ($urlPatternsType == $hostnamesType) {
+			return $urlPatternsType;
+		}
+
+		// @todo: write function to get type with the highes property
+		return $this->types[0];
 
 		echo "pc: "; var_dump($this->checkHostnames()); echo "<br>";
 		echo "url: "; var_dump($this->checkUrlPatterns());
 
-		// return in_array($this->env, $this->locals);
 		return true;
 	}
 }
