@@ -4,7 +4,7 @@ namespace Fewlines\Application\Environment;
 class Hostname
 {
 	/**
-	 * @var string
+	 * @var \Fewlines\Application\Environment\EnvType
 	 */
 	private $type;
 

@@ -4,7 +4,7 @@ namespace Fewlines\Application\Environment;
 class UrlPattern
 {
 	/**
-	 * @var string
+	 * @var \Fewlines\Application\Environment\EnvType
 	 */
 	private $type;
 
