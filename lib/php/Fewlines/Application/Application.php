@@ -152,18 +152,14 @@ class Application
 
         try {
             // Set inital environment types
-            // self::$environment->setTypes(array('production', 'staging', 'development'));
+            self::$environment->setTypes(array('production:live', 'staging:testing', 'development:local'));
 
-            // self::$environment->addHostname('development', 'Davide-PC');
+            self::$environment->addUrlPattern('production', '/\.local/');
+            // self::$environment->addUrlPattern('staging', '/\.local/');
+            self::$environment->addHostname('development', 'Davide-PC');
             // self::$environment->addHostname('development', 'daria-mini');
-            // self::$environment->addUrlPattern('development', '/\.local/');
 
-            // var_dump(Router::getInstance()->getRequest()->getFullUrl());
-            // var_dump(self::$environment->isLive());
-            
-
-            exit("Environment fixed"); 
-            
+            var_dump(self::$environment->isLive());
 
             // Get bootstrap class
             foreach (NamespaceConfigHelper::getNamespaces('php') as $key => $path) {

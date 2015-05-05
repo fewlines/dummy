@@ -33,7 +33,7 @@ class Environment
 	/**
 	 * @var array
 	 */
-	private $hostnames = array();	
+	private $hostnames = array();
 
 	public function __construct() {
 		$this->router = Router::getInstance();
@@ -176,13 +176,26 @@ class Environment
 		}
 		else if (false != $hostnamesType) {
 			return $hostnamesType;
-			
+
 		}
 		else if (false != $urlPatternsType) {
 			return $urlPatternsType;
 		}
 
-		return $this->types[0];
+		$urlPatternsPrio = array_search($urlPatternsType, $this->types);
+		$hostnamesPrio = array_search($hostnamesType, $this->types);
+
+		if ($urlPatternsPrio && $hostnamesPrio) {
+			$prio = min(array($urlPatternsPrio, $hostnamesPrio));
+		}
+		else if ($urlPatternsPrio && ! $hostnamesPrio) {
+			$prio = $urlPatternsPrio;
+		}
+		else if ($hostnamesPrio && ! $urlPatternsPrio) {
+			$prio = $hostnamesPrio;
+		}
+
+		return $this->types[$prio];
 	}
 
 	/**
@@ -200,6 +213,6 @@ class Environment
 		if (preg_match_all('/' . self::FLAG_FUNCTION_IDENTIFIER . '/', $name)) {
 			$flag = strtolower(end(explode(self::FLAG_FUNCTION_IDENTIFIER, $name)));
 			return $this->getType()->hasFlag($flag);
-		}	
+		}
 	}
 }
