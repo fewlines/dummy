@@ -229,8 +229,7 @@ abstract class Element extends \Fewlines\Dom\Element
 	 */
 	public function validate($value)
 	{
-		if(true == $this->hasValidation())
-		{
+		if(true == $this->hasValidation()) {
 			return $this->validation->validate($value, $this);
 		}
 

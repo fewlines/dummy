@@ -3,7 +3,7 @@ namespace Fewlines\Helper;
 
 use \Fewlines\Application\Config;
 
-class NamespaceConfigHelper
+class NamespaceHelper
 {
 	/**
 	 * Gets the namespaces registered in the
@@ -17,7 +17,7 @@ class NamespaceConfigHelper
 		$namspaceElements = Config::getInstance()->getElementByPath('namespace');
 		$namespaces = array();
 
-		if($namspaceElements != false) {
+		if($namspaceElements) {
 			foreach($namspaceElements->getChildren() as $child) {
 				$childLib = $child->getAttribute("lib");
 
@@ -28,5 +28,24 @@ class NamespaceConfigHelper
 		}
 
 		return $namespaces;
+	}
+
+
+	/**
+	 * Gets a namespace path from the
+	 * config by the name of element
+	 * in the config file
+	 *
+	 * @param  string $name
+	 * @return string
+	 */
+	public static function getNamespace($name, $lib) {
+		foreach (self::getNamespaces($lib) as $nsName => $path) {
+			if ($nsName == $name) {
+				return $path;
+			}
+		}
+
+		return "";
 	}
 }

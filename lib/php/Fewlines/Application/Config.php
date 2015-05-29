@@ -50,18 +50,10 @@ class Config
 				");
         }
 
-        $files = array();
+        // Add config files
+        $this->addConfigFiles($configs);
 
-        for ($i = 0; $i < count($configs); $i++) {
-            $dir = PathHelper::normalizePath($configs[$i]['dir']);
-            $files[$dir] = DirHelper::getFilesByType($dir, $configs[$i]['type'], true);
-        }
-
-        $this->configFiles = DirHelper::flattenTree($files);
-
-        // Create the config objects and push them
-        $this->initConfigs();
-
+        // Set instance for singletons
         self::$instance = $this;
     }
 
@@ -79,15 +71,44 @@ class Config
     }
 
     /**
-     * Create config objects with xml
+     * Adds the config files to
+     * the local config files var
+     *
+     * @param array $configs
      */
-    private function initConfigs() {
+    public function addConfigFiles($configs) {
+        $files = array();
+
+        for ($i = 0, $len = count($configs); $i < $len; $i++) {
+            $dir = PathHelper::normalizePath($configs[$i]['dir']);
+            $files[$dir] = DirHelper::getFilesByType($dir, $configs[$i]['type'], true);
+        }
+
+        $files = DirHelper::flattenTree($files);
+
+        for ($i = 0, $len = count($files); $i < $len; $i++) {
+            $this->configFiles[] = $files[$i];
+        }
+
+        // Reload config file list
+        $this->updateFiles();
+    }
+
+    /**
+     * Updates the current file list
+     */
+    private function updateFiles() {
         for ($i = 0; $i < count($this->configFiles); $i++) {
+            // Check if config file was already loaded
+            if (is_int(array_search($this->configFiles[$i], $this->loadedConfigFiles))) {
+                continue;
+            }
+
             $filePath = $this->configFiles[$i];
             $filename = basename($filePath);
             $ignore = preg_match("/^_(.*)$/", $filename);
 
-            if (false == $ignore) {
+            if ( ! $ignore) {
                 $this->xmls[] = new Xml($filePath);
                 $this->loadedConfigFiles[] = $filePath;
             }

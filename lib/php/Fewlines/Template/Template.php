@@ -7,7 +7,7 @@ use Fewlines\Locale\Locale;
 use Fewlines\Application\Config;
 use Fewlines\Template\Template;
 use Fewlines\Http\Router;
-use Fewlines\Application\Application;
+use Fewlines\Application\Registry;
 
 class Template extends Renderer
 {
@@ -189,7 +189,8 @@ class Template extends Renderer
     /**
      * Sets the layout
      *
-     * @param string $layout
+     * @param  string $layout
+     * @return self
      */
     public function setLayout($layout) {
         $path = PathHelper::getRealPath(LAYOUT_PATH) . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
@@ -197,6 +198,8 @@ class Template extends Renderer
 
         // Set the new view
         $this->setView();
+
+        return $this;
     }
 
     /**
@@ -286,10 +289,10 @@ class Template extends Renderer
     }
 
     /**
-     * @return \Fewlines\Application\Application
+     * @return \Fewlines\Application\Environment
      */
     public function getEnvironment() {
-        return Application::getEnv();
+        return Registry::get('environment');
     }
 
     /**
@@ -379,7 +382,7 @@ class Template extends Renderer
 				It does not exist.");
         }
 
-        return $this->{$name};
+        return $this->$name;
     }
 
     /**

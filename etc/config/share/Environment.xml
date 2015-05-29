@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<environment>
+	<type name="production" flags="live"></type>
+	<type name="staging" flags="testing"></type>
+	<type name="development" flags="local">
+		<condition type="url" value="/.local/"></condition>
+		<condition type="host" value="Davide-PC"></condition>
+	</type>
+</environment>

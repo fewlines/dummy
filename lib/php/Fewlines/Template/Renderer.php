@@ -52,7 +52,7 @@ class Renderer
      *
      * Using md5 hashed variables to avoid override of
      * the config variables from the user. Looks weird
-     * but to save performance the md5 hashes will only
+     * but to save performance, the md5 hashes will only
      * be calculated once
      *
      * @param  string $file

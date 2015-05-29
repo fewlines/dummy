@@ -1,7 +1,7 @@
-EXCEPTION_LAYOUT<?php
+<?php
 
 /**
- * fewlines CMS
+ * fewlines
  *
  * --------------------------------------------------
  *
@@ -20,23 +20,24 @@ EXCEPTION_LAYOUT<?php
  * whole system if a constant was changed.
  */
 
-define("ROOT_DIR",     __DIR__);
-define("ETC_PATH",     ROOT_DIR . "/etc");
-define("LIB_PATH",     ROOT_DIR . "/lib");
-define("TPL_PATH",     ETC_PATH . "/template");
-define("LIB_PHP",      LIB_PATH . "/php");
-define("LIB_PHP_TP",   LIB_PHP  . "/third-party");
-define("LOCALE_PATH",  ETC_PATH . "/locale");
-define("LAYOUT_PATH",  TPL_PATH . "/fewlines/layout");
-define("VIEW_PATH",    TPL_PATH . "/fewlines/views");
+define('ROOT_DIR',          __DIR__);
 
-/**
- * Define the application environment
- */
+define('ETC_PATH',          ROOT_DIR . '/etc');
+define('LIB_PATH',          ROOT_DIR . '/lib');
 
-defined("APPLICATION_ENV") || (
-	define("APPLICATION_ENV", getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production')
-);
+define('CONFIG_PATH',       ETC_PATH . '/config');
+
+define('LIB_PHP',           LIB_PATH . '/php');
+define('LIB_PHP_TP',        LIB_PHP  . '/third-party');
+
+define('TPL_PATH',          ETC_PATH . '/template/fewlines');
+define('LOCALE_PATH',       ETC_PATH . '/locale/fewlines');
+
+define('CORE_CONFIG_PATH',  CONFIG_PATH . '/core');
+define('SHARE_CONFIG_PATH', CONFIG_PATH . '/share');
+
+define('LAYOUT_PATH',       TPL_PATH . '/layout');
+define('VIEW_PATH',         TPL_PATH . '/views');
 
 /**
  * Default options for the
@@ -48,10 +49,14 @@ define('VIEW_FILETYPE',        'phtml');
 define('DEFAULT_ERROR_VIEW',   'error');
 define('DEFAULT_LAYOUT',       'default');
 define('EXCEPTION_LAYOUT',     'exception');
+
 define('AUTLOADER_LC',         '\Fewlines\Autoloader\Autoloader::loadClass');
+define('BOOTSTRAP_RL_NS',      '\Application\Bootstrap');
+
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
 define('FNC_REGEX_PARSER',     '/\{\{([^\}]*)\}\}/');
+
 define('DEVELOPER_DEBUG',      true);
 define('DEFAULT_LOCALE',       'de');
 define('DR_SP',                '/');
@@ -61,14 +66,12 @@ define('DR_SP',                '/');
  * component
  */
 
-set_include_path(implode(PATH_SEPARATOR, array(
-		LIB_PHP, LIB_PHP_TP, get_include_path()
-	)));
+set_include_path(implode(PATH_SEPARATOR, array(LIB_PHP, LIB_PHP_TP, get_include_path())));
 
 /**
- * A collection a all config folders
+ * A collection of all config folders
  * and the filetype to define the config
- * type. The given folder will scan all files
+ * file type. The given folder will scan all files
  * by the type (recursive). Same xml trees
  * won't be merged.
  *
@@ -86,8 +89,12 @@ function getConfig()
 {
 	return array(
 		array(
-			"dir"  => ETC_PATH . "/config/fewlines",
-			"type" => "xml"
+			'dir'  => CORE_CONFIG_PATH,
+			'type' => 'xml'
+		),
+		array(
+			'dir'  => SHARE_CONFIG_PATH,
+			'type' => 'xml'
 		)
 	);
 }
@@ -96,7 +103,7 @@ function getConfig()
  * Register the autoloader
  */
 
-require_once "Fewlines/Autoloader/Autoloader.php";
+require_once 'Fewlines/Autoloader/Autoloader.php';
 spl_autoload_register(AUTLOADER_LC);
 
 /**
@@ -105,8 +112,8 @@ spl_autoload_register(AUTLOADER_LC);
 
 function pr($input)
 {
-	echo "<pre>";
+	echo '<pre>';
 	if(is_bool($input)){var_dump($input);}
 	else{print_r($input);}
-	echo "</pre>";
+	echo '</pre>';
 }

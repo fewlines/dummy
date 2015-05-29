@@ -86,7 +86,7 @@ class Environment
 		}
 
 		throw new Environment\Exception\TypeNotFoundException(
-			'Type "' . (string) $type . '" not found.'
+			'Type "' . (string) $name . '" not found.'
 		);
 	}
 
@@ -169,40 +169,78 @@ class Environment
 		$urlPatternsType = $this->checkUrlPatterns();
 		$hostnamesType = $this->checkHostnames();
 
-		if (false != $urlPatternsType && false != $hostnamesType) {
-			if ($urlPatternsType->getName() == $hostnamesType->getName()) {
+		/**
+		 * Only check for the types
+		 * if they are not both empty
+		 */
+
+		if ($urlPatternsType || $hostnamesType) {
+			/**
+			 * Return only ONE of both types. 
+			 * At this point no comaprison 
+			 * is needed
+			 */
+
+			if ( ! $urlPatternsType) {
+				return $hostnamesType;
+			}
+
+			if ( ! $hostnamesType) {
 				return $urlPatternsType;
 			}
-		}
-		else if (false != $hostnamesType) {
-			return $hostnamesType;
 
-		}
-		else if (false != $urlPatternsType) {
-			return $urlPatternsType;
+			/**
+			 * Gets the index of the given types
+			 * to choose the type by a "priority"
+			 */
+
+			$urlPatternsIndex = array_search($urlPatternsType, $this->types);
+			$hostnamesIndex = array_search($hostnamesType, $this->types);
+
+			/**
+			 * Determinate which index is the lowest.
+			 * The type with the lowest index is automatically
+			 * the one with the highest priority, because it has 
+			 * been inserted as the first type.
+			 */
+
+			if ($hostnamesIndex == $urlPatternsIndex) {
+				return $hostnamesType;	
+			}
+
+			if ($urlPatternsIndex < $hostnamesIndex) {
+				return $urlPatternsType;
+			}
+
+			if ($hostnamesIndex < $urlPatternsIndex) {
+				return $hostnamesType;
+			}
 		}
 
-		$urlPatternsPrio = array_search($urlPatternsType, $this->types);
-		$hostnamesPrio = array_search($hostnamesType, $this->types);
+		/**
+		 * Return the type with the highest 
+		 * priority, if none of the cases
+		 * above matched
+		 */
 
-		if ($urlPatternsPrio && $hostnamesPrio) {
-			$prio = min(array($urlPatternsPrio, $hostnamesPrio));
+		if (count($this->types) > 0) {
+			return $this->types[0];
 		}
-		else if ($urlPatternsPrio && ! $hostnamesPrio) {
-			$prio = $urlPatternsPrio;
-		}
-		else if ($hostnamesPrio && ! $urlPatternsPrio) {
-			$prio = $hostnamesPrio;
-		}
-
-		return $this->types[$prio];
+		
+		return null;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function get() {
-		return $this->getType()->getName();
+		$type = $this->getType();
+
+		if ($type) {
+			return $type->getName();
+		}
+
+		return "";
 	}
 
 	/**
@@ -212,7 +250,13 @@ class Environment
 	public function __call($name, $args) {
 		if (preg_match_all('/' . self::FLAG_FUNCTION_IDENTIFIER . '/', $name)) {
 			$flag = strtolower(end(explode(self::FLAG_FUNCTION_IDENTIFIER, $name)));
-			return $this->getType()->hasFlag($flag);
+			$type = $this->getType();
+
+			if(false != $type) {
+				return $type->hasFlag($flag);
+			}
+
+			return false;
 		}
 	}
 }

@@ -7,13 +7,9 @@ use Fewlines\Locale\Locale;
 use Fewlines\Csv\Csv;
 use Fewlines\Http\Header;
 
-class Bootstrap
+class Bootstrap extends \Fewlines\Application\Bootstrap
 {
-	/**
-	 * @param \Fewlines\Application\Application $application Running application
-	 */
-	public function __construct($application) {
-		// Application::getEnv()->set('production');
+	public function initLocale() {
 		Locale::set(Router::getInstance()->getRouteUrlPart('locale'));
 	}
 }

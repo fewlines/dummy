@@ -1,7 +1,7 @@
 <?php
 
 /**
- * fewlines Framework (CMS)
+ * fewlines Framework
  *
  *  - Copyright:  fewlines
  *  - Developers: Davide Perozzi
@@ -39,9 +39,5 @@ require_once __DIR__ . '/fl_init.php';
  */
 
 (new \Fewlines\Application\Application)
-
-/**
- * Run the application
- */
-
-->run();
+	->bootstrap()
+	->run();

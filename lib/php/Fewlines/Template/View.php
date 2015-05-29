@@ -3,17 +3,17 @@ namespace Fewlines\Template;
 
 use Fewlines\Template\Template;
 use Fewlines\Helper\PathHelper;
-use Fewlines\Helper\NamespaceConfigHelper;
+use Fewlines\Helper\NamespaceHelper;
+use Fewlines\Application\Registry;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Router;
-use Fewlines\Application\Application;
 
 class View
 {
     /**
      * @var string
      */
-    const ACTION_SUFFIX = 'Action';
+    const ACTION_POSTFIX = 'Action';
 
     /**
      * The name of the view (could be overwritten
@@ -147,7 +147,7 @@ class View
             $this->setAction($urlParts['action']);
             $this->setName($urlParts['view']);
             $this->setPath($urlParts['view']);
-            $this->setViewControllerClass(NamespaceConfigHelper::getNamespaces('php'));
+            $this->setViewControllerClass(NamespaceHelper::getNamespaces('php'));
         }
 
         // Set by route
@@ -224,7 +224,7 @@ class View
             }
         }
         else {
-            if(Application::getEnv()->isLocal()) {
+            if(Registry::get('environemnt')->isLocal()) {
                 throw new View\Exception\InvalidHttpMethodException(
                     'Invalid HTTP method found'
                 );
@@ -280,7 +280,7 @@ class View
 
         if (true == ($this->viewController instanceof \Fewlines\Controller\View)) {
             $this->viewController->init(Template::getInstance());
-            return $this->callViewAction($this->getAction() . self::ACTION_SUFFIX);
+            return $this->callViewAction($this->getAction() . self::ACTION_POSTFIX);
         }
         else {
             throw new View\Exception\ControllerInitialisationGoneWrongException(

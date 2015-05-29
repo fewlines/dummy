@@ -67,9 +67,12 @@ class Router extends Router\Routes
 		}
 
 		// Add layout if exists
-		$layout = $routes->getChildByName('layout');
-		if ($layout != false) {
-			$this->routeLayout = $layout->getContent();
+		if ($routes) {
+			$layout = $routes->getChildByName('layout');
+
+			if ($layout) {
+				$this->routeLayout = $layout->getContent();
+			}
 		}
 
 		// Set url components
@@ -330,6 +333,7 @@ class Router extends Router\Routes
 				 * Check if get parameters are
 				 * given in this part
 				 */
+
 				if (true == preg_match('/\?(.*)/', $parts[$i])) {
 					$parts[$i] = reset(explode('?', $parts[$i]));
 				}

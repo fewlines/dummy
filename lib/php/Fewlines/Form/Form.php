@@ -66,8 +66,8 @@ class Form extends \Fewlines\Dom\Element
     private $noValidate = false;
 
     /**
-     * Telss if autocomplete should be
-     * allowd or not
+     * Tells if autocomplete should be
+     * allowed or not
      *
      * @var string
      */

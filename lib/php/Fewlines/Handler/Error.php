@@ -6,6 +6,16 @@ use Fewlines\Application\Application;
 class Error
 {
     /**
+     * @var string
+     */
+    const ERROR_FNC = 'handleError';
+
+    /**
+     * @var string
+     */
+    const SHUTDOWN_FNC = 'handleShutdown';
+
+    /**
      * The message which appears if
      * the application shuts down
      *
