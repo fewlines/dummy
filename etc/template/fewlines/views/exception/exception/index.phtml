@@ -1,6 +1,6 @@
 <?php
 	$exception = $this->getArguments(0);
-	$hasTrace  = count($exception->getTrace()) > 1;
+	$hasTrace  = $exception && count($exception->getTrace()) > 1;
 ?>
 
 <!-- Exception details -->
@@ -41,20 +41,22 @@
 		</div>
 	<?php endif; ?>
 	<div class="right details <?= false == $hasTrace ? 'full' : '' ?>">
-		<?php if($exception->getMessage()): ?>
-			<div class="message">
-				<span class="class-name"><?= get_class($exception) ?>:</span>
-				<span class="dark-red"><?= $exception->getMessage() ?></span>
+		<?php if ($exception): ?>
+			<?php if($exception->getMessage()): ?>
+				<div class="message">
+					<span class="class-name"><?= get_class($exception) ?>:</span>
+					<span class="dark-red"><?= $exception->getMessage() ?></span>
+				</div>
+			<?php endif; ?>
+			<div class="preview">
+				<?=
+					$this->render('components/file-preview', array(
+						"file"  => $exception->getFile(),
+						"line"  => $exception->getLine(),
+						"depth" => 8
+					));
+				?>
 			</div>
 		<?php endif; ?>
-		<div class="preview">
-			<?=
-				$this->render('components/file-preview', array(
-					"file"  => $exception->getFile(),
-					"line"  => $exception->getLine(),
-					"depth" => 8
-				));
-			?>
-		</div>
 	</div>
 </div>

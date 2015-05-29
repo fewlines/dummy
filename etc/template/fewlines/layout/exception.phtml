@@ -8,7 +8,7 @@
 	</head>
 	<body class="exception-page">
 		<div id="page">
-			<?php if($this->getEnvironment()->isLocal()): ?>
+			<?php if( ! $this->getEnvironment() || $this->getEnvironment()->isLocal()): ?>
 				<?= $this->renderView() ?>
 			<?php else: ?>
 				<div class="non-local-error">Something went wrong!</div>

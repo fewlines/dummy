@@ -54,7 +54,7 @@ class Bootstrap
 	 * This function will call all methods
 	 * which begins with the auto call flag
 	 */
-	public function autoCall() {
+	final public function autoCall() {
 		foreach ((new \ReflectionClass($this))->getMethods() as $method) {
 			if (preg_match('/^' . self::AUTO_CALL_FLAG . '(.*)$/', $method->name) &&
 				! array_key_exists($method->name, self::$called)) {
@@ -71,7 +71,7 @@ class Bootstrap
 		$handler = new ErrorHandler;
 
         set_error_handler(array($handler, ErrorHandler::ERROR_FNC));
-        // register_shutdown_function(array($handler, ErrorHandler::SHUTDOWN_FNC));
+        register_shutdown_function(array($handler, ErrorHandler::SHUTDOWN_FNC));
 	}
 
 	/**

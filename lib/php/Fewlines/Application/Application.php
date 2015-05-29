@@ -1,9 +1,9 @@
 <?php
 namespace Fewlines\Application;
 
-use Fewlines\Template\Template;
+use Fewlines\Http\Header;
 
-class Application
+class Application extends Renderer
 {
     /**
      * Determinates if the application
@@ -22,13 +22,6 @@ class Application
     private $running = false;
 
     /**
-     * Renders the applications frontend
-     */
-    private function renderApplication($args = array()) {
-        Template::getInstance()->setLayout(DEFAULT_LAYOUT)->renderAll($args);
-    }
-
-    /**
      * Bootstrap the application and
      * call the other bootstrap classes
      * from the projects (if they exist)
@@ -36,14 +29,21 @@ class Application
      * @return self
      */
     public function bootstrap() {
-        // Call own bootstrap
-        (new Bootstrap($this))->autoCall();
+        try {
+            Buffer::start();
 
-        // Call bootstrap of active project
-        $project = ProjectManager::getActiveProject();
+            // Call own bootstrap
+            (new Bootstrap($this))->autoCall();
 
-        if ($project) {
-            $bootstrap = $project->bootstrap($this);
+            // Call bootstrap of active project
+            $project = ProjectManager::getActiveProject();
+
+            if ($project) {
+                $bootstrap = $project->bootstrap($this);
+            }
+        }
+        catch(\Exception $err) {
+            self::renderException(array($err));
         }
 
         return $this;
@@ -55,24 +55,12 @@ class Application
      * @return boolean
      */
     public function run() {
-        $this->running = true;
-
-        // Start buffer for application output
-        self::startBuffer();
-
         try {
-            $this->renderApplication();
+            $this->running = true;
+            self::renderTemplate(DEFAULT_LAYOUT);
         }
         catch(\Exception $err) {
-            // Clear just rendered content
-            self::clearBuffer();
-
-            // Create new template
-            $template = Template::getInstance();
-
-            // Change layout to exception
-            $template->setLayout(EXCEPTION_LAYOUT);
-            $template->renderAll(array($err));
+            self::renderException(array($err));
         }
     }
 
@@ -86,46 +74,19 @@ class Application
             exit;
         }
 
-        // Set 500
-        HttpHeader::set(500, false);
-
-        // Clear previous outputs
-        self::clearBuffer();
-
-        // Create new Template
-        $template = Template::getInstance();
-
-        /**
-         * Set Exception layout and render it with
-         * the exception as argument
-         */
-
-        $template->setLayout(EXCEPTION_LAYOUT);
-        $template->renderAll(array($err));
-
         // Set shutdown flag
         self::$shutdown = true;
+
+        // Set 500
+        Header::set(500, false);
+
+        // Render layout
+        self::renderException(array($err));
     }
 
     /**
-     * Starts a new buffer
-     */
-    public static function startBuffer() {
-        ob_start();
-    }
-
-    /**
-     * Ends a buffer and deletes all output
-     * of it
-     */
-    public static function clearBuffer() {
-        while( ! empty(ob_get_contents())) {
-            ob_end_clean();
-        }
-    }
-
-    /**
-     * Returns the state of the application
+     * Returns the state
+     * of the application
      *
      * @return boolean
      */

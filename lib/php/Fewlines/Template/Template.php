@@ -179,7 +179,7 @@ class Template extends Renderer
      * @return array|*
      */
     public function getArguments($index = null) {
-        if (false == is_null($index)) {
+        if (false == is_null($index) && array_key_exists($index, $this->arguments)) {
             return $this->arguments[$index];
         }
 

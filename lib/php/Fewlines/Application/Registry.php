@@ -15,16 +15,15 @@ class Registry
 	 * property from the registry
 	 * which are private
 	 *
-	 * @param string $name
+	 * @param  string $name
+	 * @return *
 	 */
 	public static function get($name) {
 		if (array_key_exists($name, self::$values)) {
 			return self::$values[$name];
 		}
 
-		throw new Registry\Exception\PropertyNotFoundException(
-			'The property "' . $name . '" does not exist in this registry.'
-		);
+		return null;
 	}
 
 	/**
