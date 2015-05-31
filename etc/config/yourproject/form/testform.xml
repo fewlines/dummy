@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<form>
+	<test name="testform" action="/" method="post">
+		<input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
+			<validation>
+				<options blank="true"></options>
+				<errros>
+					<blank>Ist leer jo</blank>
+				</errros>
+			</validation>
+		</input>
+		<input type="submit" name="test-submit" value="Test" />
+	</test>
+</form>

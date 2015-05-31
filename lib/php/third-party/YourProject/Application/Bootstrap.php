@@ -1,11 +1,11 @@
 <?php
 namespace YourProject\Application;
 
-use Fewlines\Http\Router;
-use Fewlines\Http\Header;
-use Fewlines\Locale\Locale;
+use Fewlines\Core\Http\Router;
+use Fewlines\Core\Http\Header;
+use Fewlines\Core\Locale\Locale;
 
-class Bootstrap extends \Fewlines\Application\Bootstrap
+class Bootstrap extends \Fewlines\Core\Application\Bootstrap
 {
 	public function initLocale() {
 		$locale = Router::getInstance()->getRouteUrlPart('locale');

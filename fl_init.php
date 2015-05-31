@@ -52,17 +52,18 @@ define('EXCEPTION_LAYOUT',     'exception');
 
 define('DEFAULT_PROJECT_ID',   'fewlines');
 define('DEFAULT_PROJECT_NAME', 'Fewlines framework');
-define('DEFAULT_PROJECT_NS',   'Fewlines');
+define('DEFAULT_PROJECT_NS',   'Fewlines\Core');
 
-define('AUTLOADER_LC',         '\Fewlines\Autoloader\Autoloader::loadClass');
+define('AUTLOADER_LC',         '\Fewlines\Core\Autoloader\Autoloader::loadClass');
 define('BOOTSTRAP_RL_NS',      '\Application\Bootstrap');
 define('CONTROLLER_V_RL_NS',   '\Controller\View');
+define('VIEW_HELPER_RL_NS',    '\Helper\View');
 
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
 define('FNC_REGEX_PARSER',     '/\{\{([^\}]*)\}\}/');
 
-define('DEVELOPER_DEBUG',      true);
+define('DEVELOPER_DEBUG',      false);
 define('DEFAULT_LOCALE',       'de');
 define('DR_SP',                '/');
 
@@ -71,7 +72,8 @@ define('DR_SP',                '/');
  * component
  */
 
-set_include_path(implode(PATH_SEPARATOR, array(LIB_PHP, LIB_PHP_TP, get_include_path())));
+set_include_path(
+	implode(PATH_SEPARATOR, array(LIB_PHP, LIB_PHP_TP, get_include_path())));
 
 /**
  * A collection of all config folders
@@ -108,7 +110,7 @@ function getConfig()
  * Register the autoloader
  */
 
-require_once 'Fewlines/Autoloader/Autoloader.php';
+require_once 'Fewlines/Core/Autoloader/Autoloader.php';
 spl_autoload_register(AUTLOADER_LC);
 
 /**

@@ -6,7 +6,7 @@
  *  - Copyright:  fewlines
  *  - Developers: Davide Perozzi
  *
- *  - Framework inspired by Zend Framework (http://framework.zend.com/)
+ *  - Inspired by Zend Framework (http://framework.zend.com/)
  *
  * -------------------------------------
  *
@@ -38,6 +38,6 @@ require_once __DIR__ . '/fl_init.php';
  * to be a uninstalled version of fewlines
  */
 
-(new \Fewlines\Application\Application)
+(new \Fewlines\Core\Application\Application)
 	->bootstrap()
 	->run();

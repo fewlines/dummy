@@ -1,10 +1,18 @@
 <?php
 namespace YourProject\Controller\View;
 
-class Index extends \Fewlines\Controller\View
+use Fewlines\Component\Form\Form;
+
+class Index extends \Fewlines\Core\Controller\View
 {
 	public function indexAction() {
+		$form = new Form($this->getConfig()->getElementByPath('form/test'));
 
+		if (!empty($_POST)) {
+			$result = $form->validate()->getResult();
+		}
+
+		$this->assign('form', $form);
 	}
 
 	public function hueAction(){
