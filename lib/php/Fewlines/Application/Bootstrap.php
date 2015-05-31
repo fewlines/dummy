@@ -6,6 +6,7 @@ use Fewlines\Helper\NamespaceHelper;
 use Fewlines\Handler\Error as ErrorHandler;
 use Fewlines\Locale\Locale;
 use Fewlines\Session\Session;
+use Fewlines\Http\Router;
 
 class Bootstrap
 {
@@ -67,7 +68,7 @@ class Bootstrap
 	/**
 	 * Inits the error handler
 	 */
-	public function initErrorHandler() {
+	final protected function initErrorHandler() {
 		$handler = new ErrorHandler;
 
         set_error_handler(array($handler, ErrorHandler::ERROR_FNC));
@@ -78,31 +79,105 @@ class Bootstrap
 	 * Create new environment and give it
 	 * to the registry to make it usable
 	 */
-	private function initEnvironment() {
+	final protected function initEnvironment() {
 		Registry::set('environment', new Environment);
 	}
 
 	/**
 	 * Simply sets the default locale
 	 */
-	private function initLocale() {
+	final protected function initDefaultLocale() {
 		Locale::set(DEFAULT_LOCALE);
 	}
 
 	/**
 	 * Starts the session component
 	 */
-	private function initSession() {
+	final protected function initSession() {
         Session::startSession();
         Session::initCookies();
 	}
 
+    /**
+     * Init the default fewlines project
+     * to get static informations from
+     * anywhere
+     */
+    final protected function initDefaultProject() {
+        ProjectManager::setDefaultProject(
+                DEFAULT_PROJECT_ID, DEFAULT_PROJECT_NAME, DEFAULT_PROJECT_NS
+            );
+    }
+
 	/**
-	 * Init the environment types from
-	 * the config files
+	 * Init all projects defined
+	 * in the config
 	 */
-	private function initEnvironmentTypes() {
-		$environment = Registry::get('environment');
+	final protected function initProjects() {
+		$projects = $this->config->getElementByPath('project');
+
+        if ($projects) {
+            $activeCount = 0;
+
+            foreach ($projects->getChildren() as $proj) {
+                /**
+                 * Collect necessary informations
+                 * from the xml element frame
+                 */
+
+                $id = $proj->getAttribute('id');
+                $name = $proj->getChildByName('name');
+                $description = $proj->getChildByName('description');
+                $nsName = NamespaceHelper::getNamespace($id, 'php');
+
+                /**
+                 * Add a new project to the list
+                 * with the information from
+                 * the xml config element
+                 */
+
+                if ( ! empty($id) && $name && $description) {
+                    $project = ProjectManager::addProject(
+                        $id, $name->getContent(), $description->getContent(), $nsName
+                    );
+
+                    /**
+                     * Check if the project is initial
+                     * activated and set the flag
+                     * as if is so
+                     */
+
+                    $isActive = $project->setActive(filter_var($proj->getAttribute('active'), FILTER_VALIDATE_BOOLEAN));
+
+                    if ($isActive) {
+                        $activeCount++;
+
+                        if ($activeCount > 1) {
+                            exit("Only one project can be active");
+                        }
+                        else {
+                            // Add config files from this project
+                            Config::getInstance()->addConfigFiles(array(
+                                    array(
+                                        'dir'  => CONFIG_PATH . DR_SP . $project->getId(),
+                                        'type' => 'xml'
+                                    )
+                                ));
+
+                            Router::getInstance()->update();
+                        }
+                    }
+                }
+            }
+        }
+	}
+
+    /**
+     * Init the environment types from
+     * the config files
+     */
+    final protected function initEnvironmentTypes() {
+        $environment = Registry::get('environment');
 
         foreach ($this->config->getElementsByPath('environment/type') as $type) {
             $flags = $type->getAttribute('flags');
@@ -162,65 +237,5 @@ class Bootstrap
                 }
             }
         }
-	}
-
-	/**
-	 * Init all projects defined
-	 * in the config
-	 */
-	private function initProjects() {
-		$projects = $this->config->getElementByPath('project');
-
-        if ($projects) {
-            foreach ($projects->getChildren() as $proj) {
-                /**
-                 * Collect necessary informations
-                 * from the xml element frame
-                 */
-
-                $id = $proj->getChildByName('id');
-                $name = $proj->getChildByName('name');
-                $description = $proj->getChildByName('description');
-                $nsName = $proj->getChildByName('namespace');
-
-                /**
-                 * Get php namespace as default
-                 * if not namespace is given
-                 * ignore this optional parameter
-                 * and set it to an empty string
-                 */
-
-                if ($nsName) {
-                    $nsName = $nsName->getAttribute('php');
-                    $nsName = NamespaceHelper::getNamespace($nsName, 'php');
-                }
-                else {
-                    $nsName = "";
-                }
-
-                /**
-                 * Add a new project to the list
-                 * with the information from
-                 * the xml config element
-                 */
-
-                if ($id && $name && $description) {
-                    $project = ProjectManager::addProject(
-                        $id->getContent(),
-                        $name->getContent(),
-                        $description->getContent(),
-                        $nsName
-                    );
-
-                    /**
-                     * Check if the project is initial
-                     * activated and set the flag
-                     * as if is so
-                     */
-
-                    $project->setActive(filter_var($proj->getAttribute('active'), FILTER_VALIDATE_BOOLEAN));
-                }
-            }
-        }
-	}
+    }
 }

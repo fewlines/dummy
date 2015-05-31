@@ -18,11 +18,11 @@ abstract class Renderer
 	/**
 	 * Renders a exception/error template
 	 *
-	 * @param  \Exception $error
+	 * @param array $args
 	 */
-	final protected static function renderException(\Exception $error) {
+	final protected static function renderException($args) {
 		Buffer::clear(true);
-		self::renderTemplate(EXCEPTION_LAYOUT, $error);
+		self::renderTemplate(EXCEPTION_LAYOUT, $args);
 		exit;
 	}
 };

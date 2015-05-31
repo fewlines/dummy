@@ -2,7 +2,8 @@
 
 namespace Fewlines\Application\ProjectManager;
 
-use \Fewlines\Application\Config;
+use Fewlines\Application\Config;
+use Fewlines\Http\Router;
 
 class Project
 {
@@ -87,10 +88,11 @@ class Project
     }
 
     /**
-     * @param boolean $isActive
+     * @param  boolean $isActive
+     * @return boolean
      */
     public function setActive($isActive) {
-    	$this->active = $isActive;
+    	return $this->active = $isActive;
     }
 
     /**
@@ -120,14 +122,6 @@ class Project
      * @return {lib/php/$ns}\Application\Bootstrap
      */
     public function bootstrap(\Fewlines\Application\Application $app) {
-        // Add config files from this project
-        Config::getInstance()->addConfigFiles(array(
-                array(
-                    'dir'  => CONFIG_PATH . DR_SP . $this->getId(),
-                    'type' => 'xml'
-                )
-            ));
-
     	if ($this->hasNsName()) {
             // Get bootstrap class
             $class = $this->getNsName() . BOOTSTRAP_RL_NS;
@@ -138,6 +132,8 @@ class Project
                 $this->bootstrap->autoCall();
             }
     	}
+
+        Router::getInstance()->update();
 
     	return $this->bootstrap;
     }

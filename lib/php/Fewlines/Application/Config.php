@@ -81,6 +81,11 @@ class Config
 
         for ($i = 0, $len = count($configs); $i < $len; $i++) {
             $dir = PathHelper::normalizePath($configs[$i]['dir']);
+
+            if ( ! is_dir($dir)) {
+                continue;
+            }
+
             $files[$dir] = DirHelper::getFilesByType($dir, $configs[$i]['type'], true);
         }
 
@@ -113,6 +118,72 @@ class Config
                 $this->loadedConfigFiles[] = $filePath;
             }
         }
+
+        // Check for replacement
+        $this->checkReplacements();
+    }
+
+    /**
+     * This will check for replacement flag the user is able
+     * to set. This will prevent a merging of the childs
+     * from a subtree and remove the one which is marked
+     * as: replaceable="true"
+     */
+    private function checkReplacements() {
+        $xmls = array();
+
+        foreach ($this->xmls as $xml) {
+            $name = $xml->getTreeElement()->getName();
+
+            if ( ! array_key_exists($name, $xmls)) {
+                $xmls[$name] = array();
+            }
+
+            $xmls[$name][] = $xml;
+        }
+
+        // Handle conflicts ...
+        foreach ($xmls as $name => $xml) {
+            // ... between 2 elements
+            if (count($xml) == 2) {
+                $affector = null;
+                $replace = false;
+
+                foreach ($xmls[$name] as $subXml) {
+                    if (filter_var($subXml->getTreeElement()->getAttribute('replaceable'), FILTER_VALIDATE_BOOLEAN)) {
+                        $affector = $subXml;
+                    }
+                    else if (filter_var($subXml->getTreeElement()->getAttribute('replace'), FILTER_VALIDATE_BOOLEAN)) {
+                        $replace = true;
+                    }
+                }
+
+                if ($replace) {
+                    if ($affector) {
+                        $index = array_search($affector, $this->xmls);
+
+                        if (is_int($index)) {
+                            // Delete from array and resort so the index won't mess up
+                            unset($this->xmls[$index]);
+                            ArrayHelper::clean($this->xmls);
+                        }
+                        else {
+                            throw new Config\Exception\XmlTreeNotFoundException(
+                                'The xml tree could not be found (for replacement)
+                                in the config list'
+                            );
+                        }
+                    }
+                    else {
+                        throw new Config\Exception\NoAffectedXmlTreeFoundException(
+                            'No affected xml tree found to remove. Please use
+                            replaceable="true" as attributes to define the replacement'
+                        );
+                    }
+                }
+            }
+        }
+
     }
 
     /**

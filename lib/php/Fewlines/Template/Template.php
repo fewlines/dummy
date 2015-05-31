@@ -8,6 +8,7 @@ use Fewlines\Application\Config;
 use Fewlines\Template\Template;
 use Fewlines\Http\Router;
 use Fewlines\Application\Registry;
+use Fewlines\Application\ProjectManager;
 
 class Template extends Renderer
 {
@@ -193,7 +194,19 @@ class Template extends Renderer
      * @return self
      */
     public function setLayout($layout) {
-        $path = PathHelper::getRealPath(LAYOUT_PATH) . reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
+        $project = ProjectManager::getActiveProject();
+        $path = PathHelper::getRealPath(LAYOUT_PATH);
+
+        if ($project && $layout != EXCEPTION_LAYOUT) {
+            $path.= PathHelper::getRealPath($project->getId());
+        }
+        else {
+            $path.= PathHelper::getRealPath(ProjectManager::getDefaultProject()->getId());
+        }
+
+        $path.= reset(explode(".", $layout)) . '.' . LAYOUT_FILETYPE;
+
+        // Set layout
         $this->layout = new Layout($layout, $path);
 
         // Set the new view
@@ -217,7 +230,7 @@ class Template extends Renderer
     }
 
     public function setView() {
-        if(false == is_null($this->activeRoute) && !$this->isException()) {
+        if(false == is_null($this->activeRoute) && ! $this->isException()) {
             $this->view = new View($this->activeRoute);
         }
         else {
@@ -293,60 +306,6 @@ class Template extends Renderer
      */
     public function getEnvironment() {
         return Registry::get('environment');
-    }
-
-    /**
-     * Returns the content of
-     * the rendered element
-     *
-     * @param  string $viewPath
-     * @param  array  $config
-     * @param  string $wrapper
-     * @return string
-     */
-    public function render($viewPath, $config = array(), $wrapper = '') {
-        $bckt = debug_backtrace();
-        $view = PathHelper::getRealViewPath(ltrim($viewPath, '/'));
-        $file = $bckt[0]['file'];
-        $dir = pathinfo($file, PATHINFO_DIRNAME);
-
-        // Handle relative path
-        if (false == PathHelper::isAbsolute($viewPath)) {
-            $path = PathHelper::getRealViewFile(PathHelper::normalizePath($dir . '/' . $viewPath));
-            $view = PathHelper::normalizePath(realpath($path));
-        }
-
-        if (false == $view || false == file_exists($view)) {
-            if (false == $view) {
-                $view = $path;
-            }
-
-            throw new Exception\ViewIncludeNotFoundException("
-					The view \"" . $view . "\" was not found
-					and could not be included
-				");
-        }
-
-        $content = $this->getRenderedHtml($view, $config);
-
-        if (false == empty($wrapper)) {
-            $content = sprintf($wrapper, $content);
-        }
-
-        return $content;
-    }
-
-    /**
-     * Render a component and outputs
-     * the content of it
-     *
-     * @param  string $viewPath
-     * @param  array  $config
-     * @param  string $wrapper
-     * @return string
-     */
-    public function insert($viewPath, $config = array(), $wrapper = '') {
-        echo $this->render($viewPath, $config, $wrapper);
     }
 
 

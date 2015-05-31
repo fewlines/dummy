@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <project>
-	<yourproject active="true">
-		<id>yourproject</id>
+	<yourproject active="true" id="yourproject">
 		<name>Your Project name</name>
 		<description>A small descpription of your project</description>
-		<namespace php="yourproject"></namespace>
 	</yourproject>
 </project>

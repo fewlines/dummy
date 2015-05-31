@@ -1,6 +1,8 @@
 <?php
 namespace Fewlines\Helper;
 
+use Fewlines\Application\ProjectManager;
+
 class PathHelper
 {
     /**
@@ -53,7 +55,7 @@ class PathHelper
         $file = $view;
         $info = pathinfo($file);
 
-        if (false == array_key_exists('EXTENSION', $info)) {
+        if ( ! array_key_exists('EXTENSION', $info)) {
             $file.= '.' . $type;
         }
 
@@ -70,7 +72,15 @@ class PathHelper
      * @return string
      */
     public static function getRealViewPath($view = '', $action = '', $layout = '') {
+        $project = ProjectManager::getActiveProject();
         $path = self::getRealPath(VIEW_PATH);
+
+        if ($project && $layout != EXCEPTION_LAYOUT) {
+            $path.= self::getRealPath($project->getId());
+        }
+        else {
+            $path.= self::getRealPath(ProjectManager::getDefaultProject()->getId());
+        }
 
         if (false == empty($layout)) {
             $path.= self::getRealPath($layout);
@@ -117,5 +127,34 @@ class PathHelper
      */
     public static function isAbsolute($path) {
         return substr($path, 0, 1) == DR_SP;
+    }
+
+    /**
+     * Check if the given path
+     * points to a valid view
+     *
+     * @param  string  $path
+     * @return boolean
+     */
+    public static function isView($path) {
+        $exp = '/' . preg_replace('/\//', '\\/', self::normalizePath(VIEW_PATH)) . '/';
+        return preg_match($exp, self::normalizePath($path));
+    }
+
+    /**
+     * Get's the first view path index
+     * of the debug backtrace if exists
+     *
+     * @param  array $backtrace
+     * @return number|boolean
+     */
+    public static function getFirstViewIndexFromDebugBacktrace($backtrace) {
+        for ($i = 0, $len = count($backtrace); $i < $len; $i++) {
+            if (array_key_exists('file', $backtrace[$i]) && self::isView($backtrace[$i]['file'])) {
+                return $i;
+            }
+        }
+
+        return false;
     }
 }

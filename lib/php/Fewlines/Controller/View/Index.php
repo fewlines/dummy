@@ -12,5 +12,6 @@ use Fewlines\Template\Template;
 class Index extends \Fewlines\Controller\View
 {
     public function indexAction() {
+		$this->assign('version', $this->getConfig()->getElementByPath('application/version'));
     }
 }

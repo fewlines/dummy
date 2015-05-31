@@ -30,7 +30,7 @@ define('CONFIG_PATH',       ETC_PATH . '/config');
 define('LIB_PHP',           LIB_PATH . '/php');
 define('LIB_PHP_TP',        LIB_PHP  . '/third-party');
 
-define('TPL_PATH',          ETC_PATH . '/template/fewlines');
+define('TPL_PATH',          ETC_PATH . '/template');
 define('LOCALE_PATH',       ETC_PATH . '/locale/fewlines');
 
 define('CORE_CONFIG_PATH',  CONFIG_PATH . '/core');
@@ -50,8 +50,13 @@ define('DEFAULT_ERROR_VIEW',   'error');
 define('DEFAULT_LAYOUT',       'default');
 define('EXCEPTION_LAYOUT',     'exception');
 
+define('DEFAULT_PROJECT_ID',   'fewlines');
+define('DEFAULT_PROJECT_NAME', 'Fewlines framework');
+define('DEFAULT_PROJECT_NS',   'Fewlines');
+
 define('AUTLOADER_LC',         '\Fewlines\Autoloader\Autoloader::loadClass');
 define('BOOTSTRAP_RL_NS',      '\Application\Bootstrap');
+define('CONTROLLER_V_RL_NS',   '\Controller\View');
 
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');

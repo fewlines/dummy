@@ -70,7 +70,7 @@ class Renderer
         unset($file, $config);
 
         // Define config variables
-        foreach(${self::$md5VarHashmap['config']}  as ${self::$md5VarHashmap['varname']} => ${self::$md5VarHashmap['content']}) {
+        foreach (${self::$md5VarHashmap['config']}  as ${self::$md5VarHashmap['varname']} => ${self::$md5VarHashmap['content']}) {
             ${self::$md5VarHashmap['varname']} = (string) ${self::$md5VarHashmap['varname']};
             ${${self::$md5VarHashmap['varname']}} = ${self::$md5VarHashmap['content']};
         }
@@ -89,13 +89,13 @@ class Renderer
         $template = Template::getInstance();
         $view = $template->getView();
 
-        // Call controller from view (if exists)
+        // Call view controller from view (if exists)
         $this->controller = $view->initController();
 
         // Set layout
         $layout = $template->getLayout();
 
-        if (true == $this->layout->isDisabled()) {
+        if ($this->layout->isDisabled()) {
             if (is_string($this->controller)) {
                 echo $this->controller;
             }
@@ -123,13 +123,13 @@ class Renderer
         $view = $template->getView();
         $layout = $template->getLayout();
 
-        if (true == empty($viewPath)) {
-            if(false == $view->isRouteActive()) {
+        if (empty($viewPath)) {
+            if ( ! $view->isRouteActive()) {
                 // Get view and action
                 $file = $view->getPath();
                 $action = $view->getAction();
 
-                if (true == is_string($this->controller)) {
+                if (is_string($this->controller)) {
                     // Output rendered html from the return of the controller
                     echo $this->controller;
                 }
@@ -139,7 +139,7 @@ class Renderer
                 }
             }
             else {
-                if(true == is_string($this->controller)) {
+                if(is_string($this->controller)) {
                     echo $this->controller;
                 }
                 else {
@@ -150,11 +150,83 @@ class Renderer
         else {
             $file = PathHelper::getRealViewPath($viewPath, '', $layout->getName());
 
-            if (true == file_exists($file)) {
+            if (file_exists($file)) {
                 $file = $this->getRenderedHtml($file);
             }
 
             return $file;
         }
+    }
+
+    /**
+     * Returns the content of
+     * a rendered element
+     *
+     * @param  string $viewPath
+     * @param  array  $config
+     * @param  string $wrapper
+     * @return string
+     */
+    public function render($viewPath, $config = array(), $wrapper = '') {
+        $bckt = debug_backtrace();
+        $view = PathHelper::getRealViewPath(ltrim($viewPath, DR_SP));
+        $viewIndex = PathHelper::getFirstViewIndexFromDebugBacktrace($bckt);
+
+        if(false === $viewIndex) {
+            throw new Exception\NoViewOriginFoundException(
+                'The view "' . $view . '" could not be
+                include. You can call this function only
+                from a view'
+            );
+        }
+
+        $file = PathHelper::normalizePath($bckt[$viewIndex]['file']);
+        $dir = pathinfo($file, PATHINFO_DIRNAME);
+
+        // Handle relative path
+        if ( ! PathHelper::isAbsolute($viewPath)) {
+            $path = PathHelper::getRealViewFile(PathHelper::normalizePath($dir . DR_SP . $viewPath));
+            $view = PathHelper::normalizePath(realpath($path));
+        }
+
+        if ( ! $view || ! file_exists($view)) {
+            if ( ! $view) {
+                $view = $path;
+            }
+
+            throw new Exception\ViewIncludeNotFoundException(
+                'The view "' . $view . '" was not found
+                and could not be included'
+            );
+        }
+
+        if ($view == $file) {
+            throw new Exception\RenderRecursionException(
+                'The view "' . $view . '" is including itself (Recursion).'
+            );
+
+            exit;
+        }
+
+        $content = $this->getRenderedHtml($view, $config);
+
+        if ( ! empty($wrapper)) {
+            $content = sprintf($wrapper, $content);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Render a component and outputs
+     * the content of it
+     *
+     * @param  string $viewPath
+     * @param  array  $config
+     * @param  string $wrapper
+     * @return string
+     */
+    public function insert($viewPath, $config = array(), $wrapper = '') {
+        echo $this->render($viewPath, $config, $wrapper);
     }
 }

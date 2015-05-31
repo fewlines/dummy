@@ -5,6 +5,7 @@ use Fewlines\Template\Template;
 use Fewlines\Helper\PathHelper;
 use Fewlines\Helper\NamespaceHelper;
 use Fewlines\Application\Registry;
+use Fewlines\Application\ProjectManager;
 use Fewlines\Http\Header as HttpHeader;
 use Fewlines\Http\Router;
 
@@ -128,7 +129,7 @@ class View
         $layout = Template::getInstance()->getLayout()->getName();
         $viewFile = PathHelper::getRealViewPath($view, $this->getAction(), $layout);
 
-        if (false == file_exists($viewFile)) {
+        if ( ! file_exists($viewFile)) {
             HttpHeader::set(404);
         }
 
@@ -143,11 +144,11 @@ class View
      */
     public function __construct($urlParts) {
         // Set components by default layout
-        if (true == array_key_exists('view', $urlParts) && true == array_key_exists('action', $urlParts)) {
+        if (array_key_exists('view', $urlParts) && array_key_exists('action', $urlParts)) {
             $this->setAction($urlParts['action']);
             $this->setName($urlParts['view']);
             $this->setPath($urlParts['view']);
-            $this->setViewControllerClass(NamespaceHelper::getNamespaces('php'));
+            $this->setViewControllerClass();
         }
 
         // Set by route
@@ -178,28 +179,28 @@ class View
     }
 
     /**
-     * Sets the controller namespace
-     *
-     * @param array $path
+     * Sets the controller by the active namespace
      */
-    private function setViewControllerClass($paths) {
-        $controllerPath = "\\Controller\\View\\";
-        $namespace = "\\Fewlines" . $controllerPath;
+    private function setViewControllerClass() {
+        $project = ProjectManager::getActiveProject();
+        $class = '\\';
 
-        foreach ($paths as $path) {
-            $path = "\\" . $path . $controllerPath;
-
-            if (true == class_exists($path . $this->name)) {
-                $namespace = $path;
-            }
+        if ($project && $project->hasNsName() && Template::getInstance()->getLayout()->getName() != EXCEPTION_LAYOUT) {
+            $class.= $project->getNsName();
+        }
+        else {
+            $class.= ProjectManager::getDefaultProject()->getNsName();
         }
 
-        $this->controllerClass = $namespace . $this->name;
+        $class.= CONTROLLER_V_RL_NS . '\\' . ucfirst($this->name);
 
-        if (false == class_exists($this->controllerClass)) {
-            throw new View\Exception\ControllerClassNotFoundException('The class "' . $this->controllerClass . '" for the
+        if ( ! class_exists($class)) {
+            throw new View\Exception\ControllerClassNotFoundException(
+                'The class "' . $class . '", for the
                 controller was not found.');
         }
+
+        $this->controllerClass = $class;
     }
 
     /**
@@ -224,7 +225,7 @@ class View
             }
         }
         else {
-            if(Registry::get('environemnt')->isLocal()) {
+            if(Registry::get('environment')->isLocal()) {
                 throw new View\Exception\InvalidHttpMethodException(
                     'Invalid HTTP method found'
                 );

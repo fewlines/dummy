@@ -12,6 +12,13 @@ class ProjectManager
 	private static $projects = array();
 
 	/**
+	 * The default project (fewlines)
+	 *
+	 * @var ProjectManager\Project
+	 */
+	private static $default;
+
+	/**
 	 * Adds a new project to the list
 	 *
 	 * @param string $name
@@ -23,6 +30,17 @@ class ProjectManager
 	 */
 	public static function addProject($id, $name, $description, $nsName = "") {
 		return self::$projects[] = new ProjectManager\Project($id, $name, $description, $nsName);
+	}
+
+	/**
+	 * Set the default project
+	 *
+	 * @param string $id
+	 * @param string $name
+	 * @param string $nsName
+	 */
+	public static function setDefaultProject($id, $name, $nsName) {
+		self::$default = new ProjectManager\Project($id, $name, "", $nsName);
 	}
 
 	/**
@@ -49,5 +67,16 @@ class ProjectManager
      */
     public static function getProjects() {
         return self::$projects;
+    }
+
+    /**
+     * Returns the default project id
+     * it should be the id defined in
+     * the init file
+     *
+     * @return string
+     */
+    public static function getDefaultProject() {
+    	return self::$default;
     }
 }

@@ -18,8 +18,8 @@ class Autoloader
     public static function loadClass($path) {
         $file = str_replace('\\', DR_SP, $path) . '.' . self::FILE_TYPE;
 
-        if (true == file_exists(LIB_PHP . DR_SP . $file) ||
-            true == file_exists(LIB_PHP_TP . DR_SP . $file)) {
+        if (file_exists(LIB_PHP . DR_SP . $file) ||
+            file_exists(LIB_PHP_TP . DR_SP . $file)) {
             require_once $file;
 
             if (class_exists(basename($path))) {

@@ -50,45 +50,18 @@ class Router extends Router\Routes
 	 * Init the router with a
 	 * given Request
 	 *
-	 * @param \Fewlines\Http\Request $request
+	 * @param Request $request
 	 */
 	public function __construct(Request $request) {
-		// Add routes
-		$routes = Config::getInstance()->getElementByPath('route');
-		if ($routes != false) {
-			foreach ($routes->getChildren() as $route) {
-				$name = strtolower($route->getName());
-
-				// Add route to parent
-				if (true == preg_match(HTTP_METHODS_PATTERN, $name)) {
-					$this->addRoute($name, $route->getAttribute('from'), $route->getAttribute('to'));
-				}
-			}
-		}
-
-		// Add layout if exists
-		if ($routes) {
-			$layout = $routes->getChildByName('layout');
-
-			if ($layout) {
-				$this->routeLayout = $layout->getContent();
-			}
-		}
-
 		// Set url components
 		$this->setBaseUrl();
 		$this->url = $request->getUrl();
 
-		// Check if route is active
-		$currentUrl = implode('/', $this->getUrlParts());
-		foreach ($this->routes as $route) {
-			if (ltrim($route->getFrom(), '/') == $currentUrl) {
-				$this->activeRoute = $route;
-			}
-		}
-
 		// Save request
 		$this->request = $request;
+
+		// Initial update
+		$this->update();
 
 		// Save instance for further usage
 		self::$instance = $this;
@@ -103,6 +76,45 @@ class Router extends Router\Routes
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Updates the router e.g. check
+	 * for incoming routes
+	 */
+	public function update() {
+		// Add routes
+		$routeCollection = Config::getInstance()->getElementsByPath('route');
+
+		foreach($routeCollection as $routes) {
+			if ($routes != false) {
+				foreach ($routes->getChildren() as $route) {
+					$name = strtolower($route->getName());
+
+					// Add route to parent
+					if (true == preg_match(HTTP_METHODS_PATTERN, $name)) {
+						$this->addRoute($name, $route->getAttribute('from'), $route->getAttribute('to'));
+					}
+				}
+			}
+
+			// Add layout if exists
+			if ($routes) {
+				$layout = $routes->getChildByName('layout');
+
+				if ($layout) {
+					$this->routeLayout = $layout->getContent();
+				}
+			}
+
+			// Check if route is active
+			$currentUrl = implode('/', $this->getUrlParts());
+			foreach ($this->routes as $route) {
+				if (ltrim($route->getFrom(), '/') == $currentUrl) {
+					$this->activeRoute = $route;
+				}
+			}
+		}
 	}
 
 	/**
@@ -219,7 +231,7 @@ class Router extends Router\Routes
 		 * User defined route
 		 */
 
-		if (true ==($this->activeRoute instanceof \Fewlines\Http\Router\Routes\Route)) {
+		if ($this->activeRoute instanceof \Fewlines\Http\Router\Routes\Route) {
 			return $this->activeRoute;
 		}
 
