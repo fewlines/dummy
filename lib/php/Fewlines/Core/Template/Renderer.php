@@ -168,26 +168,40 @@ class Renderer
      * @return string
      */
     public function render($viewPath, $config = array(), $wrapper = '') {
-        $bckt = debug_backtrace();
-        $view = PathHelper::getRealViewPath(ltrim($viewPath, DR_SP));
-        $viewIndex = PathHelper::getFirstViewIndexFromDebugBacktrace($bckt);
-
-        if(false === $viewIndex) {
-            throw new Exception\NoViewOriginFoundException(
-                'The view "' . $view . '" could not be
-                include. You can call this function only
-                from a view'
-            );
-        }
-
-        $file = PathHelper::normalizePath($bckt[$viewIndex]['file']);
-        $dir = pathinfo($file, PATHINFO_DIRNAME);
+        $view = PathHelper::getRealViewPath(ltrim($viewPath, DR_SP), '', Template::getInstance()->getLayout()->getName());
+        $path = $view;
 
         // Handle relative path
         if ( ! PathHelper::isAbsolute($viewPath)) {
+            $backtrace = debug_backtrace();
+            $viewIndex = PathHelper::getFirstViewIndexFromDebugBacktrace($backtrace);
+
+            if(false === $viewIndex) {
+                throw new Exception\NoViewOriginFoundException(
+                    'The view "' . $view . '" could not be
+                    include. You can render relative path\'s
+                    only from an other view.'
+                );
+            }
+
+            $file = PathHelper::normalizePath($backtrace[$viewIndex]['file']);
+            $dir = pathinfo($file, PATHINFO_DIRNAME);
+
             $path = PathHelper::getRealViewFile(PathHelper::normalizePath($dir . DR_SP . $viewPath));
             $view = PathHelper::normalizePath(realpath($path));
+
+            if ($view == $file) {
+                throw new Exception\RenderRecursionException(
+                    'The view "' . $view . '" is including itself (Recursion).'
+                );
+
+                exit;
+            }
         }
+
+        /**
+         * Default check & render
+         */
 
         if ( ! $view || ! file_exists($view)) {
             if ( ! $view) {
@@ -198,14 +212,6 @@ class Renderer
                 'The view "' . $view . '" was not found
                 and could not be included'
             );
-        }
-
-        if ($view == $file) {
-            throw new Exception\RenderRecursionException(
-                'The view "' . $view . '" is including itself (Recursion).'
-            );
-
-            exit;
         }
 
         $content = $this->getRenderedHtml($view, $config);
