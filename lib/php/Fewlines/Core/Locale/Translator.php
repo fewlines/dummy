@@ -4,6 +4,7 @@ namespace Fewlines\Core\Locale;
 use Fewlines\Core\Csv\Csv;
 use Fewlines\Core\Helper\PathHelper;
 use Fewlines\Core\Helper\ArrayHelper;
+use Fewlines\Core\Application\ProjectManager;
 
 class Translator
 {
@@ -38,10 +39,18 @@ class Translator
      * @return string
      */
     public static function get($path) {
-        $pathParts = explode(self::SUBPATH_SEPERATOR, $path);
-        $localeDir = PathHelper::getRealPath(LOCALE_PATH) . Locale::getKey();
+        $project = ProjectManager::getActiveProject();
+        $project = $project ? $project : ProjectManager::getDefaultProject();
+
+        $pathParts = ArrayHelper::clean(explode(self::SUBPATH_SEPERATOR, $path));
+        $localeDir = PathHelper::getRealPath(LOCALE_PATH . DR_SP . $project->getId()) . Locale::getKey();
         $entryPoint = '';
         $entryPointIndex = 0;
+
+        // Check if path is empty
+        if (empty($pathParts)) {
+            return '';
+        }
 
         // Get entry point file
         for ($i = 0, $len = count($pathParts); $i < $len; $i++) {
@@ -95,11 +104,18 @@ class Translator
                 break;
         }
 
-        if(true == empty($value)) {
-            // @todo: write log if value is empty
-        }
+        /**
+         * If the value is a array and empty it doesn't
+         * need to be returned. Return a empty string
+         * instead
+         */
 
-        return $value;
+        if (empty($value)) {
+            return '';
+        }
+        else {
+            return $value;
+        }
     }
 
     /**

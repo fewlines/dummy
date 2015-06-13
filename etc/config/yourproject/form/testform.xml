@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<form>
-	<test name="testform" action="/" method="post">
-		<input type="text" placeholder="Vorname"  name="firstname" autocomplete="off">
+<form shortcuts="true">
+	<test name="testform" action=":url:{test/form}" method="post">
+		<input type="text" placeholder=":lang:{testform.firstname}"  name="firstname" autocomplete="off">
 			<validation>
 				<options blank="true"></options>
 				<errors>
-					<blank>Ist leer jo</blank>
+					<blank>Empty!</blank>
 				</errors>
 			</validation>
 		</input>

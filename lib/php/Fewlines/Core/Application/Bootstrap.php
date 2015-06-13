@@ -158,7 +158,12 @@ class Bootstrap
                         $activeCount++;
 
                         if ($activeCount > 1) {
-                            exit("Only one project can be active");
+                            // Init environment types manually
+                            $this->initEnvironmentTypes();
+
+                            throw new Bootstrap\Exception\TooManyProjectsException(
+                                'Only one project can be active'
+                            );
                         }
                         else {
                             // Add config files from this project

@@ -26,16 +26,8 @@
 require_once __DIR__ . '/fl_init.php';
 
 /**
- * Instantiate the application
- *
- * -----------------------------------------
- *
- * To reactivate the installation,
- * please go to "ETC_DIR/cfg/fewlines/"
- * and uncomment the file "Install.xml".
- * Just rename it to "_Install.xml", so the
- * application will ignore it and pretend
- * to be a uninstalled version of fewlines
+ * Bootstrap application and render the
+ * frontend with the given parameters
  */
 
 (new \Fewlines\Core\Application\Application)

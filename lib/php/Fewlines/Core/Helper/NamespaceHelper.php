@@ -14,15 +14,17 @@ class NamespaceHelper
 	 * @return array
 	 */
 	public static function getNamespaces($lib) {
-		$namspaceElements = Config::getInstance()->getElementByPath('namespace');
+		$namespaceElements = Config::getInstance()->getElementsByPath('namespace');
 		$namespaces = array();
 
-		if($namspaceElements) {
-			foreach($namspaceElements->getChildren() as $child) {
-				$childLib = $child->getAttribute("lib");
+		if($namespaceElements) {
+			for ($i = 0, $len = count($namespaceElements); $i < $len; $i++) {
+				foreach ($namespaceElements[$i]->getChildren() as $child) {
+					$childLib = $child->getAttribute("lib");
 
-				if($childLib == $lib) {
-					$namespaces[$child->getName()] = $child->getContent();
+					if($childLib == $lib) {
+						$namespaces[$child->getName()] = $child->getContent();
+					}
 				}
 			}
 		}

@@ -31,7 +31,7 @@ define('LIB_PHP',           LIB_PATH . '/php');
 define('LIB_PHP_TP',        LIB_PHP  . '/third-party');
 
 define('TPL_PATH',          ETC_PATH . '/template');
-define('LOCALE_PATH',       ETC_PATH . '/locale/fewlines');
+define('LOCALE_PATH',       ETC_PATH . '/locale');
 
 define('CORE_CONFIG_PATH',  CONFIG_PATH . '/core');
 define('SHARE_CONFIG_PATH', CONFIG_PATH . '/share');
@@ -63,8 +63,8 @@ define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
 define('FNC_REGEX_PARSER',     '/\{\{([^\}]*)\}\}/');
 
-define('DEVELOPER_DEBUG',      false);
-define('DEFAULT_LOCALE',       'de');
+define('DEVELOPER_DEBUG',      true);
+define('DEFAULT_LOCALE',       'en');
 define('DR_SP',                '/');
 
 /**

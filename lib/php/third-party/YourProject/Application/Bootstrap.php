@@ -14,6 +14,6 @@ class Bootstrap extends \Fewlines\Core\Application\Bootstrap
 			// Header::set(404);
 		}
 
-		Locale::set($locale);
+		Locale::set('de');
 	}
 }

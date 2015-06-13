@@ -119,6 +119,26 @@ class Element
 	}
 
 	/**
+	 * Sets the content of the element
+	 *
+	 * @param string $content
+	 */
+	public function setContent($content)
+	{
+		$this->content = $content;
+	}
+
+	/**
+	 * Checks if the element has the given
+	 * attribute name
+	 *
+	 * @return boolean
+	 */
+	public function hasAttribute($name) {
+		return (bool)array_key_exists($name, $this->attributes);
+	}
+
+	/**
 	 * Returns a all attributes
 	 *
 	 * @param  array $exclude
@@ -140,6 +160,16 @@ class Element
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Adds a attribute with a name and value
+	 *
+	 * @param string $name
+	 * @param string $value
+	 */
+	public function addAttribute($name, $value = '') {
+		$this->attributes[$name] = $value;
 	}
 
 	/**

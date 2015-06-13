@@ -131,9 +131,10 @@ class Project
             	$this->bootstrap = new $class($app);
                 $this->bootstrap->autoCall();
             }
-    	}
 
-        Router::getInstance()->update();
+            Router::getInstance()->update();
+            Config::getInstance()->applyShortcuts();
+    	}
 
     	return $this->bootstrap;
     }

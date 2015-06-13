@@ -4,7 +4,6 @@ namespace Fewlines\Component\Form;
 use Fewlines\Component\Form\Element\Input;
 use Fewlines\Component\Form\Element\Select;
 use Fewlines\Component\Form\Element\Textarea;
-use Fewlines\Core\Helper\FunctionParseHelper;
 use Fewlines\Core\Dom\Dom as DomHelper;
 
 class Form extends \Fewlines\Core\Dom\Element
@@ -432,8 +431,6 @@ class Form extends \Fewlines\Core\Dom\Element
     private function setFormAttributesByConfig() {
         if ($this->config instanceof \Fewlines\Core\Xml\Tree\Element) {
             foreach ($this->config->getAttributes() as $name => $content) {
-                $content = FunctionParseHelper::parseLine($content);
-
                 switch (strtolower($name)) {
                     case 'name':
                         $this->setName($content);
@@ -531,8 +528,10 @@ class Form extends \Fewlines\Core\Dom\Element
     public function addElement($type, $name, $attributes = array(), $validation = array()) {
         $element = null;
 
-        // Force name tag to be set as attribute
-        // for the dom element
+        /**
+         * Force name tag to be set as attribute
+         * for the dom element
+         */
         if (false == array_key_exists('name', $attributes)) {
             $attributes['name'] = $name;
         }

@@ -4,10 +4,16 @@ namespace Fewlines\Core\Application;
 use Fewlines\Core\Helper\DirHelper;
 use Fewlines\Core\Helper\PathHelper;
 use Fewlines\Core\Helper\ArrayHelper;
+use Fewlines\Core\Helper\ShortcutHelper;
 use Fewlines\Core\Xml\Xml;
 
 class Config
 {
+    /**
+     * @var
+     */
+    const SHORTCUT_ATTR_IDENTIFIER = 'shortcuts';
+
     /**
      * Holds the instance
      *
@@ -184,6 +190,59 @@ class Config
             }
         }
 
+    }
+
+    /**
+     * Apply's the executed shortcut string
+     * if the flag of the element tree is set
+     */
+    public function applyShortcuts() {
+        foreach ($this->xmls as $i => &$xml) {
+            if ($xml->getTreeElement()->hasAttribute(self::SHORTCUT_ATTR_IDENTIFIER)) {
+                foreach ($xml->getTreeElement()->getChildren() as &$child) {
+                    $this->applyChildrenShortcuts($child);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param \Fewlines\Core\Xml\Tree\Element &$element
+     */
+    private function applyChildrenShortcuts(\Fewlines\Core\Xml\Tree\Element &$element) {
+        $this->applyAttributeShortcuts($element);
+        $this->applyContentShortcuts($element);
+
+        foreach ($element->getChildren() as &$child) {
+            // Parse attributes & content
+            $this->applyAttributeShortcuts($child);
+            $this->applyContentShortcuts($child);
+
+            // Parse childs of the element if exist
+            foreach ($child->getChildren() as &$child) {
+                $this->applyChildrenShortcuts($child);
+            }
+        }
+    }
+
+    /**
+     * @param \Fewlines\Core\Xml\Tree\Element &$child
+     */
+    private function applyAttributeShortcuts(\Fewlines\Core\Xml\Tree\Element &$child) {
+        foreach ($child->getAttributes() as $name => $value) {
+            if (ShortcutHelper::isShortcut($value)) {
+                $child->addAttribute($name, ShortcutHelper::parse($value));
+            }
+        }
+    }
+
+    /**
+     * @param \Fewlines\Core\Xml\Tree\Element &$child
+     */
+    private function applyContentShortcuts(\Fewlines\Core\Xml\Tree\Element &$child) {
+        if (ShortcutHelper::isShortcut($child->getContent())) {
+            $child->setContent(ShortcutHelper::parse($child->getContent()));
+        }
     }
 
     /**
