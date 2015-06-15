@@ -39,6 +39,7 @@ class Application extends Renderer
             $project = ProjectManager::getActiveProject();
 
             if ($project) {
+                // Save it in case for further use
                 $bootstrap = $project->bootstrap($this);
             }
         }

@@ -2,6 +2,7 @@
 
 namespace Fewlines\Core\Application;
 
+use Fewlines\Component\Session\Session;
 use Fewlines\Core\Helper\NamespaceHelper;
 use Fewlines\Core\Handler\Error as ErrorHandler;
 use Fewlines\Core\Locale\Locale;
@@ -39,12 +40,13 @@ class Bootstrap
 	 */
 	protected $config;
 
-	/**
-	 * Start the bootstrap with the
-	 * application instance
-	 *
-	 * @param Application $app
-	 */
+    /**
+     * Start the bootstrap with the
+     * application instance
+     *
+     * @param Application $application
+     * @internal param Application $app
+     */
 	public function __construct(Application $application) {
 		$this->application = $application;
 		$this->config = Config::getInstance();
@@ -109,8 +111,8 @@ class Bootstrap
 	 */
 	final protected function initSession() {
         if (class_exists('\\Fewlines\\Component\\Session\\Session')) {
-            \Fewlines\Component\Session\Session::startSession();
-            \Fewlines\Component\Session\Session::initCookies();
+            Session::startSession();
+            Session::initCookies();
         }
 	}
 

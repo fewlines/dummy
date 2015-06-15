@@ -92,7 +92,9 @@ class Session
      * Maps the cookie with the suffix and
      * filters the cookies from the project
      *
-     * @return
+     * @param $val
+     * @param $key
+     * @return array|bool
      */
     public static function mapCookies($val, $key) {
         if (preg_match('/^' . self::PREFIX . '(.*)/', $key)) {
@@ -147,16 +149,16 @@ class Session
      *
      * @param \Fewlines\Component\Session\Cookie\Session $session
      */
-    private function addSession(\Fewlines\Component\Session\Cookie\Session $session) {
+    private function addSession(Cookie\Session $session) {
         self::$sessions[] = $session;
     }
 
     /**
      * Adds a cookie to the session collection
      *
-     * @param FewlinesSessionCookieCookie $cookie
+     * @param Cookie\Cookie $cookie
      */
-    private function addCookie(\Fewlines\Component\Session\Cookie\Cookie $cookie) {
+    private function addCookie(Cookie\Cookie $cookie) {
         self::$sessions[] = $cookie;
     }
 
@@ -212,6 +214,7 @@ class Session
      *
      * @param  string $name
      * @param  *      $content
+     * @throws Exception\SessionNotStartedException
      */
     private function createSession($name, $content) {
         if (false == self::$isStarted) {
@@ -230,7 +233,7 @@ class Session
      * Returns a saved session (cookie or session)
      *
      * @param  string $name
-     * @return *
+     * @return Result
      */
     public static function get($name) {
         $name = self::convertName($name);

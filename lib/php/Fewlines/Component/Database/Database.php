@@ -74,6 +74,7 @@ class Database
 	 *
 	 * @param  string $database
 	 * @return boolean
+     * @throws Exception\DatabaseNotFoundException IF database stat is false
 	 */
 	public function selectDatabase($database)
 	{
@@ -149,6 +150,7 @@ class Database
 	 *
 	 * @param  string $query
 	 * @return \mysqli_result
+     * @throws Exception\SelectResultInvalidException IF result is false
 	 */
 	public function query($query)
 	{

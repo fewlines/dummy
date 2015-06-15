@@ -1,39 +1,38 @@
 <?php
 namespace Fewlines\Component\Session;
 
-use Fewlines\Component\Session\Void;
-
 class Result
 {
     /**
      * Holds a cookie as result
      *
-     * @var \Fewlines\Component\Session\Cookie\Session
+     * @var Session
      */
     private $session;
 
     /**
      * Holds a cookie as result
      *
-     * @var \Fewlines\Component\Session\Cookie\Cookie
+     * @var Cookie\Cookie
      */
     private $cookie;
 
     /**
      * Sets a session (native) as result
      *
-     * @param $session \Fewlines\Component\Session\Cookie\Session
+     * @param $session Cookie\Session
      */
-    public function setSession(\Fewlines\Component\Session\Cookie\Session $session) {
+    public function setSession(Cookie\Session $session) {
         $this->session = $session;
     }
 
     /**
      * Sets a cookie (native) as result
      *
-     * @param $session \Fewlines\Component\Session\Cookie\Cookie
+     * @param Cookie\Cookie $cookie
+     * @internal param Cookie\Cookie $session
      */
-    public function setCookie(\Fewlines\Component\Session\Cookie\Cookie $cookie) {
+    public function setCookie(Cookie\Cookie $cookie) {
         $this->cookie = $cookie;
     }
 
@@ -41,7 +40,7 @@ class Result
      * Resturns the session (native) if
      * a session was set
      *
-     * @return \Fewlines\Component\Session\Cookie\Session
+     * @return Session
      */
     public function getSession() {
         return is_null($this->session) ? new Void : $this->session;
@@ -51,7 +50,7 @@ class Result
      * Returns the cookie (native) if
      * a cookie was set
      *
-     * @return \Fewlines\Component\Session\Cookie\Cookie
+     * @return Cookie\Cookie
      */
     public function getCookie() {
         return is_null($this->cookie) ? new Void : $this->cookie;

@@ -76,6 +76,7 @@ class Crypt
      *
      * @param  string $str
      * @return string
+     * @throws Exception\InvalidStringToDecryptException IF str is crpyted
      */
     public static function decrypt($str) {
         if (false == self::isCrypted($str)) {

@@ -67,14 +67,14 @@ class Link
 		$this->link = new \MySqli($host, $user, $password, $database, $port);
 	}
 
-	/**
-	 * Calls a given function on the conection
-	 * object. Acts as a "proxy".
-	 *
-	 * @param  string $name
-	 * @param  array  $parameters
-	 * @return *
-	 */
+    /**
+     * Calls a given function on the conection
+     * object. Acts as a "proxy".
+     *
+     * @param  string $name
+     * @param  array $parameters
+     * @return mixed *
+     */
 	public function __call($name, $parameters)
 	{
 		return call_user_func_array(array($this->link, $name), $parameters);

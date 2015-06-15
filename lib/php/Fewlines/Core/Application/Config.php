@@ -5,6 +5,7 @@ use Fewlines\Core\Helper\DirHelper;
 use Fewlines\Core\Helper\PathHelper;
 use Fewlines\Core\Helper\ArrayHelper;
 use Fewlines\Core\Helper\ShortcutHelper;
+use Fewlines\Core\Xml\Tree\Element;
 use Fewlines\Core\Xml\Xml;
 
 class Config
@@ -47,6 +48,7 @@ class Config
      * Load config files
      *
      * @param array $configs
+     * @throws Exception\ConfigJustInstantiatedException
      */
     public function __construct($configs) {
         if (false == is_null(self::$instance)) {
@@ -207,9 +209,9 @@ class Config
     }
 
     /**
-     * @param \Fewlines\Core\Xml\Tree\Element &$element
+     * @param Element &$element
      */
-    private function applyChildrenShortcuts(\Fewlines\Core\Xml\Tree\Element &$element) {
+    private function applyChildrenShortcuts(Element &$element) {
         $this->applyAttributeShortcuts($element);
         $this->applyContentShortcuts($element);
 
@@ -226,9 +228,9 @@ class Config
     }
 
     /**
-     * @param \Fewlines\Core\Xml\Tree\Element &$child
+     * @param Element &$child
      */
-    private function applyAttributeShortcuts(\Fewlines\Core\Xml\Tree\Element &$child) {
+    private function applyAttributeShortcuts(Element &$child) {
         foreach ($child->getAttributes() as $name => $value) {
             if (ShortcutHelper::isShortcut($value)) {
                 $child->addAttribute($name, ShortcutHelper::parse($value));
@@ -237,9 +239,9 @@ class Config
     }
 
     /**
-     * @param \Fewlines\Core\Xml\Tree\Element &$child
+     * @param Element &$child
      */
-    private function applyContentShortcuts(\Fewlines\Core\Xml\Tree\Element &$child) {
+    private function applyContentShortcuts(Element &$child) {
         if (ShortcutHelper::isShortcut($child->getContent())) {
             $child->setContent(ShortcutHelper::parse($child->getContent()));
         }
@@ -274,7 +276,7 @@ class Config
      * Will Return the first result which is found.
      *
      * @param  string $path
-     * @return \Fewlines\Core\Xml\Tree\Element|boolean
+     * @return Element|boolean
      */
     public function getElementByPath($path) {
         foreach ($this->xmls as $xml) {

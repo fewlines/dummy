@@ -1,6 +1,10 @@
 <?php
 namespace Fewlines\Component\Form;
 
+use Fewlines\Component\Form\Validation\Error;
+use Fewlines\Component\Form\Validation\Option;
+use Fewlines\Core\Xml\Tree\Element as XmlElement;
+
 class Validation
 {
     /**
@@ -29,9 +33,9 @@ class Validation
     private $result;
 
     /**
-     * @param array|\Fewlines\Core\Xml\Tree\Element $errors
-     * @param array|\Fewlines\Core\Xml\Tree\Element $options
-     * @param array|\Fewlines\Core\Xml\Tree\Element $defaultErrors
+     * @param array|XmlElement $errors
+     * @param array|XmlElement $options
+     * @param array|XmlElement $defaultErrors
      */
     public function __construct($errors = array(), $options = array(), $defaultErrors = array()) {
 
@@ -40,7 +44,7 @@ class Validation
          * Otherwise use an array (Manually)
          */
 
-        if ($errors instanceof \Fewlines\Core\Xml\Tree\Element) {
+        if ($errors instanceof XmlElement) {
             foreach ($errors->getChildren() as $child) {
                 $this->addError($child->getName(), $child->getContent());
             }
@@ -57,7 +61,7 @@ class Validation
          * Otherwise use an array (Manually)
          */
 
-        if ($options instanceof \Fewlines\Core\Xml\Tree\Element) {
+        if ($options instanceof XmlElement) {
             foreach ($options->getAttributes() as $type => $value) {
                 $this->addOption($type, $value);
             }
@@ -72,14 +76,14 @@ class Validation
          * Set default errors as fallback
          */
 
-        if ($defaultErrors instanceof \Fewlines\Core\Xml\Tree\Element) {
+        if ($defaultErrors instanceof XmlElement) {
             foreach ($defaultErrors->getChildren() as $child) {
                 $this->addError($child->getName(), $child->getContent(), true);
             }
         }
         else if (true == is_array($defaultErrors)) {
             foreach ($defaultErrors as $type => $message) {
-                if ($message instanceof \Fewlines\Component\Form\Validation\Error) {
+                if ($message instanceof Error) {
                     $this->defaultErrors[] = $message;
                     continue;
                 }
@@ -117,10 +121,10 @@ class Validation
     }
 
     /**
-     * @param  \Fewlines\Component\Form\Validation\Option $option
+     * @param  Option $option
      * @return \Fewlines\Component\Form\Validation\Validator|boolean
      */
-    private function createValidatorByOption(\Fewlines\Component\Form\Validation\Option $option) {
+    private function createValidatorByOption(Option $option) {
         $class = "\\" . __NAMESPACE__ . "\\Validation\\Validator\\" . ucfirst(trim($option->getType()));
 
         if (true === class_exists($class)) {
@@ -133,6 +137,7 @@ class Validation
     /**
      * @param string $type
      * @param string $message
+     * @param bool $default
      * @throws Exception\InvalidErrorValidationTypeException
      */
     public function addError($type, $message = "", $default = false) {
@@ -187,7 +192,7 @@ class Validation
 
     /**
      * @param  string $type
-     * @return boolean|\Fewlines\Component\Form\Validation\Option
+     * @return boolean|Option
      */
     public function getOption($type) {
         for ($i = 0, $len = count($this->options); $i < $len; $i++) {

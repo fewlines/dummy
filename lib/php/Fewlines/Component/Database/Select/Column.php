@@ -12,7 +12,7 @@ class Column
 	private $name;
 
 	/**
-	 * @param string $content
+	 * @param string $name
 	 */
 	public function __construct($name)
 	{

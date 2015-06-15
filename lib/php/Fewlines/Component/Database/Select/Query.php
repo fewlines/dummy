@@ -29,7 +29,7 @@ class Query extends \Fewlines\Component\Database\Query
 	/**
 	 * Sets all where references
 	 *
-	 * @param array $where
+	 * @param array|Where $where
 	 * @return \Fewlines\Component\Database\Select\Query
 	 */
 	public function setWhere($where)

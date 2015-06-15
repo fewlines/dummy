@@ -159,6 +159,7 @@ class Cookie
      * Returns the plain content without
      * any lifetime values
      *
+     * @param string $content
      * @return string
      */
     private function getExtractedContent($content = '') {

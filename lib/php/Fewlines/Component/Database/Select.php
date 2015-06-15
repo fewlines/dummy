@@ -265,11 +265,13 @@ class Select
 		return $this;
 	}
 
-	/**
-	 * Executes the build up query
-	 *
-	 * @return boolean
-	 */
+    /**
+     * Executes the build up query
+     *
+     * @return bool
+     * @throws Exception\ExecuteEmptyQueryException
+     * @throws Exception\SelectResultInvalidException
+     */
 	public function execute()
 	{
 		$query = "";
@@ -319,12 +321,13 @@ class Select
 		return false;
 	}
 
-	/**
-	 * Check if the query is valid
-	 *
-	 * @param  \Fewlines\Component\Database\Select\Query $query
-	 * @return boolean
-	 */
+    /**
+     * Check if the query is valid
+     *
+     * @param  \Fewlines\Component\Database\Select\Query $query
+     * @return bool
+     * @throws Exception\SelectQueryInvalidException
+     */
 	private function checkQuery($query)
 	{
 		if(false == $query->isValid())

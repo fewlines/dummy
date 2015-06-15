@@ -5,8 +5,9 @@ use Fewlines\Component\Form\Element\Input;
 use Fewlines\Component\Form\Element\Select;
 use Fewlines\Component\Form\Element\Textarea;
 use Fewlines\Core\Dom\Dom as DomHelper;
+use Fewlines\Core\Dom\Element;
 
-class Form extends \Fewlines\Core\Dom\Element
+class Form extends Element
 {
     /**
      * The element tagame of the config element
@@ -179,7 +180,8 @@ class Form extends \Fewlines\Core\Dom\Element
 
     /**
      * @param  string $name
-     * @return array|null|\Fewlines\Component\Form\Element\Element
+     * @param bool $collect
+     * @return array|Element\Element|null
      */
     public function getElementsByName($name, $collect = true) {
         $result = array();
@@ -211,7 +213,7 @@ class Form extends \Fewlines\Core\Dom\Element
     }
 
     /**
-     * @param  \Fewlines\Component\Form\Element\Element $name
+     * @param  \Fewlines\Component\Form\Element\Element $element
      * @param  array   $ctx
      * @param  boolean $mergeCtx
      * @return string|array
@@ -268,6 +270,7 @@ class Form extends \Fewlines\Core\Dom\Element
 
     /**
      * @param string $method
+     * @throws Exception\MethodDoesNotExistException
      */
     public function setMethod($method) {
         $method = strtolower($method);
@@ -310,7 +313,7 @@ class Form extends \Fewlines\Core\Dom\Element
      */
     public function setAcceptCharset($charset) {
         $this->acceptCharset = $charset;
-        $this->addAttribute('accept-charset', $acceptCharset);
+        $this->addAttribute('accept-charset', $this->acceptCharset);
     }
 
     /**
@@ -337,6 +340,7 @@ class Form extends \Fewlines\Core\Dom\Element
 
     /**
      * @param string $autoComplete
+     * @throws Exception\AutoCompleteValueInvalidException
      */
     public function setAutoComplete($autoComplete) {
         $autoComplete = strtolower($autoComplete);
@@ -368,6 +372,7 @@ class Form extends \Fewlines\Core\Dom\Element
 
     /**
      * @param string $encType
+     * @throws Exception\InvalidEncTypeException
      */
     public function setEncType($encType) {
         $encType = strtolower($encType);
@@ -521,9 +526,11 @@ class Form extends \Fewlines\Core\Dom\Element
      *
      * @param string $type
      * @param string $name
-     * @param array  $attributes
+     * @param array $attributes
      * @param array|\Fewlines\Core\Xml\Tree\Element $validation
-     * @return \Fewlines\Component\Form\Form
+     * @return Form
+     * @throws Exception\SelectOptionInvalidException
+     * @throws Exception\ValidationParametersEmptyException
      */
     public function addElement($type, $name, $attributes = array(), $validation = array()) {
         $element = null;
@@ -591,7 +598,7 @@ class Form extends \Fewlines\Core\Dom\Element
                 break;
         }
 
-        if ($element instanceof \Fewlines\Component\Form\Element) {
+        if ($element instanceof Element) {
             // Set element name
             $element->setName($name);
 
@@ -647,7 +654,7 @@ class Form extends \Fewlines\Core\Dom\Element
      * @return array
      */
     public function getValidationErrors() {
-        if (true == ($this->validation instanceof \Fewlines\Component\Form\Validation)) {
+        if (true == ($this->validation instanceof Validation)) {
             return $this->validation->getErrors();
         }
 
