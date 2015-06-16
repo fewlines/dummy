@@ -8,7 +8,7 @@ class ShortcutHelper
 	/**
 	 * @var string
 	 */
-	const SHORTCUT_IDENTIFIER_PATTERN = '/^:(.*):\{(.*)\}$/';
+	const SHORTCUT_IDENTIFIER_PATTERN = '/.*\{(.*)\-\>\((.*)\)\}.*/';
 
 	/**
 	 * @var string
@@ -78,7 +78,9 @@ class ShortcutHelper
 	 * @return boolean
 	 */
 	public static function isShortcut($str) {
-		return preg_match(self::SHORTCUT_IDENTIFIER_PATTERN, $str);
+		var_dump(preg_match_all(self::SHORTCUT_IDENTIFIER_PATTERN, $str));
+		echo $str . "<br />";
+		return (bool)preg_match_all(self::SHORTCUT_IDENTIFIER_PATTERN, $str);
 	}
 
 	/**
@@ -98,7 +100,7 @@ class ShortcutHelper
 	 * @return string
 	 */
 	public static function execLANG($value) {
-		$translation =  Locale::get($value);
+		$translation = Locale::get($value);
 		return ! is_array($translation) ? $translation : '';
 	}
 }

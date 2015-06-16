@@ -10,6 +10,7 @@ class Index extends \Fewlines\Core\Controller\View
 
 		if (!empty($_POST)) {
 			$result = $form->validate()->getResult();
+			pr($result);
 		}
 
 		$this->assign('form', $form);
