@@ -1,7 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project replaceable="false">
-	<yourproject active="true" id="yourproject">
-		<name>Your Project name</name>
-		<description>A small descpription of your project</description>
-	</yourproject>
-</project>
+<project replaceable="false"></project>

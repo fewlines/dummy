@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<route>
-	<get from="test/test" to="\YourProject\Controller\View\Index:hueAction"></get>
-</route>

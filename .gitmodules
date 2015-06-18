@@ -1,3 +1,0 @@
-[submodule "lib/js/third-party/closure-library"]
-	path = lib/js/third-party/closure-library
-	url = https://github.com/google/closure-library.git

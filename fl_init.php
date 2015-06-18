@@ -61,9 +61,8 @@ define('VIEW_HELPER_RL_NS',    '\Helper\View');
 
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
-define('FNC_REGEX_PARSER',     '/\{\{([^\}]*)\}\}/');
 
-define('DEVELOPER_DEBUG',      true);
+define('DEVELOPER_DEBUG',      false);
 define('DEFAULT_LOCALE',       'en');
 define('DR_SP',                '/');
 
@@ -117,10 +116,12 @@ spl_autoload_register(AUTLOADER_LC);
  * Global debug function (beautified output)
  */
 
-function pr($input)
-{
-	echo '<pre>';
-	if(is_bool($input)){var_dump($input);}
-	else{print_r($input);}
-	echo '</pre>';
+if (DEVELOPER_DEBUG == true) {
+	function pr($input)
+	{
+		echo '<pre>';
+		if(is_bool($input)){var_dump($input);}
+		else{print_r($input);}
+		echo '</pre>';
+	}
 }
