@@ -232,7 +232,7 @@ class Config
      */
     private function applyAttributeShortcuts(Element &$child) {
         foreach ($child->getAttributes() as $name => $value) {
-            if (ShortcutHelper::isShortcut($value)) {
+            if (ShortcutHelper::containsShortcut($value)) {
                 $child->addAttribute($name, ShortcutHelper::parse($value));
             }
         }
@@ -242,7 +242,7 @@ class Config
      * @param Element &$child
      */
     private function applyContentShortcuts(Element &$child) {
-        if (ShortcutHelper::isShortcut($child->getContent())) {
+        if (ShortcutHelper::containsShortcut($child->getContent())) {
             $child->setContent(ShortcutHelper::parse($child->getContent()));
         }
     }

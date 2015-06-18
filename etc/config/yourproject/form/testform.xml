@@ -5,7 +5,7 @@
 			<validation>
 				<options blank="true"></options>
 				<errors>
-					<blank>{lang->(testform.lastname)} sad</blank>
+					<blank>asdasdasd {lang->(testform.lastname)} {lang->(testform.lastname)} {lang->(testform.lastname)} asdasda</blank>
 				</errors>
 			</validation>
 		</input>

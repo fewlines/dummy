@@ -8,7 +8,7 @@ class ShortcutHelper
 	/**
 	 * @var string
 	 */
-	const SHORTCUT_IDENTIFIER_PATTERN = '/.*\{(.*)\-\>\((.*)\)\}.*/';
+	const SHORTCUT_IDENTIFIER_PATTERN = '/(.*)\{(.*)\-\>\((.*)\)\}(.*)/';
 
 	/**
 	 * @var string
@@ -23,10 +23,36 @@ class ShortcutHelper
 	 * @return string
 	 */
 	public static function parse($str) {
-		$name = strtolower(self::getStringVars($str, 0));
-		$value = self::getStringVars($str, 1);
+		$explode = explode("{", $str);
+		$shortcuts = array();
 
-		return self::executeShortcut($name, $value);
+		foreach ($explode as $i => $exp) {
+			if (preg_match('/\}/', $exp)) {
+				$shCut = explode("}", $exp);
+				$shortcuts[] = "{" . $shCut[0] . "}";
+				$shortcuts[] = $shCut[1];
+			}
+			else {
+				$shortcuts[] = $exp;
+			}
+		}
+
+		$shortcuts = ArrayHelper::clean($shortcuts);
+		$result = "";
+
+		// Execute shortcuts and build result string
+		for ($i = 0, $len = count($shortcuts); $i < $len; $i++) {
+			if (self::isShortcut($shortcuts[$i])) {
+				$name = strtolower(self::getStringVars($shortcuts[$i], 1));
+				$value = self::getStringVars($shortcuts[$i], 2);
+				$result .= self::executeShortcut($name, $value);
+			}
+			else {
+				$result .= $shortcuts[$i];
+			}
+		}
+
+		return $result;;
 	}
 
 	/**
@@ -71,6 +97,17 @@ class ShortcutHelper
 	}
 
 	/**
+	 * Checks if the given string contains
+	 * at least one shortcut
+	 *
+	 * @param  string  $str
+	 * @return boolean
+	 */
+	public static function containsShortcut($str) {
+		return (bool)preg_match_all(self::SHORTCUT_IDENTIFIER_PATTERN, trim($str));
+	}
+
+	/**
 	 * Checks if the given string is a valid
 	 * shortcut to be executed
 	 *
@@ -78,9 +115,7 @@ class ShortcutHelper
 	 * @return boolean
 	 */
 	public static function isShortcut($str) {
-		var_dump(preg_match_all(self::SHORTCUT_IDENTIFIER_PATTERN, $str));
-		echo $str . "<br />";
-		return (bool)preg_match_all(self::SHORTCUT_IDENTIFIER_PATTERN, $str);
+		return (bool)preg_match(self::SHORTCUT_IDENTIFIER_PATTERN, trim($str));
 	}
 
 	/**
