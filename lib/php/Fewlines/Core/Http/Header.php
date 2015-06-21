@@ -1,8 +1,18 @@
 <?php
 namespace Fewlines\Core\Http;
 
+use Fewlines\Core\Template\Template;
+use Fewlines\Core\Application\Buffer;
+
 class Header
 {
+	use Messages;
+
+	/**
+	 * @var array
+	 */
+	private static $codeViews = array();
+
 	/**
 	 * Returns all current headers
 	 *
@@ -13,37 +23,60 @@ class Header
 	}
 
 	/**
+	 * Sets the http status of the current
+	 * request/response
+	 */
+	private static function setStatus($str) {
+		header('HTTP/1.0 ' . $str);
+		header('Status: ' . $str);
+	}
+
+	/**
 	 * Sets the defined code
 	 *
 	 * @param number $code
 	 */
 	public static function set($code, $throw = true) {
-		switch ($code) {
-			case 404:
-				header('HTTP/1.0 404 Not Found');
-				header('Status: 404 Not Found');
-
-				if(true == $throw) {
-					throw new Header\Exception\HttpNotFoundException(
-						'The page couldn\'t be found'
-					);
-				}
-
-				break;
-
-			default:
-			case 500:
-				header('HTTP/1.1 500 Internal Server Error');
-				header('Status: 500 Internal Server Error');
-
-				if(true == $throw) {
-					throw new Header\Exception\InternalServerErrorException(
-						'Something went wrong'
-					);
-				}
-
-				break;
+		// Check if status message is given
+		if ( ! array_key_exists($code, self::$messages)) {
+			$code  = 500;
 		}
+
+		// Build message
+		$message = self::$messages[$code]['status'];
+
+		if ( ! empty(self::$messages[$code]['message'])) {
+			$message = self::$messages[$code]['message'];
+		}
+
+		// Set status to the header
+		self::setStatus(self::$messages[$code]['status']);
+
+		// Check if a view was set
+		if (array_key_exists($code, self::$codeViews)) {
+			$throw = false;
+
+			\Fewlines\Core\Application\Buffer::clear(true);
+			Template::getInstance()->setLayout('default')->setView(self::$codeViews[$code])->renderAll();
+
+			exit;
+		}
+		else {
+			if(true == $throw) {
+				throw new Header\Exception\HttpException($message);
+			}
+		}
+	}
+
+	/**
+	 * Sets the url of a code so it will be rendered
+	 * instead of the exception
+	 *
+	 * @param number $code
+	 * @param string $path
+	 */
+	public static function setCodeView($code, $path) {
+		self::$codeViews[$code] = $path;
 	}
 
 	/**
@@ -52,6 +85,8 @@ class Header
 	 * @param  string $location
 	 */
 	public static function redirect($location) {
+		Buffer::clear(true);
+
 		header("Location: " . $location);
 		exit;
 	}

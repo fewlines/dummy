@@ -1,6 +1,6 @@
 <?php
 namespace Fewlines\Core\Http\Header\Exception;
 
-class HttpNotFoundException extends \Exception
+class HttpException extends \Exception
 {
 }

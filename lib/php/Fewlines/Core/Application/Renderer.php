@@ -12,7 +12,7 @@ abstract class Renderer
 	 */
 	final protected static function renderTemplate($layout, $args = array()) {
 		Buffer::start();
-		Template::getInstance()->setLayout($layout)->renderAll($args);
+		Template::getInstance()->setLayout($layout)->setAutoView()->renderAll($args);
 	}
 
 	/**

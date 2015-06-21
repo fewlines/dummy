@@ -75,6 +75,15 @@ class View
     private $routeController;
 
     /**
+     * Determinates if the controller returns
+     * an empty string - no matter if called
+     * from a view or an route
+     *
+     * @var boolean
+     */
+    private $disableController = false;
+
+    /**
      * Returns the name of the rendered view
      *
      * @return string
@@ -140,21 +149,26 @@ class View
      * Init the view with some options
      * called from the layout
      *
-     * @param array $urlParts
+     * @param array $config
      */
-    public function __construct($urlParts) {
+    public function __construct($config) {
+        if ( ! is_array($config) && preg_match('/\//', $config)) {
+            $this->setPath($config);
+            $this->disableController = true;
+        }
         // Set components by default layout
-        if (array_key_exists('view', $urlParts) && array_key_exists('action', $urlParts)) {
-            $this->setAction($urlParts['action']);
-            $this->setName($urlParts['view']);
-            $this->setPath($urlParts['view']);
+        else if (is_array($config) && array_key_exists('view', $config) && array_key_exists('action', $config)) {
+            $this->setAction($config['action']);
+            $this->setName($config['view']);
+            $this->setPath($config['view']);
             $this->setViewControllerClass();
         }
-
-        // Set by route
-        if (true == ($urlParts instanceof \Fewlines\Core\Http\Router\Routes\Route)) {
-            $this->activeRoute = $urlParts;
+        else if (true == ($config instanceof \Fewlines\Core\Http\Router\Routes\Route)) {
+            $this->activeRoute = $config;
             $this->setRouteControllerClass($this->activeRoute->getToClass());
+        }
+        else {
+            $this->disableController = true;
         }
     }
 
@@ -263,6 +277,10 @@ class View
      * @return null|*
      */
     public function initController() {
+        if (true == $this->disableController) {
+            return false;
+        }
+
         if (false == is_null($this->activeRoute)) {
             return $this->initRouteController();
         }
@@ -286,7 +304,7 @@ class View
         else {
             throw new View\Exception\ControllerInitialisationGoneWrongException(
                 'The view controller could not be initialized.
-                Must be instance of \Fewlines\Controller\View'
+                Must be instance of \Fewlines\Core\Controller\View'
             );
         }
 

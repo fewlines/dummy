@@ -191,6 +191,7 @@ class Template extends Renderer
      * Sets the layout
      *
      * @param  string $layout
+     * @param  string $view
      * @return self
      */
     public function setLayout($layout) {
@@ -209,9 +210,6 @@ class Template extends Renderer
         // Set layout
         $this->layout = new Layout($layout, $path);
 
-        // Set the new view
-        $this->setView();
-
         return $this;
     }
 
@@ -229,7 +227,10 @@ class Template extends Renderer
         return false;
     }
 
-    public function setView() {
+    /**
+     * @return self
+     */
+    public function setAutoView() {
         if(false == is_null($this->activeRoute) && ! $this->isException()) {
             $this->view = new View($this->activeRoute);
         }
@@ -249,6 +250,20 @@ class Template extends Renderer
                     'action' => $action
                 ));
         }
+
+        return $this;
+    }
+
+    /**
+     * Create the view by a given
+     * path
+     *
+     * @param  string $path
+     * @return self
+     */
+    public function setView($path) {
+        $this->view = new View($path);
+        return $this;
     }
 
     /**

@@ -127,7 +127,6 @@ class Renderer
             if ( ! $view->isRouteActive()) {
                 // Get view and action
                 $file = $view->getPath();
-                $action = $view->getAction();
 
                 if (is_string($this->controller)) {
                     // Output rendered html from the return of the controller

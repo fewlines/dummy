@@ -62,7 +62,8 @@ define('VIEW_HELPER_RL_NS',    '\Helper\View');
 define('HTTP_METHODS_PATTERN', '/get|post|put|delete|any/');
 define('URL_LAYOUT_ROUTE',     '/view:index/action:index');
 
-define('DEVELOPER_DEBUG',      false);
+define('DEVELOPER_DEBUG',      true);
+define('ERROR_HANDLER',		   true);
 define('DEFAULT_LOCALE',       'en');
 define('DR_SP',                '/');
 

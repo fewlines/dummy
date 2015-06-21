@@ -7,6 +7,7 @@ use Fewlines\Core\Helper\NamespaceHelper;
 use Fewlines\Core\Handler\Error as ErrorHandler;
 use Fewlines\Core\Locale\Locale;
 use Fewlines\Core\Http\Router;
+use Fewlines\Core\Http\Header;
 
 class Bootstrap
 {
@@ -81,7 +82,7 @@ class Bootstrap
 	 * Inits the error handler
 	 */
 	final protected function initErrorHandler() {
-        if (DEVELOPER_DEBUG == true) {
+        if (DEVELOPER_DEBUG == true && ERROR_HANDLER == false) {
             return;
         }
 
