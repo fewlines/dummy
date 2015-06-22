@@ -114,7 +114,7 @@ class Environment
 	 * @return \Fewlines\Core\Application\Environment\EnvType|boolean
 	 */
 	private function checkUrlPatterns() {
-		$url = $this->router->getRequest()->getFullUrl();
+		$url = $this->router->getRequest()->getHost();
 		$type = false;
 
 		for ($i = 0, $len = count($this->urlPatterns); $i < $len; $i++) {

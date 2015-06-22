@@ -3,7 +3,6 @@
 	<type name="production" flags="live"></type>
 	<type name="staging" flags="testing"></type>
 	<type name="development" flags="local">
-		<condition type="url" value="/.local/"></condition>
-		<condition type="host" value="Davide-PC"></condition>
+		<condition type="url" value="/\.local/"></condition>
 	</type>
 </environment>

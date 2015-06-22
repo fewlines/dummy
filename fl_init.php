@@ -37,7 +37,7 @@ define('CORE_CONFIG_PATH',  CONFIG_PATH . '/core');
 define('SHARE_CONFIG_PATH', CONFIG_PATH . '/share');
 
 define('LAYOUT_PATH',       TPL_PATH . '/layout');
-define('VIEW_PATH',         TPL_PATH . '/views');
+define('VIEW_PATH',         TPL_PATH . '/view');
 
 /**
  * Default options for the

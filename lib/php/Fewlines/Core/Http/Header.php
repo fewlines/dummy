@@ -9,6 +9,11 @@ class Header
 	use Messages;
 
 	/**
+	 * @var integer
+	 */
+	const DEFAULT_ERROR_CODE = 500;
+
+	/**
 	 * @var array
 	 */
 	private static $codeViews = array();
@@ -20,6 +25,45 @@ class Header
 	 */
 	public static function getHeaders() {
 		return getallheaders();
+	}
+
+	/**
+	 * Returns the active status code
+	 *
+	 * @return integer
+	 */
+	public static function getStatusCode() {
+		return http_response_code();
+	}
+
+	/**
+	 * Returns the status message of the current
+	 * status code
+	 *
+	 * @param  boolean $real if set the default message wil be returned
+	 * @return string
+	 */
+	public static function getStatusMessage($real = false) {
+		$code = self::getStatusCode();
+		$message = '';
+
+		if (array_key_exists($code, self::$messages)) {
+			if (true == $real) {
+				if ( ! empty(self::$messages[$code]['status'])) {
+					$message = self::$messages[$code]['status'];
+				}
+			}
+			else {
+				if (empty(self::$messages[$code]['message'])) {
+					$message = self::$messages[$code]['status'];
+				}
+				else {
+					$message = self::$messages[$code]['message'];
+				}
+			}
+		}
+
+		return $message;
 	}
 
 	/**
@@ -39,7 +83,7 @@ class Header
 	public static function set($code, $throw = true) {
 		// Check if status message is given
 		if ( ! array_key_exists($code, self::$messages)) {
-			$code  = 500;
+			$code = self::DEFAULT_ERROR_CODE;
 		}
 
 		// Build message
@@ -56,9 +100,25 @@ class Header
 		if (array_key_exists($code, self::$codeViews)) {
 			$throw = false;
 
-			\Fewlines\Core\Application\Buffer::clear(true);
-			Template::getInstance()->setLayout('default')->setView(self::$codeViews[$code])->renderAll();
+			/**
+			 * Clear previous outputs
+			 * completely
+			 */
 
+			Buffer::clear(true);
+
+			/**
+			 * Render new template
+			 * with the given view path
+			 * and layout
+			 */
+
+			Template::getInstance()
+				->setLayout(self::$codeViews[$code]['layout'])
+				->setView(self::$codeViews[$code]['path'])
+				->renderAll();
+
+			// Abort to prevent further actions
 			exit;
 		}
 		else {
@@ -72,11 +132,17 @@ class Header
 	 * Sets the url of a code so it will be rendered
 	 * instead of the exception
 	 *
-	 * @param number $code
-	 * @param string $path
+	 * @param number  $code
+	 * @param string  $path
+	 * @param boolean $condition
 	 */
-	public static function setCodeView($code, $path) {
-		self::$codeViews[$code] = $path;
+	public static function setCodeView($code, $path, $condition = true, $layout = '') {
+		if (true == $condition) {
+			self::$codeViews[$code] = array(
+				'path'   => $path,
+				'layout' => empty($layout) ? DEFAULT_LAYOUT : $layout
+			);
+		}
 	}
 
 	/**
@@ -86,7 +152,6 @@ class Header
 	 */
 	public static function redirect($location) {
 		Buffer::clear(true);
-
 		header("Location: " . $location);
 		exit;
 	}

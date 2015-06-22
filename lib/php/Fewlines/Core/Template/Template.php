@@ -68,6 +68,9 @@ class Template extends Renderer
     public $arguments = array();
 
     /**
+     * Holds the current instance of the
+     * router created on startup
+     *
      * @var \Fewlines\Core\Http\Router
      */
     private $router;
@@ -79,6 +82,8 @@ class Template extends Renderer
      * @param array|\Fewlines\Core\Http\Router\Routes\Route $routeUrlParts
      */
     public function __construct($route) {
+        parent::__construct();
+
         // Set instance so it can be use as singleton
         self::$instance = $this;
 
@@ -92,9 +97,6 @@ class Template extends Renderer
 
         // Get default router
         $this->router = Router::getInstance();
-
-        // Create renderer
-        $this->renderer = new Renderer();
     }
 
     /**
