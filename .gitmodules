@@ -1,6 +1,0 @@
-[submodule "lib/php/Fewlines/core"]
-	path = lib/php/Fewlines/core
-	url = git@github.com:fewlines/core.git
-[submodule "lib/php/Fewlines/component"]
-	path = lib/php/Fewlines/component
-	url = git@github.com:fewlines/component.git
