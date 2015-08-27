@@ -7,7 +7,7 @@ $db = new \Fewlines\Component\Database\Database;
 
 /** Takes the given database settings  */
 $db = new \Fewlines\Component\Database\Database(
-	'127.0.0.1:88', 'username', 'password', 'database', 'charset'
+	'127.0.0.1:8080', 'username', 'password', 'database', 'charset'
 );
 ```
 
