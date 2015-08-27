@@ -2,7 +2,13 @@
 
 ### Database usage
 ```php
-$db = new \Fewlines\Component\Database\Database();
+/** Takes the databse settings from the xml config */
+$db = new \Fewlines\Component\Database\Database;
+
+/** Takes the given database settings  */
+$db = new \Fewlines\Component\Database\Database(
+	'127.0.0.1:88', 'username', 'password', 'database', 'charset'
+);
 ```
 
 ##### SELECT 
