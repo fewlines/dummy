@@ -1,6 +1,6 @@
 # fewlines - framework
 
-#### Database usage
+### Database usage
 ```$db = new Database;```
 
 ##### SELECT 
