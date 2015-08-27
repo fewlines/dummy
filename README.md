@@ -1,7 +1,7 @@
 # fewlines - framework
 
 ### Database usage
-```$db = new Database;```
+```$db = new \Fewlines\Component\Database\Database();```
 
 ##### SELECT 
 ```$table = $db->select('yourtable');```
