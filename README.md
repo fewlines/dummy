@@ -2,7 +2,7 @@
 
 ### Database usage
 ```php
-/** Takes the databse settings from the xml config */
+/** Takes the database settings from the xml config */
 $db = new \Fewlines\Component\Database\Database;
 
 /** Takes the given database settings  */
@@ -85,6 +85,7 @@ $fetch = $db->select('yourtable', '*');
 $fetch = $fetch->where(array('id', '>', 1))
                ->where(array('id', '<', 4))
                ->where(array('username', 'LIKE', '%bot%'))
+               ->orderBy('id', 'desc')
                ->limit(0, 5);
 
 $result = $fetch->fetchAll();
