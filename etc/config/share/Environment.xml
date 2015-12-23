@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<environment replaceable="true">
-	<type name="production" flags="live"></type>
-	<type name="staging" flags="testing"></type>
-	<type name="development" flags="local">
-		<condition type="url" value="/\.local/"></condition>
-	</type>
-</environment>

@@ -1,7 +1,0 @@
-@mixin keyframes($name) {
-	@keyframes #{unquote($name)} {@content;}
-	@-o-keyframes #{unquote($name)} {@content;}
-	@-ms-keyframes #{unquote($name)} {@content;}
-	@-moz-keyframes #{unquote($name)} {@content;}
-	@-webkit-keyframes #{unquote($name)} {@content;}
-}
